@@ -1,0 +1,101 @@
+#-----------------------------------------------------------#
+
+# PlayerMarket by Norbit4
+
+# github: https://github.com/Norbit4
+# website https://n0rbit.pl/
+
+#---------------------------------------#
+#             [ database ]              #
+#---------------------------------------#
+
+#database
+
+# mysql/h2
+database:
+  type: 'h2'
+  # use when mysql is enabled
+  dialect: 'org.hibernate.dialect.MySQLDialect'
+
+  database: 'test'
+  host: 'jdbc:mysql://localhost:3307'
+  user: 'root'
+  password: '$5fKJKrre[do9235uidkdf135'
+  use-ssl: false
+
+
+# all items without category will go to this category
+other-category:
+  # if disabled, all items without category will be not available to use in shop
+  enabled: true
+  name: "Inne"
+  icon: "BOOK"
+  lore:
+    - ''
+    - '&eKliknij aby przejść!'
+
+all-category:
+  enabled: true
+  name: "Wszystkie"
+  icon: "NETHER_STAR"
+  lore:
+    - ''
+    - '&eKliknij aby przejść!'
+
+categories:
+  1:
+    name: 'Bloki'
+    icon: 'BRICKS'
+    file: 'blocks'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  2:
+    name: 'Zbroje'
+    icon: 'DIAMOND_CHESTPLATE'
+    file: 'armor'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  3:
+    name: 'Walka'
+    icon: 'GOLDEN_SWORD'
+    file: 'combat'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  4:
+    name: 'Minerały'
+    icon: 'AMETHYST_SHARD'
+    file: 'minerals'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  5:
+    name: 'Natura'
+    icon: 'BAMBOO'
+    file: 'nature'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  6:
+    name: 'Mechanizmy'
+    icon: 'REDSTONE'
+    file: 'redstone'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  7:
+    name: 'Narzędzia'
+    icon: 'IRON_PICKAXE'
+    file: 'tools'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  8:
+    name: 'Jedzenie'
+    icon: 'ENCHANTED_GOLDEN_APPLE'
+    file: 'food'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
