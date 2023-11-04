@@ -1,16 +1,23 @@
-#-----------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------#
+#     _____  _          __      ________ _____    __  __          _____  _  ________ _______    #
+#    |  __ \| |        /\\ \   / /  ____|  __ \  |  \/  |   /\   |  __ \| |/ /  ____|__   __|   #
+#    | |__) | |       /  \\ \_/ /| |__  | |__) | | \  / |  /  \  | |__) | ' /| |__     | |      #
+#    |  ___/| |      / /\ \\   / |  __| |  _  /  | |\/| | / /\ \ |  _  /|  < |  __|    | |      #
+#    | |    | |____ / ____ \| |  | |____| | \ \  | |  | |/ ____ \| | \ \| . \| |____   | |      #
+#    |_|    |______/_/    \_\_|  |______|_|  \_\ |_|  |_/_/    \_\_|  \_\_|\_\______|  |_|      #
+#                                                                                               #
+#-----------------------------------------------------------------------------------------------#
 
 # PlayerMarket by Norbit4
 
 # github: https://github.com/Norbit4
 # website https://n0rbit.pl/
 
-#---------------------------------------#
-#             [ database ]              #
-#---------------------------------------#
+# If you like the plugin, support me with a positive opinion, thanks! <3
 
-#database
-
+#---------------------------------------#
+#             [ DATABASE ]              #
+#---------------------------------------#
 # mysql/h2
 database:
   type: 'h2'
@@ -23,13 +30,141 @@ database:
   password: '$5fKJKrre[do9235uidkdf135'
   use-ssl: false
 
+#---------------------------------------#
+#             [ COMMANDS ]              #
+#---------------------------------------#
+offer-command:
+  command: 'wystaw'
+  permission: 'playermarket.command.offer'
+  usage: '&cPoprawne uzycie: /wystaw <cena>'
+  no-permission: '&cNie masz uprawnien do tej komendy!'
+  wrong-price: '&cPodana cena jest nieprawidłowa!'
+  wrong-item: '&cNie możesz wystawić tego przedmiotu!'
+  success: '&aWystawiłeś przedmiot na sprzedaż!'
+
+market-command:
+  command: 'market'
+  permission: 'playermarket.command.market'
+  usage: '&cPoprawne uzycie: /market'
+  no-permission: '&cNie masz uprawnien do tej komendy!'
+
+#---------------------------------------#
+#              [ GLOBAL ]               #
+#---------------------------------------#
+offer-item-lore:
+    - ''
+    - '&7Cena: &a{PRICE}$'
+    - '&7Sprzedawca: &a{SELLER}'
+    - '&7Data wystawienia: &a{DATE}'
+    - ''
+    - '&eKliknij aby kupić!'
+
+#---------------------------------------#
+#            [ MARKET - GUI ]           #
+#---------------------------------------#
+market-gui:
+  title: '&8&lMARKET &7&l» &e&l&8{CATEGORY}'
+  your-offers-icon:
+    name: '&e&lTwoje oferty'
+    icon: 'CHEST'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  previous-page-icon:
+    name: '&e&lPoprzednia strona'
+    icon: 'ARROW'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  next-page-icon:
+    name: '&e&lNastępna strona'
+    icon: 'ARROW'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+
+#---------------------------------------#
+#            [ OFFERS - GUI ]           #
+#---------------------------------------#
+your-offers-gui:
+  title: '&8&lTWOJE OFERTY'
+  remove-offer-message: '&fUsunięto ofertę!'
+  offer-lore:
+    - ''
+    - '&7Cena: &a{PRICE}$'
+    - ''
+    - '&eKliknij aby usunąć!'
+  statistics:
+    nothing-to-get-message: '&cNie masz nic do odebrania!'
+    success-message: '&fOdebrano &a{MONEY}$ &fza sprzedane przedmioty!'
+    icon:
+      name: '&b&lTwoje konto'
+      icon: 'CHEST'
+      lore:
+        - ''
+        - '&6◆ &fWystawione przedmioty: &6{OFFERS}'
+        - '&d◆ &fSprzedane przedmioty: &d{SOLD}'
+        - '&a$ &fDo odebrania: &a{MONEY_EARNED}'
+        - ''
+        - '&d◆ &fSprzedane przedmioty ogólnie: &d{ALL_SOLD}'
+        - '&a$ &fZarobione ogólnie: &a{ALL_MONEY_EARNED}'
+        - ''
+        - '&eKliknij aby odebrać!'
+
+  back-to-market-icon:
+    name: '&b&lPowrót do sklepu'
+    icon: 'BARRIER'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  previous-page-icon:
+    name: '&e&lPoprzednia strona'
+    icon: 'ARROW'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+  next-page-icon:
+    name: '&e&lNastępna strona'
+    icon: 'ARROW'
+    lore:
+      - ''
+      - '&eKliknij aby przejść!'
+
+#---------------------------------------#
+#            [ BUY - GUI ]              #
+#---------------------------------------#
+buy-gui:
+  title: '&8&lKUP PRZEDMIOT!'
+  item-sold-message: '&cTen przedmiot został już sprzedany!'
+  not-enough-money-message: '&cNie masz wystarczająco pieniędzy!'
+  success-message: '&fKupiłeś przedmiot za &a&l{COST}$!'
+  accept-icon:
+    name: '&f&lKup za &a&l{AMOUNT}$!'
+    icon: 'GREEN_WOOL'
+    lore:
+      - ''
+      - '&eKliknij aby kupić!'
+  cancel-icon:
+    name: '&c&lCofnij'
+    icon: 'RED_WOOL'
+    lore:
+      - ''
+      - '&eKliknij aby wrócić!'
+
+#---------------------------------------#
+#            [ CATEGORIES ]             #
+#---------------------------------------#
+category-name-format: '&a&l{CATEGORY}'
+category-selected-lore:
+  - ''
+  - '&e&lWybrano'
 
 # all items without category will go to this category
 other-category:
-  # if disabled, all items without category will be not available to use in shop
+  # if disabled, all items without category will be not available to buy in shop
   enabled: true
   name: "Inne"
-  icon: "BOOK"
+  icon: "ENDER_PEARL"
   lore:
     - ''
     - '&eKliknij aby przejść!'
