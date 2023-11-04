@@ -3,6 +3,7 @@ package pl.norbit.playermarket.config.category;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.norbit.playermarket.model.local.Category;
+import pl.norbit.playermarket.model.local.CategoryType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class CategoryUtils {
 
             ConfigurationSection categorySection = section.getConfigurationSection(key);
 
-            Category category = getDefaultCategory(categorySection);
+            Category category = getDefaultCategory(categorySection, CategoryType.NORMAL);
 
             if(category == null) return;
 
@@ -31,10 +32,10 @@ public class CategoryUtils {
         return categories;
     }
 
-    public static Category getDefaultCategory(ConfigurationSection categorySection){
+    public static Category getDefaultCategory(ConfigurationSection categorySection, CategoryType type){
         if(categorySection == null) return null;
 
-        Category category = new Category();
+        Category category = new Category(type);
 
         String mat = categorySection.getString("icon");
 

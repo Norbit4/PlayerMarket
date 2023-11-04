@@ -1,12 +1,10 @@
 package pl.norbit.playermarket.commands;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.TaskUtils;
