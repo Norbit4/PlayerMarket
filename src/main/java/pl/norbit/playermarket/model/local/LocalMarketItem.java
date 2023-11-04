@@ -24,11 +24,13 @@ import java.util.List;
 public class LocalMarketItem {
 
     private static final String priceTemplate = "&7Cena: &a{PRICE}&7";
+    private static final String ownerTemplate = "&7Sprzedawca: &a{NAME}&7";
     private static final String buyTemplate = "&eKliknij aby kupić!";
 
     private static NamespacedKey idKey = new NamespacedKey(PlayerMarket.getInstance(), "ID");
     private Long id;
     private String ownerUUID;
+    private String ownerName;
     private double price;
     private ItemStack itemStack;
     private Icon icon;
@@ -59,6 +61,7 @@ public class LocalMarketItem {
         is.setItemMeta(itemMeta);
         this.itemStack = is;
         this.id = id;
+        this.ownerName = marketItemData.getOwnerName();
         this.price = marketItemData.getPrice();
         updateMarketItem();
     }
@@ -67,7 +70,7 @@ public class LocalMarketItem {
     }
 
     public void updateMarketItem(){
-        Icon icon = new Icon(addPrice(itemStack, price));
+        Icon icon = new Icon(addPrice(itemStack, price, ownerName));
 
         icon.onClick(e->{
             e.setCancelled(true);
@@ -91,7 +94,7 @@ public class LocalMarketItem {
         this.icon = icon;
     }
 
-    private static ItemStack addPrice(ItemStack is, double price){
+    private static ItemStack addPrice(ItemStack is, double price, String owner){
         ItemMeta iMeta = is.getItemMeta();
         List<String> lore = iMeta.getLore();
 
@@ -99,6 +102,7 @@ public class LocalMarketItem {
 
         lore.add("");
         lore.add(ChatUtils.format(priceTemplate.replace("{PRICE}", DoubleFormatter.format(price))));
+        lore.add(ChatUtils.format(ownerTemplate.replace("{NAME}", owner)));
         lore.add("");
         lore.add(ChatUtils.format(buyTemplate));
 

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = '1.0'
+version = '1.0.0'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.2.0'
     implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.2.0'
 
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.28'
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
 }
 

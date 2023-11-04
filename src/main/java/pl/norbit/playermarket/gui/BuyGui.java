@@ -11,12 +11,12 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.economy.EconomyService;
+import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
 import pl.norbit.playermarket.utils.TaskUtils;
 
 public class BuyGui extends Gui {
-
     private final MarketItemData marketItemData;
     private final ItemStack is;
 
@@ -47,45 +47,39 @@ public class BuyGui extends Gui {
                 MarketItemData mItemData = DataService.getMarketItemData(marketItemData.getId());
 
                 if(mItemData == null){
-                    p.sendMessage(ChatUtils.format("&cPrzedmiot został już sprzedany!"));
-                    TaskUtils.runTaskLater(() -> new MarketGui(p,Settings.CATEGORIES.get(0)).open(),0L);
+                    backToShop("&cPrzedmiot został już sprzedany!");
                     return;
                 }
 
                 if(!EconomyService.withDrawIfPossible(p, mItemData.getPrice())){
-                    p.sendMessage(ChatUtils.format("&cNie masz wystarczająco środków!"));
-                    TaskUtils.runTaskLater(() -> new MarketGui(p, Settings.CATEGORIES.get(0)).open(),0L);
+                    backToShop("&cNie masz wystarczająco środków!");
                     return;
                 }
 
                 DataService.buyItem(mItemData);
                 p.getInventory().addItem(mItemData.getItemStack());
 
-                p.sendMessage(ChatUtils.format("&aKupiłeś przedmiot!"));
-                TaskUtils.runTaskLater(() -> new MarketGui(p,Settings.CATEGORIES.get(0)).open(),0L);
+                backToShop("&aKupiłeś przedmiot!");
 
             },0L);
         });
 
         cancelIcon.onClick(e -> {
             e.setCancelled(true);
-            new MarketGui((Player)e.getWhoClicked(),Settings.CATEGORIES.get(0)).open();
+            new MarketGui((Player)e.getWhoClicked(), CategoryService.getMain()).open();
         });
 
         addItem(20, buyIcon);
         addItem(24, cancelIcon);
     }
 
+    private void backToShop(String message){
+        player.sendMessage(ChatUtils.format(message));
+        TaskUtils.runTaskLater(() -> new MarketGui(player, CategoryService.getMain()), 0L);
+    }
+
     private static Icon getIcon(ItemStack is){
-        Icon icon = new Icon(is);
-
-        icon.setDurability(is.getDurability());
-        icon.setAmount(is.getAmount());
-        icon.setLore(is.getItemMeta().getLore());
-        icon.setName(is.getItemMeta().getDisplayName());
-        icon.enchant(is.getEnchantments());
-
-        return icon;
+        return new Icon(is);
     }
 
     private static Icon getIcon(Material material, String name, String lore){

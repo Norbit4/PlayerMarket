@@ -26,6 +26,7 @@ public class MarketItemData {
     private String ownerUUID;
 
     private double price;
+//    private long date;
 
     @Lob
     @Column(name = "itemStack", columnDefinition="BLOB")

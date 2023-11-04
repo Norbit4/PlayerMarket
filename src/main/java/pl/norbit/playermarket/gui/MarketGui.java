@@ -8,8 +8,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.gui.template.GuiTemplate;
+import pl.norbit.playermarket.gui.template.TemplateService;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
@@ -17,25 +17,23 @@ import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.utils.ChatUtils;
+import pl.norbit.playermarket.utils.gui.GuiIconUtil;
+import pl.norbit.playermarket.utils.gui.IconType;
+import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class MarketGui extends Gui {
     private final PaginationManager marketItemsPagination;
     private final PaginationManager categoriesPagination;
+    private final PaginationManager borderPagination;
     private final Category category;
 
     private static final List<MarketGui> marketGuis = new ArrayList<>();
 
     static {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                marketGuis.forEach(MarketGui::updateTask);
-            }
-        }.runTaskTimerAsynchronously(PlayerMarket.getInstance(), 6, 6);
+        TaskUtils.runTaskTimerAsynchronously(() -> marketGuis.forEach(MarketGui::updateTask), 6L, 4L);
     }
 
     public MarketGui(Player player, Category category) {
@@ -43,25 +41,24 @@ public class MarketGui extends Gui {
 
         this.category = category;
 
-        //item slots
-        this.marketItemsPagination = new PaginationManager(this);
+        GuiTemplate template = TemplateService.getTemplate(this);
 
-        this.marketItemsPagination.registerPageSlotsBetween(3, 8);
-        this.marketItemsPagination.registerPageSlotsBetween(12, 17);
-        this.marketItemsPagination.registerPageSlotsBetween(21, 26);
-
-        //category slots
-        this.categoriesPagination = new PaginationManager(this);
-
-        this.categoriesPagination.registerPageSlotsBetween(0, 1);
-        this.categoriesPagination.registerPageSlotsBetween(9, 10);
-        this.categoriesPagination.registerPageSlotsBetween(18, 19);
-        this.categoriesPagination.registerPageSlotsBetween(27, 28);
-        this.categoriesPagination.registerPageSlotsBetween(36, 37);
+        this.marketItemsPagination = template.getMarketItemsPagination();
+        this.categoriesPagination = template.getCategoriesPagination();
+        this.borderPagination = template.getBorderPagination();
 
         updateCategory(category);
 
+        for (int i = 0; i < this.borderPagination.getSlots().size(); i++) {
+            this.borderPagination.addItem(getBorderIcon());
+        }
+
+        //add categories
+        this.categoriesPagination.addItem(createCategory(Settings.ALL_CATEGORY));
+
         Settings.CATEGORIES.stream().map(this::createCategory).forEach(this.categoriesPagination::addItem);
+
+        this.categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
     }
 
 
@@ -77,7 +74,7 @@ public class MarketGui extends Gui {
     private void updatePage(Category category){
         this.marketItemsPagination.getItems().clear();
 
-        Set<LocalMarketItem> icons = MarketService.getIcons(category.getCategoryUUID());
+        List<LocalMarketItem> icons = MarketService.getIcons(category);
         if(icons != null) icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
 
         this.marketItemsPagination.update();
@@ -87,70 +84,42 @@ public class MarketGui extends Gui {
         this.marketItemsPagination.getItems().clear();
         this.marketItemsPagination.goFirstPage();
 
-        Set<LocalMarketItem> icons = MarketService.getIcons(category.getCategoryUUID());
+        List<LocalMarketItem> icons = MarketService.getIcons(category);
         if(icons != null) icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
     }
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
 
+        //update pagination
         this.marketItemsPagination.update();
         this.categoriesPagination.update();
+        this.borderPagination.update();
+
+        addItem(47,GuiIconUtil.getPaginationItem(marketItemsPagination, IconType.LEFT));
+        addItem(50, getProfileIcon());
+        addItem(53,GuiIconUtil.getPaginationItem(marketItemsPagination, IconType.RIGHT));
 
         marketGuis.add(this);
-
-        buildGui();
     }
 
-    public void buildGui(){
-        //black border
-        addItem(2, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(11, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(20, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(29, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(38, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(39, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(40, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(41, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(42, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(43, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
-        addItem(44, new Icon(Material.BLACK_STAINED_GLASS_PANE).setName(" "));
+    private Icon getProfileIcon(){
+        Icon icon = new Icon(Material.CHEST);
 
-        Icon aRight = new Icon(Material.ARROW);
-
-        aRight.setName(ChatUtils.format("&e&lNastępna strona"));
-        aRight.hideFlags();
-        aRight.onClick(e -> {
-            e.setCancelled(true);
-            this.marketItemsPagination.goNextPage();
-            this.marketItemsPagination.update();
-        });
-
-        Icon aLeft = new Icon(Material.ARROW);
-
-        aLeft.setName(ChatUtils.format("&e&lPoprzednia strona"));
-        aLeft.hideFlags();
-        aLeft.onClick(e -> {
-            e.setCancelled(true);
-            this.marketItemsPagination.goPreviousPage();
-            this.marketItemsPagination.update();
-        });
-
-        Icon profile = new Icon(Material.CHEST);
-
-        profile.setName(ChatUtils.format("&b&lTwoje oferty"));
-        profile.hideFlags();
-        profile.onClick(e -> {
+        icon.setName(ChatUtils.format("&b&lTwoje oferty"));
+        icon.hideFlags();
+        icon.onClick(e -> {
             e.setCancelled(true);
 
             LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
 
             new PlayerItemsGui(player, playerLocalData).open();
         });
+        return icon;
+    }
 
-        addItem(47, aLeft);
-        addItem(53, aRight);
-        addItem(50, profile);
+    private Icon getBorderIcon(){
+        return new Icon(Material.GRAY_STAINED_GLASS_PANE).setName(" ");
     }
 
     private Icon createCategory(Category category) {
