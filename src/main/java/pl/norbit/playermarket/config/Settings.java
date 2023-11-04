@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.config.category.CategoryUtils;
+import pl.norbit.playermarket.model.local.CategoryType;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class Settings {
 
         CATEGORIES = CategoryUtils.getCategories(configurationSection);
 
-        OTHER_CATEGORY = CategoryUtils.getDefaultCategory(config.getConfigurationSection("other-category"));
-        ALL_CATEGORY = CategoryUtils.getDefaultCategory(config.getConfigurationSection("all-category"));
+        OTHER_CATEGORY = CategoryUtils.getDefaultCategory(config.getConfigurationSection("other-category"), CategoryType.OTHER);
+        ALL_CATEGORY = CategoryUtils.getDefaultCategory(config.getConfigurationSection("all-category"), CategoryType.ALL);
     }
 }

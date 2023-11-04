@@ -10,16 +10,20 @@ import java.util.UUID;
 public class Category {
 
     private UUID categoryUUID;
+
     private String name;
+    private List<String> lore;
     private Material icon;
+
     private boolean enabled;
+    private CategoryType type;
 
     private String file;
-
-    private List<String> lore;
     private List<Material> materials;
 
-    public Category(){
+    public Category(CategoryType type){
         this.categoryUUID = UUID.randomUUID();
+        this.type = type;
     }
+
 }

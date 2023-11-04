@@ -15,8 +15,16 @@ public class CategoryService {
                 .findFirst()
                 .orElse(null);
 
-        if(category == null) return null;
+        if(category == null) return Settings.OTHER_CATEGORY.getCategoryUUID();
 
         return category.getCategoryUUID();
+    }
+
+    public static Category getMain(){
+        Category all = Settings.ALL_CATEGORY;
+
+        if(all.isEnabled()) return all;
+
+        return Settings.CATEGORIES.get(0);
     }
 }
