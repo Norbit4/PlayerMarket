@@ -12,19 +12,24 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.economy.EconomyService;
+import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.model.local.LocalPlayerItem;
+import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.*;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.gui.IconType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerItemsGui extends Gui {
 
     private final PaginationManager pagination;
     private LocalPlayerData localData;
+
+    private final ConfigGui configGui;
 
     private static final List<PlayerItemsGui> itemsGui = new ArrayList<>();
 
@@ -33,7 +38,9 @@ public class PlayerItemsGui extends Gui {
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData) {
-        super(player, "market-gui", ChatUtils.format("&8&lTwoje oferty"), 6);
+        super(player, "market-gui", ChatUtils.format(Settings.OFFERS_GUI.getTitle()), 6);
+
+        this.configGui = Settings.OFFERS_GUI;
 
         this.pagination = new PaginationManager(this);
 
@@ -61,30 +68,29 @@ public class PlayerItemsGui extends Gui {
 
         addItem(4, getProfileIcon());
 
-        addItem(46, GuiIconUtil.getPaginationItem(pagination, IconType.LEFT));
+        addItem(46,GuiIconUtil.getPaginationItem(pagination,
+                IconType.LEFT,
+                configGui.getIcon("previous-page-icon")));
 
-        addItem(52, GuiIconUtil.getPaginationItem(pagination, IconType.RIGHT));
+        addItem(49, GuiIconUtil.getOpenGuItem(configGui.getIcon("back-to-market-icon"),
+                new MarketGui(player, CategoryService.getMain())));
 
-        addItem(49, GuiIconUtil.getOpenGuItem(Material.BARRIER, "&b&lPowrót do sklepu", new MarketGui(player, Settings.CATEGORIES.get(0))));
+        addItem(52,GuiIconUtil.getPaginationItem(pagination,
+                IconType.RIGHT,
+                configGui.getIcon("next-page-icon")));
 
         itemsGui.add(this);
     }
 
     private Icon getProfileIcon(){
-        Icon icon = new Icon(Material.CHEST);
         PlayerData playerData = localData.getPlayerData();
+        Icon icon = configGui.getIcon("statistics-icon");
 
-        icon.setName(ChatUtils.format("&b&lTwoje konto"));
+
+        icon.setLore(icon.getItem()
+                .getLore().stream().map(l -> formatLine(l, playerData)).collect(Collectors.toList()));
         icon.hideFlags();
-        icon.appendLore("",
-                ChatUtils.format("&6◆ &fWystawione przedmioty: &6" + playerData.getPlayerOffers().size()),
-                ChatUtils.format("&d◆ &fSprzedane przedmioty: &d" + playerData.getSoldItems()),
-                ChatUtils.format("&a$ &fDo odebrania: &a" + DoubleFormatter.format(playerData.getEarnedMoney())),
-                "",
-                ChatUtils.format("&d◆ &fSprzedane przedmioty ogólnie: &d" + DoubleFormatter.format(playerData.getTotalSoldItems())),
-                ChatUtils.format("&a$ &fZarobione ogólnie: &a" + DoubleFormatter.format(playerData.getTotalEarnedMoney())),
-                "",
-                ChatUtils.format("&eKliknij aby odebrać!"));
+
 
         icon.onClick(e -> {
             e.setCancelled(true);
@@ -92,11 +98,13 @@ public class PlayerItemsGui extends Gui {
             double earnedMoney = playerData.getEarnedMoney();
 
             if(earnedMoney == 0) {
-                player.sendMessage(ChatUtils.format("&cNie masz nic do odebrania!"));
+                player.sendMessage(ChatUtils.format(configGui.getMessage("nothing-to-get-message")));
                 return;
             }
 
-            player.sendMessage(ChatUtils.format("&fOdebrano &e" + DoubleFormatter.format(earnedMoney)));
+            player.sendMessage(ChatUtils.format(
+                    configGui.getMessage("success-message")
+                            .replace("{MONEY}", DoubleFormatter.format(earnedMoney))));
 
             playerData.setEarnedMoney(0);
             playerData.setSoldItems(0);
@@ -110,6 +118,17 @@ public class PlayerItemsGui extends Gui {
             EconomyService.deposit(player, earnedMoney);
         });
         return icon;
+    }
+
+    private String formatLine(String line, PlayerData playerData){
+
+        return ChatUtils.format(
+                line.replace("{OFFERS}", String.valueOf(playerData.getPlayerOffers().size()))
+                        .replace("{SOLD}", String.valueOf(playerData.getSoldItems()))
+                        .replace("{MONEY_EARNED}", DoubleFormatter.format(playerData.getEarnedMoney()))
+                        .replace("{ALL_SOLD}", String.valueOf(playerData.getTotalSoldItems()))
+                        .replace("{ALL_MONEY_EARNED}", DoubleFormatter.format(playerData.getTotalEarnedMoney()))
+        );
     }
 
     private void updateCategory(List<LocalPlayerItem> items) {

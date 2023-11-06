@@ -45,13 +45,12 @@ offer-command:
 market-command:
   command: 'market'
   permission: 'playermarket.command.market'
-  usage: '&cPoprawne uzycie: /market'
   no-permission: '&cNie masz uprawnien do tej komendy!'
 
 #---------------------------------------#
 #              [ GLOBAL ]               #
 #---------------------------------------#
-offer-item-lore:
+market-offer-item-lore:
     - ''
     - '&7Cena: &a{PRICE}$'
     - '&7Sprzedawca: &a{SELLER}'
@@ -59,25 +58,31 @@ offer-item-lore:
     - ''
     - '&eKliknij aby kupić!'
 
+player-offer-item-lore:
+      - ''
+      - '&7Cena: &a{PRICE}$'
+      - ''
+      - '&eKliknij aby usunąć!'
+
 #---------------------------------------#
 #            [ MARKET - GUI ]           #
 #---------------------------------------#
 market-gui:
-  title: '&8&lMARKET &7&l» &e&l&8{CATEGORY}'
+  title: '&8&lMARKET &7&l» &8&l{CATEGORY}'
   your-offers-icon:
-    name: '&e&lTwoje oferty'
+    name: '&a&lTwoje oferty'
     icon: 'CHEST'
     lore:
       - ''
       - '&eKliknij aby przejść!'
   previous-page-icon:
-    name: '&e&lPoprzednia strona'
+    name: '&f&lPoprzednia strona'
     icon: 'ARROW'
     lore:
       - ''
       - '&eKliknij aby przejść!'
   next-page-icon:
-    name: '&e&lNastępna strona'
+    name: '&f&lNastępna strona'
     icon: 'ARROW'
     lore:
       - ''
@@ -86,45 +91,39 @@ market-gui:
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
 #---------------------------------------#
-your-offers-gui:
+offers-gui:
   title: '&8&lTWOJE OFERTY'
   remove-offer-message: '&fUsunięto ofertę!'
-  offer-lore:
-    - ''
-    - '&7Cena: &a{PRICE}$'
-    - ''
-    - '&eKliknij aby usunąć!'
-  statistics:
-    nothing-to-get-message: '&cNie masz nic do odebrania!'
-    success-message: '&fOdebrano &a{MONEY}$ &fza sprzedane przedmioty!'
-    icon:
-      name: '&b&lTwoje konto'
-      icon: 'CHEST'
-      lore:
-        - ''
-        - '&6◆ &fWystawione przedmioty: &6{OFFERS}'
-        - '&d◆ &fSprzedane przedmioty: &d{SOLD}'
-        - '&a$ &fDo odebrania: &a{MONEY_EARNED}'
-        - ''
-        - '&d◆ &fSprzedane przedmioty ogólnie: &d{ALL_SOLD}'
-        - '&a$ &fZarobione ogólnie: &a{ALL_MONEY_EARNED}'
-        - ''
-        - '&eKliknij aby odebrać!'
+  nothing-to-get-message: '&cNie masz nic do odebrania!'
+  success-message: '&fOdebrano &a{MONEY}$ &fza sprzedane przedmioty!'
+  statistics-icon:
+    name: '&a&lTwoje konto'
+    icon: 'CHEST'
+    lore:
+      - ''
+      - '&6◆ &fWystawione przedmioty: &6{OFFERS}'
+      - '&d◆ &fSprzedane przedmioty: &d{SOLD}'
+      - '&a$ &fDo odebrania: &a{MONEY_EARNED}$'
+      - ''
+      - '&d◆ &fSprzedane przedmioty ogólnie: &d{ALL_SOLD}'
+      - '&a$ &fZarobione ogólnie: &a{ALL_MONEY_EARNED}$'
+      - ''
+      - '&eKliknij aby odebrać!'
 
   back-to-market-icon:
-    name: '&b&lPowrót do sklepu'
+    name: '&a&lPowrót do sklepu'
     icon: 'BARRIER'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eKliknij aby wrócić!'
   previous-page-icon:
-    name: '&e&lPoprzednia strona'
+    name: '&f&lPoprzednia strona'
     icon: 'ARROW'
     lore:
       - ''
       - '&eKliknij aby przejść!'
   next-page-icon:
-    name: '&e&lNastępna strona'
+    name: '&f&lNastępna strona'
     icon: 'ARROW'
     lore:
       - ''
@@ -157,7 +156,7 @@ buy-gui:
 category-name-format: '&a&l{CATEGORY}'
 category-selected-lore:
   - ''
-  - '&e&lWybrano'
+  - '&a&lWybrano!'
 
 # all items without category will go to this category
 other-category:

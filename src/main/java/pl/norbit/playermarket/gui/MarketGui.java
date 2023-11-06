@@ -13,6 +13,7 @@ import pl.norbit.playermarket.gui.template.TemplateService;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.MarketService;
@@ -23,12 +24,15 @@ import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MarketGui extends Gui {
     private final PaginationManager marketItemsPagination;
     private final PaginationManager categoriesPagination;
     private final PaginationManager borderPagination;
     private final Category category;
+
+    private final ConfigGui configGui;
 
     private static final List<MarketGui> marketGuis = new ArrayList<>();
 
@@ -37,9 +41,11 @@ public class MarketGui extends Gui {
     }
 
     public MarketGui(Player player, Category category) {
-        super(player, "market-gui", ChatUtils.format("&8&lMarket - " + category.getName()), 6);
+        super(player, "market-gui",
+                ChatUtils.format(Settings.MARKET_GUI.getTitle().replace("{CATEGORY}", category.getName())), 6);
 
         this.category = category;
+        this.configGui = Settings.MARKET_GUI;
 
         GuiTemplate template = TemplateService.getTemplate(this);
 
@@ -96,17 +102,20 @@ public class MarketGui extends Gui {
         this.categoriesPagination.update();
         this.borderPagination.update();
 
-        addItem(47,GuiIconUtil.getPaginationItem(marketItemsPagination, IconType.LEFT));
+        addItem(47,GuiIconUtil.getPaginationItem(marketItemsPagination,
+                IconType.LEFT,
+                configGui.getIcon("previous-page-icon")));
         addItem(50, getProfileIcon());
-        addItem(53,GuiIconUtil.getPaginationItem(marketItemsPagination, IconType.RIGHT));
+        addItem(53,GuiIconUtil.getPaginationItem(marketItemsPagination,
+                IconType.RIGHT,
+                configGui.getIcon("next-page-icon")));
 
         marketGuis.add(this);
     }
 
     private Icon getProfileIcon(){
-        Icon icon = new Icon(Material.CHEST);
+        Icon icon = configGui.getIcon("your-offers-icon");
 
-        icon.setName(ChatUtils.format("&b&lTwoje oferty"));
         icon.hideFlags();
         icon.onClick(e -> {
             e.setCancelled(true);
@@ -127,15 +136,20 @@ public class MarketGui extends Gui {
 
         boolean isSel = category.getCategoryUUID().equals(this.category.getCategoryUUID());
 
-        String sel = isSel ? "&aWybrano!" : "&eKliknij aby zobaczyc oferty!";
+        icon.setName(ChatUtils.format(Settings.CATEGORY_NAME_FORMAT.replace("{CATEGORY}", category.getName())));
 
-        icon.setName(ChatUtils.format("&a&l" + category.getName()));
-        icon.setLore("", ChatUtils.format(sel));
         icon.hideFlags();
 
-        if(isSel) icon.enchant(Enchantment.DURABILITY);
+        if(isSel){
+            icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream().map(ChatUtils::format).collect(Collectors.toList()));
+            icon.enchant(Enchantment.DURABILITY);
 
-        if(!isSel) icon.onClick(e -> {
+            return icon;
+        }
+
+        icon.setLore(category.getLore().stream().map(ChatUtils::format).collect(Collectors.toList()));
+
+        icon.onClick(e -> {
             e.setCancelled(true);
 
             new MarketGui(player, category).open();

@@ -8,6 +8,3 @@ depend:
   - Vault
 softdepend:
   - PlaceholderAPI
-commands:
-  market:
-  wystaw:
