@@ -3,13 +3,10 @@ package pl.norbit.playermarket.model.local;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mc.obliviate.inventory.Icon;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.gui.BuyGui;
@@ -23,11 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 public class LocalMarketItem {
 
-    private static final String priceTemplate = "&7Cena: &a{PRICE}&7";
-    private static final String ownerTemplate = "&7Sprzedawca: &a{NAME}&7";
-    private static final String buyTemplate = "&eKliknij aby kupić!";
-
-    private static NamespacedKey idKey = new NamespacedKey(PlayerMarket.getInstance(), "ID");
     private Long id;
     private String ownerUUID;
     private String ownerName;
@@ -35,34 +27,12 @@ public class LocalMarketItem {
     private ItemStack itemStack;
     private Icon icon;
 
-    public LocalMarketItem(Long itemID, ItemStack is, double price){
-        ItemMeta itemMeta = is.getItemMeta();
-
-        PersistentDataContainer pDataContainer = itemMeta.getPersistentDataContainer();
-
-        pDataContainer.set(idKey, PersistentDataType.LONG, itemID);
-
-        is.setItemMeta(itemMeta);
-        this.itemStack = is;
-        this.id = itemID;
-        this.price = price;
-        updateMarketItem();
-    }
     public LocalMarketItem(MarketItemData marketItemData){
-        ItemStack is = marketItemData.getItemStack();
-        Long id = marketItemData.getId();
-
-        ItemMeta itemMeta = is.getItemMeta();
-
-        PersistentDataContainer pDataContainer = itemMeta.getPersistentDataContainer();
-
-        pDataContainer.set(idKey, PersistentDataType.LONG, id);
-
-        is.setItemMeta(itemMeta);
-        this.itemStack = is;
-        this.id = id;
+        this.itemStack = marketItemData.getItemStack();
+        this.id = marketItemData.getId();
         this.ownerName = marketItemData.getOwnerName();
         this.price = marketItemData.getPrice();
+
         updateMarketItem();
     }
     public Icon getMarketItem() {
@@ -70,7 +40,7 @@ public class LocalMarketItem {
     }
 
     public void updateMarketItem(){
-        Icon icon = new Icon(addPrice(itemStack, price, ownerName));
+        Icon icon = new Icon(addPrice());
 
         icon.onClick(e->{
             e.setCancelled(true);
@@ -79,13 +49,7 @@ public class LocalMarketItem {
 
             ItemStack currentItem = e.getCurrentItem();
 
-            ItemMeta itemMeta = currentItem.getItemMeta();
-
-            PersistentDataContainer pDataContainer = itemMeta.getPersistentDataContainer();
-
-            Long ID = pDataContainer.get(idKey, PersistentDataType.LONG);
-
-            MarketItemData mtItemData = DataService.getMarketItemData(ID);
+            MarketItemData mtItemData = DataService.getMarketItemData(id);
 
             if(mtItemData == null) return;
 
@@ -94,21 +58,26 @@ public class LocalMarketItem {
         this.icon = icon;
     }
 
-    private static ItemStack addPrice(ItemStack is, double price, String owner){
-        ItemMeta iMeta = is.getItemMeta();
+    private ItemStack addPrice(){
+        ItemMeta iMeta = itemStack.getItemMeta();
         List<String> lore = iMeta.getLore();
 
         if(lore == null) lore = new ArrayList<>();
 
-        lore.add("");
-        lore.add(ChatUtils.format(priceTemplate.replace("{PRICE}", DoubleFormatter.format(price))));
-        lore.add(ChatUtils.format(ownerTemplate.replace("{NAME}", owner)));
-        lore.add("");
-        lore.add(ChatUtils.format(buyTemplate));
+        for (String line : Settings.MARKET_OFFER_ITEM_LORE) lore.add(formatLine(line));
 
         iMeta.setLore(lore);
-        is.setItemMeta(iMeta);
+        itemStack.setItemMeta(iMeta);
 
-        return is;
+        return itemStack;
     }
+    private String formatLine(String line){
+        return ChatUtils.format(
+                line
+                        .replace("{PRICE}", DoubleFormatter.format(price))
+                        .replace("{SELLER}", ownerName)
+                        .replace("{DATE}", "brak")
+        );
+    }
+
 }

@@ -27,7 +27,7 @@ public class PlayerData {
     private String playerName;
     private String playerUUID;
     private int soldItems;
-    private double totalSoldItems;
+    private int totalSoldItems;
     private double earnedMoney;
     private double totalEarnedMoney;
 

@@ -2,8 +2,8 @@ package pl.norbit.playermarket;
 
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.plugin.java.JavaPlugin;
-import pl.norbit.playermarket.commands.MarketCMD;
-import pl.norbit.playermarket.commands.OfferItemCMD;
+import pl.norbit.playermarket.commands.MarketCommand;
+import pl.norbit.playermarket.commands.OfferCommand;
 import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
@@ -28,8 +28,8 @@ public final class PlayerMarket extends JavaPlugin {
         new InventoryAPI(this).init();
         Settings.load(false);
 
-        getCommand("market").setExecutor(new MarketCMD());
-        getCommand("wystaw").setExecutor(new OfferItemCMD());
+        new MarketCommand().register();
+        new OfferCommand().register();
 
         getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
 

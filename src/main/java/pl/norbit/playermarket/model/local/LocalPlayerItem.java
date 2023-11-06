@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.utils.ChatUtils;
@@ -23,10 +23,6 @@ import java.util.List;
 @NoArgsConstructor
 public class LocalPlayerItem {
 
-    private static final String priceTemplate = "&7Cena: &a{PRICE}&7";
-    private static final String removeTemplate = "&eKliknij aby usunąć!";
-
-    private static NamespacedKey idKey = new NamespacedKey(PlayerMarket.getInstance(), "ID");
     private Long id;
     private String ownerUUID;
     private double price;
@@ -34,16 +30,10 @@ public class LocalPlayerItem {
     private Icon icon;
 
     public LocalPlayerItem(Long itemID, ItemStack is, double price){
-        ItemMeta itemMeta = is.getItemMeta();
-
-        PersistentDataContainer pDataContainer = itemMeta.getPersistentDataContainer();
-
-        pDataContainer.set(idKey, PersistentDataType.LONG, itemID);
-
-        is.setItemMeta(itemMeta);
         this.itemStack = is;
         this.id = itemID;
         this.price = price;
+
         updateMarketItem();
     }
     public Icon getIcon() {
@@ -51,7 +41,7 @@ public class LocalPlayerItem {
     }
 
     public void updateMarketItem(){
-        Icon icon = new Icon(addPrice(itemStack, price));
+        Icon icon = new Icon(addPrice());
 
         icon.onClick(e->{
             e.setCancelled(true);
@@ -59,17 +49,9 @@ public class LocalPlayerItem {
             TaskUtils.runTaskLaterAsynchronously(() -> {
                 Player p = (Player) e.getWhoClicked();
 
-                ItemStack currentItem = e.getCurrentItem();
+                ItemStack itemStack1 = DataService.removeItemFromOffer(p, id);
 
-                ItemMeta itemMeta = currentItem.getItemMeta();
-
-                PersistentDataContainer pDataContainer = itemMeta.getPersistentDataContainer();
-
-                Long ID = pDataContainer.get(idKey, PersistentDataType.LONG);
-
-                ItemStack itemStack1 = DataService.removeItemFromOffer(p, ID);
-
-                p.sendMessage(ChatUtils.format("&aUsunięto przedmiot!"));
+                p.sendMessage(ChatUtils.format(Settings.OFFERS_GUI.getMessage("remove-offer-message")));
 
                 if(itemStack1 != null)  p.getInventory().addItem(itemStack1);
 
@@ -81,20 +63,24 @@ public class LocalPlayerItem {
         this.icon = icon;
     }
 
-    private static ItemStack addPrice(ItemStack is, double price){
-        ItemMeta iMeta = is.getItemMeta();
+    private  ItemStack addPrice(){
+        ItemMeta iMeta = itemStack.getItemMeta();
         List<String> lore = iMeta.getLore();
 
         if(lore == null) lore = new ArrayList<>();
 
-        lore.add("");
-        lore.add(ChatUtils.format(priceTemplate.replace("{PRICE}", DoubleFormatter.format(price))));
-        lore.add("");
-        lore.add(ChatUtils.format(removeTemplate));
+        for (String line : Settings.PLAYER_OFFER_ITEM_LORE) lore.add(formatLine(line));
 
         iMeta.setLore(lore);
-        is.setItemMeta(iMeta);
+        itemStack.setItemMeta(iMeta);
 
-        return is;
+        return itemStack;
+    }
+    private String formatLine(String line){
+        return ChatUtils.format(
+                line
+                        .replace("{PRICE}", DoubleFormatter.format(price))
+                        .replace("{DATE}", "brak")
+        );
     }
 }
