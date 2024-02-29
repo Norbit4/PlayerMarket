@@ -19,7 +19,7 @@ public class LocalPlayerData {
 
         playerOffers = playerData.getPlayerOffers()
                 .stream()
-                .map(iData -> new LocalPlayerItem(iData.getId(), iData.getItemStack(), iData.getPrice()))
+                .map(iData -> new LocalPlayerItem(iData.getId(), iData.getItemStackDeserialize(), iData.getPrice()))
                 .collect(Collectors.toList());
 
     }

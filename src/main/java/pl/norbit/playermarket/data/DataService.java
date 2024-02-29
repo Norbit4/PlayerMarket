@@ -5,17 +5,18 @@ import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.model.PlayerData;
+import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
 
 import java.util.List;
 
 public class DataService {
 
     public static void start(){
-        HibernateService.init();
+        JDBCService.init();
     }
 
     public static PlayerData getPlayerData(String playerUUID){
-        return HibernateService.getPlayerData(playerUUID);
+        return JDBCService.getPlayerData(playerUUID);
     }
 
     public static void buyItem(MarketItemData marketItemData){
@@ -32,17 +33,18 @@ public class DataService {
         playerData.setTotalSoldItems(playerData.getTotalSoldItems() + 1);
 
         //remove item from seller
-        playerData.removeOffer(id);
+//        playerData.removeOffer(id);
+        removeMarketItem(id);
 
         updatePlayerData(playerData);
     }
 
     public static void close(){
-        HibernateService.close();
+        JDBCService.close();
     }
 
     public static MarketItemData getMarketItemData(Long itemId){
-        return HibernateService.getMarketItem(itemId);
+        return JDBCService.getMarketItem(itemId);
     }
 
     public static ItemStack removeItemFromOffer(Player p,Long itemId){
@@ -54,9 +56,11 @@ public class DataService {
 
         if(offer == null) return null;
 
-        ItemStack itemStack = offer.getItemStack();
+        ItemStack itemStack = offer.getItemStackDeserialize();
 
-        pData.removeOffer(itemId);
+//        pData.removeOffer(itemId);
+
+        removeMarketItem(itemId);
 
         updatePlayerData(pData);
 
@@ -68,21 +72,35 @@ public class DataService {
 
         return new LocalPlayerData(pData);
     }
+
+
+    public static void createPlayerData(PlayerData playerData) {
+        JDBCService.createPlayerData(playerData);
+    }
+
+    public static void removeMarketItem(Long id) {
+        JDBCService.removeMarketItem(id);
+    }
+
     public static List<MarketItemData> getAll(){
-        return HibernateService.getAllMarketItems();
+        return JDBCService.getAllMarketItems();
     }
 
     public static void addItemToOffer(Player p, ItemStack is, double price){
         PlayerData pData = getPlayerDataCreate(p);
 
-        MarketItemData mItemData = new MarketItemData(p, is, price);
+        MarketItemData mItemData = new MarketItemData(p, BukkitSerializer.serializeItems(is), price);
 
-        pData.getPlayerOffers().add(mItemData);
         updatePlayerData(pData);
+        updateMarketItem(pData, mItemData);
     }
 
     public static void updatePlayerData(PlayerData pData){
-        HibernateService.updatePlayerData(pData);
+        JDBCService.updatePlayerData(pData);
+    }
+
+    public static void updateMarketItem(PlayerData pData, MarketItemData mItemData){
+        JDBCService.addMarketItemForPlayer(pData, mItemData);
     }
 
     public static PlayerData getPlayerDataCreate(Player p){
@@ -97,7 +115,7 @@ public class DataService {
         pData.setPlayerUUID(playerStringUUID);
         pData.setPlayerName(p.getName());
 
-        updatePlayerData(pData);
+        createPlayerData(pData);
 
         return pData;
     }

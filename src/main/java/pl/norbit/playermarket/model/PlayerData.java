@@ -1,13 +1,6 @@
 package pl.norbit.playermarket.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.*;
-import jakarta.persistence.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 
 import java.util.ArrayList;
@@ -17,12 +10,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @ToString
 public class PlayerData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String playerName;
     private String playerUUID;
@@ -31,9 +21,6 @@ public class PlayerData {
     private double earnedMoney;
     private double totalEarnedMoney;
 
-    @OneToMany(cascade = CascadeType.ALL,  orphanRemoval = true, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
-    @JoinColumn()
     @Builder.Default
     private List<MarketItemData> playerOffers = new ArrayList<>();
 

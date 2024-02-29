@@ -28,7 +28,7 @@ public class LocalMarketItem {
     private Icon icon;
 
     public LocalMarketItem(MarketItemData marketItemData){
-        this.itemStack = marketItemData.getItemStack();
+        this.itemStack = marketItemData.getItemStackDeserialize();
         this.id = marketItemData.getId();
         this.ownerName = marketItemData.getOwnerName();
         this.price = marketItemData.getPrice();

@@ -9,18 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
 
-import jakarta.persistence.*;
 
 @Data
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 
 public class MarketItemData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String ownerName;
     private String ownerUUID;
@@ -28,19 +24,18 @@ public class MarketItemData {
     private double price;
 //    private long date;
 
-    @Lob
-    @Column(name = "itemStack", columnDefinition="BLOB")
     private byte[] itemStack;
+    private Long playerId;
 
-    public MarketItemData(Player p, ItemStack is, double price){
+    public MarketItemData(Player p, byte[] is, double price){
         this.ownerName = p.getName();
         this.ownerUUID = p.getUniqueId().toString();
 
         this.price = price;
-        this.itemStack = BukkitSerializer.serializeItems(is);
+        this.itemStack = is;
     }
 
-    public ItemStack getItemStack(){
+    public ItemStack getItemStackDeserialize(){
         return BukkitSerializer.deserializeItems(itemStack);
     }
 }

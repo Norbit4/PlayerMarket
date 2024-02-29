@@ -3,7 +3,6 @@ package pl.norbit.playermarket.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -37,7 +36,7 @@ public class PlayerItemsGui extends Gui {
         TaskUtils.runTaskTimerAsynchronously(() -> itemsGui.forEach(PlayerItemsGui::updateTask), 6L, 8L);
     }
 
-    public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData) {
+    public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
         super(player, "market-gui", ChatUtils.format(Settings.OFFERS_GUI.getTitle()), 6);
 
         this.configGui = Settings.OFFERS_GUI;
@@ -50,7 +49,7 @@ public class PlayerItemsGui extends Gui {
 
         this.localData = lPlayerData;
 
-        updateCategory(lPlayerData.getPlayerOffers());
+        updateCategory(lPlayerData.getPlayerOffers(), page);
     }
 
     public void updateTask(){
@@ -113,7 +112,7 @@ public class PlayerItemsGui extends Gui {
 
             LocalPlayerData pLocalData = DataService.getPlayerLocalData(player);
 
-            new PlayerItemsGui(player, pLocalData).open();
+            new PlayerItemsGui(player, pLocalData, this.pagination.getCurrentPage()).open();
 
             EconomyService.deposit(player, earnedMoney);
         });
@@ -121,9 +120,11 @@ public class PlayerItemsGui extends Gui {
     }
 
     private String formatLine(String line, PlayerData playerData){
+        int amount = PermUtils.getAmount(player, Settings.OFFER_COMMAND_LIMIT_PERMISSION, Settings.OFFER_COMMAND_DEFAULT_LIMIT);
 
         return ChatUtils.format(
                 line.replace("{OFFERS}", String.valueOf(playerData.getPlayerOffers().size()))
+                        .replace("{OFFERS_LIMIT}", String.valueOf(amount))
                         .replace("{SOLD}", String.valueOf(playerData.getSoldItems()))
                         .replace("{MONEY_EARNED}", DoubleFormatter.format(playerData.getEarnedMoney()))
                         .replace("{ALL_SOLD}", String.valueOf(playerData.getTotalSoldItems()))
@@ -131,18 +132,23 @@ public class PlayerItemsGui extends Gui {
         );
     }
 
-    private void updateCategory(List<LocalPlayerItem> items) {
+    private void updateCategory(List<LocalPlayerItem> items, int page) {
         this.pagination.getItems().clear();
         this.pagination.goFirstPage();
 
         items.forEach(item -> this.pagination.addItem(item.getIcon()));
+
+        if(page < this.pagination.getLastPage()) {
+            this.pagination.setPage(page);
+        } else {
+            this.pagination.goLastPage();
+        }
     }
     private void updateCategory() {
         LocalPlayerData localData = DataService.getPlayerLocalData(player);
         this.localData = localData;
 
         this.pagination.getItems().clear();
-        this.pagination.goFirstPage();
 
         localData.getPlayerOffers().forEach(item -> this.pagination.addItem(item.getIcon()));
         this.pagination.update();
