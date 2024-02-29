@@ -122,7 +122,7 @@ public class MarketGui extends Gui {
 
             LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
 
-            new PlayerItemsGui(player, playerLocalData).open();
+            new PlayerItemsGui(player, playerLocalData ,0).open();
         });
         return icon;
     }

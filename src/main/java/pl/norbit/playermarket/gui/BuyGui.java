@@ -2,7 +2,6 @@ package pl.norbit.playermarket.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
@@ -87,7 +86,7 @@ public class BuyGui extends Gui {
                 }
 
                 DataService.buyItem(mItemData);
-                p.getInventory().addItem(mItemData.getItemStack());
+                p.getInventory().addItem(mItemData.getItemStackDeserialize());
 
                 backToShop(configGui.getMessage("success-message")
                         .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))

@@ -7,8 +7,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
@@ -57,7 +55,7 @@ public class LocalPlayerItem {
 
                 LocalPlayerData pLocalData = DataService.getPlayerLocalData(p);
 
-                TaskUtils.runTaskLater(() -> new PlayerItemsGui(p, pLocalData).open(), 0L);
+                TaskUtils.runTaskLater(() -> new PlayerItemsGui(p, pLocalData, 0).open(), 0L);
             }, 0L);
         });
         this.icon = icon;
