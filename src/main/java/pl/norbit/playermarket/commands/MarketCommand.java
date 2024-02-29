@@ -9,7 +9,7 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.gui.MarketGui;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.PermissionUtils;
+import pl.norbit.playermarket.utils.PermUtils;
 
 public class MarketCommand extends BukkitCommand {
 
@@ -20,7 +20,7 @@ public class MarketCommand extends BukkitCommand {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
 
-        if(!PermissionUtils.hasPermission(Settings.MARKET_COMMAND_PERMISSION, sender)){
+        if(!PermUtils.hasPermission(Settings.MARKET_COMMAND_PERMISSION, sender)){
             sender.sendMessage(ChatUtils.format(Settings.MARKET_COMMAND_NO_PERMISSION));
             return true;
         }
