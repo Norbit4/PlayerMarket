@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ConfigGui {
 
     private String title;
-    private Map<String, Icon> icons;
+    private Map<String, ConfigIcon> icons;
     private Map<String, String> messages;
 
     public ConfigGui(Configuration config, String secKey, String[] messagesKeys, String[] iconsKeys){
@@ -51,17 +51,25 @@ public class ConfigGui {
 
             List<String> stringList = configurationSection.getStringList("lore");
 
-            Icon icon = new Icon(mat);
+            ConfigIcon configIcon = new ConfigIcon();
 
-            icon.setName(ChatUtils.format(name));
-            icon.setLore(stringList.stream().map(ChatUtils::format).collect(Collectors.toList()));
+            configIcon.setMaterial(mat);
+            configIcon.setName(ChatUtils.format(name));
+            configIcon.setLore(stringList.stream().map(ChatUtils::format).collect(Collectors.toList()));
 
-            icons.put(key, icon);
+            icons.put(key, configIcon);
         }
     }
 
     public Icon getIcon(String key){
-        return icons.get(key);
+        ConfigIcon configIcon = icons.get(key);
+
+        Icon icon = new Icon(configIcon.getMaterial());
+
+        icon.setName(configIcon.getName());
+        icon.setLore(configIcon.getLore());
+
+        return  icon;
     }
 
     public String getMessage(String key){
