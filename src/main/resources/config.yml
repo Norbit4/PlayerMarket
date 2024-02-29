@@ -25,7 +25,7 @@ database:
   dialect: 'org.hibernate.dialect.MySQLDialect'
 
   database: 'test'
-  host: 'jdbc:mysql://localhost:3307'
+  host: 'jdbc:mysql://localhost:3306'
   user: 'root'
   password: '$5fKJKrre[do9235uidkdf135'
   use-ssl: false
@@ -91,6 +91,15 @@ market-gui:
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
 #---------------------------------------#
+
+offers-limit:
+    enabled: true
+    default-limit: 5
+    # usage:
+    # ex. 'playermarket.offers.limit.15' => 15 offers
+    permission: 'playermarket.offers.limit'
+    limit-message: '&cOsiągnąłeś limit wystawionych ofert!'
+
 offers-gui:
   title: '&8&lTWOJE OFERTY'
   remove-offer-message: '&fUsunięto ofertę!'
@@ -101,7 +110,7 @@ offers-gui:
     icon: 'CHEST'
     lore:
       - ''
-      - '&6◆ &fWystawione przedmioty: &6{OFFERS}'
+      - '&6◆ &fWystawione przedmioty: &6{OFFERS}/{OFFERS_LIMIT}'
       - '&d◆ &fSprzedane przedmioty: &d{SOLD}'
       - '&a$ &fDo odebrania: &a{MONEY_EARNED}$'
       - ''

@@ -31,6 +31,9 @@ public class Settings {
 
     public static String MARKET_COMMAND_NAME, MARKET_COMMAND_PERMISSION, MARKET_COMMAND_NO_PERMISSION;
 
+    public static String OFFER_COMMAND_LIMIT_PERMISSION, OFFER_COMMAND_LIMIT_MESSAGE;
+    public static int OFFER_COMMAND_DEFAULT_LIMIT;
+    public static boolean OFFER_COMMAND_LIMIT_ENABLED;
 
     public static void load(boolean reload){
         PlayerMarket instance = PlayerMarket.getInstance();
@@ -51,6 +54,13 @@ public class Settings {
             PASSWORD = config.getString("database.password");
             USE_SSL = config.getString("database.use-ssl");
         }
+
+        //offers limit
+        OFFER_COMMAND_LIMIT_ENABLED = config.getBoolean("offers-limit.enabled");
+        OFFER_COMMAND_DEFAULT_LIMIT = config.getInt("offers-limit.default-limit");
+        OFFER_COMMAND_LIMIT_PERMISSION = config.getString("offers-limit.permission");
+        OFFER_COMMAND_LIMIT_MESSAGE = config.getString("offers-limit.limit-message");
+
 
         ConfigurationSection configurationSection = config.getConfigurationSection("categories");
 
