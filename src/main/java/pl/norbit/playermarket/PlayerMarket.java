@@ -1,6 +1,7 @@
 package pl.norbit.playermarket;
 
 import mc.obliviate.inventory.InventoryAPI;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.playermarket.commands.MarketCommand;
 import pl.norbit.playermarket.commands.OfferCommand;
@@ -16,35 +17,43 @@ public final class PlayerMarket extends JavaPlugin {
 
     private static PlayerMarket instance;
 
+    public static PlayerMarket getInstance() {
+        return instance;
+    }
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         instance = this;
 
         EconomyService.load();
-
         CategoryConfig.generateDefaults();
 
         new InventoryAPI(this).init();
         Settings.load(false);
 
-        new MarketCommand().register();
-        new OfferCommand().register();
+        registerCommands();
+        registerEvents();
 
-        getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
-
-        TaskUtils.runTaskLaterAsynchronously(() -> {
+        TaskUtils.runTaskLater(() -> {
             DataService.start();
             MarketService.start();
         }, 0L);
     }
 
+    public void registerEvents() {
+        PluginManager pluginManager = getServer().getPluginManager();
+
+        pluginManager.registerEvents(new OnPlayerJoin(), this);
+    }
+
+    public void registerCommands() {
+        new MarketCommand().register();
+        new OfferCommand().register();
+    }
+
     @Override
     public void onDisable() {
         DataService.close();
-    }
-
-    public static PlayerMarket getInstance() {
-        return instance;
     }
 }
