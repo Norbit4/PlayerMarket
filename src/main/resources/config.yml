@@ -33,36 +33,62 @@ database:
 #---------------------------------------#
 #             [ COMMANDS ]              #
 #---------------------------------------#
-offer-command:
-  command: 'wystaw'
-  permission: 'playermarket.command.offer'
-  usage: '&cPoprawne uzycie: /wystaw <cena>'
-  no-permission: '&cNie masz uprawnien do tej komendy!'
-  wrong-price: '&cPodana cena jest nieprawidłowa!'
-  wrong-item: '&cNie możesz wystawić tego przedmiotu!'
-  success: '&aWystawiłeś przedmiot na sprzedaż!'
 
+# /playermarket - help command
+# /playermarket reload - reload plugin
+main-command:
+  permission: 'playermarket.command.main'
+  no-permission: '&cYou do not have access to this command!'
+  reload: '&aPlugin has been reloaded!'
+  # {CMD_MARKET} - market command prefix
+  # {CMD_OFFER} - offer command prefix
+  help:
+    - '&8--------------- &a&lPLAYERMARKET &8---------------'
+    - ''
+    - '&7&l» &8&l/&a{CMD_MARKET} &7- &fOpen the market!'
+    - '&7&l» &8&l/&a{CMD_OFFER} &7- &fOffer an item!'
+    - '&7&l» &8&l/&aplayermarket reload &7- &fReload files!'
+    - ''
+
+# /offer <price> - offer an item
+offer-command:
+  command: 'offer'
+  permission: 'playermarket.command.offer'
+  usage: '&cUsage: /offer <price>'
+  no-permission: '&cYou do not have access to this command!'
+  wrong-price: '&cThe price variable is invalid!'
+  wrong-item: '&cYou can not offer this item!'
+  success: '&aYou have successfully offered this item!'
+
+# /market - open market
 market-command:
   command: 'market'
   permission: 'playermarket.command.market'
-  no-permission: '&cNie masz uprawnien do tej komendy!'
+  no-permission: '&cYou do not have access to this command!'
 
 #---------------------------------------#
 #              [ GLOBAL ]               #
 #---------------------------------------#
-market-offer-item-lore:
-    - ''
-    - '&7Cena: &a{PRICE}$'
-    - '&7Sprzedawca: &a{SELLER}'
-    - '&7Data wystawienia: &a{DATE}'
-    - ''
-    - '&eKliknij aby kupić!'
 
+# {DATE} - item offer date
+# {PRICE} - item price
+# {SELLER} - item seller
+market-offer-item-lore:
+  - '&8{DATE}'
+  - ''
+  - '&7Price: &a{PRICE}$'
+  - '&7Seller: &a{SELLER}'
+  - ''
+  - '&eClick to buy!'
+
+# {DATE} - item offer date
+# {PRICE} - item price
 player-offer-item-lore:
-      - ''
-      - '&7Cena: &a{PRICE}$'
-      - ''
-      - '&eKliknij aby usunąć!'
+  - '&8{DATE}'
+  - ''
+  - '&7Price: &a{PRICE}$'
+  - ''
+  - '&eClick to delete!'
 
 #---------------------------------------#
 #            [ MARKET - GUI ]           #
@@ -70,94 +96,99 @@ player-offer-item-lore:
 market-gui:
   title: '&8&lMARKET &7&l» &8&l{CATEGORY}'
   your-offers-icon:
-    name: '&a&lTwoje oferty'
+    name: '&a&lYour offers'
     icon: 'CHEST'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   previous-page-icon:
-    name: '&f&lPoprzednia strona'
+    name: '&f&lPrevious Page'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   next-page-icon:
-    name: '&f&lNastępna strona'
+    name: '&f&lNext Page'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
 
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
 #---------------------------------------#
 
 offers-limit:
-    enabled: true
-    default-limit: 5
-    # usage:
-    # ex. 'playermarket.offers.limit.15' => 15 offers
-    permission: 'playermarket.offers.limit'
-    limit-message: '&cOsiągnąłeś limit wystawionych ofert!'
+  enabled: true
+  default-limit: 5
+  # usage:
+  # ex. 'playermarket.offers.limit.15' => 15 offers
+  permission: 'playermarket.offers.limit'
+  limit-message: '&cYou have reached maximum amount of active offers!'
 
 offers-gui:
-  title: '&8&lTWOJE OFERTY'
-  remove-offer-message: '&fUsunięto ofertę!'
-  nothing-to-get-message: '&cNie masz nic do odebrania!'
-  success-message: '&fOdebrano &a{MONEY}$ &fza sprzedane przedmioty!'
+  title: '&8&lYOUR OFFERS'
+  remove-offer-message: '&cYour offer has been removed!'
+  nothing-to-get-message: '&cYou have nothing to claim!'
+  success-message: '&aYou have successfully received &2{MONEY}$ &afor your sold offers!'
   statistics-icon:
-    name: '&a&lTwoje konto'
+    name: '&a&lYour account'
     icon: 'CHEST'
     lore:
+      # {OFFERS} - player offers
+      # {OFFERS_LIMIT} - player offers limit
+      # {MONEY_EARNED} - player money earned
+      # {ALL_SOLD} - all time player sold items
+      # {ALL_MONEY_EARNED} - all time player money earned
       - ''
-      - '&6◆ &fWystawione przedmioty: &6{OFFERS}/{OFFERS_LIMIT}'
-      - '&d◆ &fSprzedane przedmioty: &d{SOLD}'
-      - '&a$ &fDo odebrania: &a{MONEY_EARNED}$'
+      - '&6◆ &fOffers: &6{OFFERS}/{OFFERS_LIMIT}'
+      - '&d◆ &fSold offers: &d{SOLD}'
+      - '&a$ &fMoney to claim: &a{MONEY_EARNED}$'
       - ''
-      - '&d◆ &fSprzedane przedmioty ogólnie: &d{ALL_SOLD}'
-      - '&a$ &fZarobione ogólnie: &a{ALL_MONEY_EARNED}$'
+      - '&d◆ &fAll time sold offers: &d{ALL_SOLD}'
+      - '&a$ &fAll time money earned: &a{ALL_MONEY_EARNED}$'
       - ''
-      - '&eKliknij aby odebrać!'
+      - '&eClick to claim!'
 
   back-to-market-icon:
-    name: '&a&lPowrót do sklepu'
+    name: '&a&lBack to market'
     icon: 'BARRIER'
     lore:
       - ''
-      - '&eKliknij aby wrócić!'
+      - '&eClick to go back!'
   previous-page-icon:
-    name: '&f&lPoprzednia strona'
+    name: '&f&lPrevious Page'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   next-page-icon:
-    name: '&f&lNastępna strona'
+    name: '&f&lNext Page'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
 
 #---------------------------------------#
 #            [ BUY - GUI ]              #
 #---------------------------------------#
 buy-gui:
-  title: '&8&lKUP PRZEDMIOT!'
-  item-sold-message: '&cTen przedmiot został już sprzedany!'
-  not-enough-money-message: '&cNie masz wystarczająco pieniędzy!'
-  success-message: '&fKupiłeś przedmiot za &a&l{COST}$!'
+  title: '&8&lBUY AN ITEM'
+  item-sold-message: '&cThis offer is already sold!'
+  not-enough-money-message: '&cYou do not have enough money!'
+  success-message: '&fYou have bought an item for &a&l{COST}$!'
   accept-icon:
-    name: '&f&lKup za &a&l{AMOUNT}$!'
+    name: '&f&lBuy for &a&l{AMOUNT}$!'
     icon: 'GREEN_WOOL'
     lore:
       - ''
-      - '&eKliknij aby kupić!'
+      - '&eClick to buy!'
   cancel-icon:
-    name: '&c&lCofnij'
+    name: '&c&lBack'
     icon: 'RED_WOOL'
     lore:
       - ''
-      - '&eKliknij aby wrócić!'
+      - '&eClick to go back!'
 
 #---------------------------------------#
 #            [ CATEGORIES ]             #
@@ -165,80 +196,83 @@ buy-gui:
 category-name-format: '&a&l{CATEGORY}'
 category-selected-lore:
   - ''
-  - '&a&lWybrano!'
+  - '&a&lSelected!'
 
 # all items without category will go to this category
 other-category:
   # if disabled, all items without category will be not available to buy in shop
   enabled: true
-  name: "Inne"
+  name: "Other"
   icon: "ENDER_PEARL"
   lore:
     - ''
-    - '&eKliknij aby przejść!'
+    - '&eClick to browse!'
 
+# main page category, all items will be displayed here
 all-category:
   enabled: true
-  name: "Wszystkie"
+  name: "Main Page"
   icon: "NETHER_STAR"
   lore:
     - ''
-    - '&eKliknij aby przejść!'
+    - '&eClick to browse!'
 
+# categories, you can add more categories
+# file is the name of the file /categories/{file}.yml
 categories:
   1:
-    name: 'Bloki'
+    name: 'Blocks'
     icon: 'BRICKS'
     file: 'blocks'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   2:
-    name: 'Zbroje'
+    name: 'Armor'
     icon: 'DIAMOND_CHESTPLATE'
     file: 'armor'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   3:
-    name: 'Walka'
+    name: 'Combat'
     icon: 'GOLDEN_SWORD'
     file: 'combat'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   4:
-    name: 'Minerały'
+    name: 'Minerals'
     icon: 'AMETHYST_SHARD'
     file: 'minerals'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   5:
-    name: 'Natura'
+    name: 'Nature'
     icon: 'BAMBOO'
     file: 'nature'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   6:
-    name: 'Mechanizmy'
+    name: 'Redstone'
     icon: 'REDSTONE'
     file: 'redstone'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   7:
-    name: 'Narzędzia'
+    name: 'Tools'
     icon: 'IRON_PICKAXE'
     file: 'tools'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
   8:
-    name: 'Jedzenie'
+    name: 'Food'
     icon: 'ENCHANTED_GOLDEN_APPLE'
     file: 'food'
     lore:
       - ''
-      - '&eKliknij aby przejść!'
+      - '&eClick to browse!'
