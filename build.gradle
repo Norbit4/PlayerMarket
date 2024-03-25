@@ -65,6 +65,16 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+tasks.register('copyJar', Copy) {
+    dependsOn jar
+    from 'build/libs'
+    into '/home/norbit/mc/1.20.4-purpur/plugins'
+    include '*all.jar'
+}
+shadowJar {
+    finalizedBy(copyJar)
+}
+
 processResources {
     def props = [version: version]
     inputs.properties props
