@@ -18,7 +18,7 @@ public class JDBCService {
     private static QueryRunner runner;
     private static final BeanListHandler<PlayerData> playerDataHandler = new BeanListHandler<>(PlayerData.class);
 
-    private static final  ResultSetHandler<List<MarketItemData>> marketDataHandler = new BeanListHandler<>(MarketItemData.class) {
+    private static final ResultSetHandler<List<MarketItemData>> marketDataHandler = new BeanListHandler<>(MarketItemData.class) {
         @Override
         public List<MarketItemData> handle(ResultSet rs) throws SQLException {
             List<MarketItemData> result = new ArrayList<>();
@@ -30,6 +30,7 @@ public class JDBCService {
                 item.setPrice(rs.getDouble("price"));
                 item.setItemStack(rs.getBytes("itemStack"));
                 item.setPlayerId(rs.getLong("playerId"));
+                item.setOfferDate(rs.getLong("offerDate"));
                 result.add(item);
             }
             return result;
@@ -73,6 +74,7 @@ public class JDBCService {
                 "ownerName VARCHAR(255)," +
                 "itemStack BLOB," +
                 "price DOUBLE," +
+                "offerDate BIGINT," +
                 "playerId BIGINT," +
                 "FOREIGN KEY (playerId) REFERENCES PlayerData(id)" +
                 ")";
@@ -101,7 +103,7 @@ public class JDBCService {
     }
 
     public static void addMarketItemForPlayer(PlayerData player, MarketItemData marketItem) {
-        String insertQuery = "INSERT INTO MarketItemData (ownerUUID,ownerName, itemStack, price, playerId) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO MarketItemData (ownerUUID,ownerName, itemStack, price, offerDate,  playerId) VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             runner.update(connection, insertQuery,
@@ -109,6 +111,7 @@ public class JDBCService {
                     marketItem.getOwnerName(),
                     marketItem.getItemStack(),
                     marketItem.getPrice(),
+                    marketItem.getOfferDate(),
                     player.getId());
 
         } catch (SQLException e) {

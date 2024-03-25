@@ -22,7 +22,7 @@ public class MarketItemData {
     private String ownerUUID;
 
     private double price;
-//    private long date;
+    private long offerDate;
 
     private byte[] itemStack;
     private Long playerId;
@@ -33,6 +33,7 @@ public class MarketItemData {
 
         this.price = price;
         this.itemStack = is;
+        this.offerDate = System.currentTimeMillis();
     }
 
     public ItemStack getItemStackDeserialize(){

@@ -12,6 +12,7 @@ import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.gui.BuyGui;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
+import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,8 @@ public class LocalMarketItem {
     private String ownerUUID;
     private String ownerName;
     private double price;
+    private long offerDate;
+
     private ItemStack itemStack;
     private Icon icon;
 
@@ -32,6 +35,7 @@ public class LocalMarketItem {
         this.id = marketItemData.getId();
         this.ownerName = marketItemData.getOwnerName();
         this.price = marketItemData.getPrice();
+        this.offerDate = marketItemData.getOfferDate();
 
         updateMarketItem();
     }
@@ -76,7 +80,7 @@ public class LocalMarketItem {
                 line
                         .replace("{PRICE}", DoubleFormatter.format(price))
                         .replace("{SELLER}", ownerName)
-                        .replace("{DATE}", "brak")
+                        .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
         );
     }
 

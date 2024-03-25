@@ -26,7 +26,10 @@ public class PlayerData {
 
 
     public MarketItemData getOffer(Long id){
-        return playerOffers.stream().filter(iData -> iData.getId().equals(id)).findFirst().orElse(null);
+        return playerOffers.stream()
+                .filter(iData -> iData.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
     public void addOffer(MarketItemData itemData){
         playerOffers.add(itemData);

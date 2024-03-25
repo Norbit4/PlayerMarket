@@ -1,6 +1,7 @@
 package pl.norbit.playermarket.model.local;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.NamespacedKey;
@@ -13,6 +14,7 @@ import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
 import pl.norbit.playermarket.utils.TaskUtils;
+import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +27,18 @@ public class LocalPlayerItem {
     private String ownerUUID;
     private double price;
     private ItemStack itemStack;
+    private long offerDate;
+
+    @Getter
     private Icon icon;
 
-    public LocalPlayerItem(Long itemID, ItemStack is, double price){
+    public LocalPlayerItem(Long itemID, ItemStack is, double price, long offerDate){
         this.itemStack = is;
         this.id = itemID;
         this.price = price;
+        this.offerDate = offerDate;
 
         updateMarketItem();
-    }
-    public Icon getIcon() {
-        return this.icon;
     }
 
     public void updateMarketItem(){
@@ -78,7 +81,7 @@ public class LocalPlayerItem {
         return ChatUtils.format(
                 line
                         .replace("{PRICE}", DoubleFormatter.format(price))
-                        .replace("{DATE}", "brak")
+                        .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
         );
     }
 }
