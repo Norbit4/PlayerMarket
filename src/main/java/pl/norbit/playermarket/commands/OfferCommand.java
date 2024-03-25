@@ -26,7 +26,7 @@ public class OfferCommand extends BukkitCommand {
             return true;
         }
 
-        Player p = (Player)sender;
+        Player p = (Player) sender;
 
         if(args.length != 1){
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_USAGE));

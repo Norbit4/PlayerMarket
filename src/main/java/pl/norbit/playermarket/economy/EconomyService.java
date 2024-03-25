@@ -22,9 +22,6 @@ public class EconomyService {
 
         economy = rsp.getProvider();
     }
-    public static Economy getEconomy() {
-        return economy;
-    }
 
     public static boolean withDrawIfPossible(Player p, double amount){
         if(economy.getBalance(p) < amount) return false;

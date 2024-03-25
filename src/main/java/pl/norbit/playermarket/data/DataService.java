@@ -33,7 +33,6 @@ public class DataService {
         playerData.setTotalSoldItems(playerData.getTotalSoldItems() + 1);
 
         //remove item from seller
-//        playerData.removeOffer(id);
         removeMarketItem(id);
 
         updatePlayerData(playerData);
@@ -57,8 +56,6 @@ public class DataService {
         if(offer == null) return null;
 
         ItemStack itemStack = offer.getItemStackDeserialize();
-
-//        pData.removeOffer(itemId);
 
         removeMarketItem(itemId);
 
