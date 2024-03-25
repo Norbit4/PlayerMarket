@@ -1,8 +1,12 @@
 package pl.norbit.playermarket;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.norbit.playermarket.commands.MainCommand;
 import pl.norbit.playermarket.commands.MarketCommand;
 import pl.norbit.playermarket.commands.OfferCommand;
 import pl.norbit.playermarket.config.category.CategoryConfig;
@@ -15,16 +19,14 @@ import pl.norbit.playermarket.utils.TaskUtils;
 
 public final class PlayerMarket extends JavaPlugin {
 
+    @Getter
+    @Setter(value = AccessLevel.PRIVATE)
     private static PlayerMarket instance;
-
-    public static PlayerMarket getInstance() {
-        return instance;
-    }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        instance = this;
+        setInstance(this);
 
         EconomyService.load();
         CategoryConfig.generateDefaults();
@@ -50,6 +52,7 @@ public final class PlayerMarket extends JavaPlugin {
     public void registerCommands() {
         new MarketCommand().register();
         new OfferCommand().register();
+        new MainCommand().register();
     }
 
     @Override

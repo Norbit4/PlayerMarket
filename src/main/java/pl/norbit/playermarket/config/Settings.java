@@ -30,6 +30,8 @@ public class Settings {
             OFFER_COMMAND_WRONG_PRICE, OFFER_COMMAND_SUCCESS, OFFER_COMMAND_WRONG_ITEM;
 
     public static String MARKET_COMMAND_NAME, MARKET_COMMAND_PERMISSION, MARKET_COMMAND_NO_PERMISSION;
+    public static String MAIN_COMMAND_PERMISSION, MAIN_COMMAND_NO_PERMISSION, MAIN_COMMAND_RELOAD_MESSAGE;
+    public static List<String> MAIN_COMMAND_HELP_MESSAGE;
 
     public static String OFFER_COMMAND_LIMIT_PERMISSION, OFFER_COMMAND_LIMIT_MESSAGE;
     public static int OFFER_COMMAND_DEFAULT_LIMIT;
@@ -102,5 +104,11 @@ public class Settings {
         MARKET_COMMAND_NAME = config.getString("market-command.command");
         MARKET_COMMAND_PERMISSION = config.getString("market-command.permission");
         MARKET_COMMAND_NO_PERMISSION = config.getString("market-command.no-permission");
+
+        //main command
+        MAIN_COMMAND_PERMISSION = config.getString("main-command.permission");
+        MAIN_COMMAND_NO_PERMISSION = config.getString("main-command.no-permission");
+        MAIN_COMMAND_RELOAD_MESSAGE = config.getString("main-command.reload");
+        MAIN_COMMAND_HELP_MESSAGE = config.getStringList("main-command.help");
     }
 }
