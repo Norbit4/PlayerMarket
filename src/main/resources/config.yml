@@ -70,6 +70,14 @@ market-command:
 #              [ GLOBAL ]               #
 #---------------------------------------#
 
+# Plugin support economy:
+#  Vault - https://www.spigotmc.org/resources/vault.34315/
+#  PlayerPoints - https://www.spigotmc.org/resources/playerpoints.80745/
+
+# types: [vault, playerpoints]
+economy:
+  type: 'vault'
+
 # {DATE} - item offer date
 # {PRICE} - item price
 # {SELLER} - item seller

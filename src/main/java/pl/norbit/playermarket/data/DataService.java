@@ -1,5 +1,6 @@
 package pl.norbit.playermarket.data;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.model.MarketItemData;
@@ -64,7 +65,7 @@ public class DataService {
         return itemStack;
     }
 
-    public static LocalPlayerData getPlayerLocalData(Player p){
+    public static LocalPlayerData getPlayerLocalData(OfflinePlayer p){
         PlayerData pData = getPlayerDataCreate(p);
 
         return new LocalPlayerData(pData);
@@ -83,7 +84,7 @@ public class DataService {
         return JDBCService.getAllMarketItems();
     }
 
-    public static void addItemToOffer(Player p, ItemStack is, double price){
+    public static void addItemToOffer(OfflinePlayer p, ItemStack is, double price){
         PlayerData pData = getPlayerDataCreate(p);
 
         MarketItemData mItemData = new MarketItemData(p, BukkitSerializer.serializeItems(is), price);
@@ -100,7 +101,7 @@ public class DataService {
         JDBCService.addMarketItemForPlayer(pData, mItemData);
     }
 
-    public static PlayerData getPlayerDataCreate(Player p){
+    public static PlayerData getPlayerDataCreate(OfflinePlayer p){
         String playerStringUUID = p.getUniqueId().toString();
 
         PlayerData pData = getPlayerData(playerStringUUID);

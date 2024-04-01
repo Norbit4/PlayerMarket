@@ -22,10 +22,16 @@ repositories {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
     maven { url 'https://jitpack.io' }
+    maven {
+        url = 'https://repo.rosewooddev.io/repository/public/'
+    }
 }
 
 dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+
+    //playerpoints
+    compileOnly( 'org.black_ixx:playerpoints:3.2.6')
 
     //lombok
     compileOnly 'org.projectlombok:lombok:1.18.28'

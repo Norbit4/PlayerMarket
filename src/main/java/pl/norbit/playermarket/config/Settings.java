@@ -3,6 +3,7 @@ package pl.norbit.playermarket.config;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.config.category.CategoryUtils;
 import pl.norbit.playermarket.model.local.CategoryType;
@@ -37,6 +38,8 @@ public class Settings {
     public static int OFFER_COMMAND_DEFAULT_LIMIT;
     public static boolean OFFER_COMMAND_LIMIT_ENABLED;
 
+    public static boolean PLACEHOLDERAPI_IS_ENABLED;
+
     public static void load(boolean reload){
         PlayerMarket instance = PlayerMarket.getInstance();
 
@@ -55,6 +58,10 @@ public class Settings {
             USER = config.getString("database.user");
             PASSWORD = config.getString("database.password");
             USE_SSL = config.getString("database.use-ssl");
+
+            String type = config.getString("economy.type");
+
+            EconomyService.setEconomyType(type);
         }
 
         //offers limit
@@ -62,7 +69,6 @@ public class Settings {
         OFFER_COMMAND_DEFAULT_LIMIT = config.getInt("offers-limit.default-limit");
         OFFER_COMMAND_LIMIT_PERMISSION = config.getString("offers-limit.permission");
         OFFER_COMMAND_LIMIT_MESSAGE = config.getString("offers-limit.limit-message");
-
 
         ConfigurationSection configurationSection = config.getConfigurationSection("categories");
 

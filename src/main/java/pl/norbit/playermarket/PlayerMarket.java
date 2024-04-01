@@ -14,6 +14,8 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
+import pl.norbit.playermarket.placeholders.PlaceholderRegistry;
+import pl.norbit.playermarket.placeholders.PlaceholderVault;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.utils.TaskUtils;
 
@@ -28,14 +30,20 @@ public final class PlayerMarket extends JavaPlugin {
         // Plugin startup logic
         setInstance(this);
 
-        EconomyService.load();
         CategoryConfig.generateDefaults();
+
+        checkPlugins();
 
         new InventoryAPI(this).init();
         Settings.load(false);
 
+        EconomyService.load();
+
         registerCommands();
         registerEvents();
+
+        PlaceholderVault.start();
+        new PlaceholderRegistry().register();
 
         TaskUtils.runTaskLater(() -> {
             DataService.start();
@@ -53,6 +61,22 @@ public final class PlayerMarket extends JavaPlugin {
         new MarketCommand().register();
         new OfferCommand().register();
         new MainCommand().register();
+    }
+
+    private void checkPlugins(){
+        Settings.PLACEHOLDERAPI_IS_ENABLED = checkPlugin("PlaceholderAPI");
+    }
+
+    private boolean checkPlugin(String pluginName) {
+        var pM = getServer().getPluginManager();
+        var plugin = pM.getPlugin(pluginName);
+
+        if(plugin != null && plugin.isEnabled()){
+            var logger = getServer().getLogger();
+            logger.info("Hooked to: " + pluginName);
+            return true;
+        }
+        return false;
     }
 
     @Override

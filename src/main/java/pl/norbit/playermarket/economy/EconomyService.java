@@ -1,48 +1,76 @@
 package pl.norbit.playermarket.economy;
 
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.OfflinePlayer;
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import pl.norbit.playermarket.PlayerMarket;
 
-import java.util.UUID;
-
 public class EconomyService {
-
     private static Economy economy;
+    private static PlayerPointsAPI playerPointsAPI;
+
+    private static EconomyType economyType;
+
+    public static void setEconomyType(String type) {
+        if(type == null) throw new IllegalArgumentException("Invalid economy type");
+
+        try {
+            economyType = EconomyType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid economy type");
+        }
+
+        PlayerMarket instance = PlayerMarket.getInstance();
+        PluginManager pluginManager = instance.getServer().getPluginManager();
+
+        String pluginName = economyType.getName();
+
+        if(!pluginManager.isPluginEnabled(pluginName)){
+            throw new IllegalArgumentException(pluginName + " not found");
+        }else {
+            instance.getLogger().info("Using " + pluginName + " as economy plugin");
+        }
+    }
 
     public static void load(){
         Server server = PlayerMarket.getInstance().getServer();
 
-        RegisteredServiceProvider<Economy> rsp = server.getServicesManager().getRegistration(Economy.class);
+        if(economyType == EconomyType.VAULT) {
+            RegisteredServiceProvider<Economy> rsp = server.getServicesManager().getRegistration(Economy.class);
 
-        if (rsp == null) return;
+            if (rsp == null) return;
 
-        economy = rsp.getProvider();
+            economy = rsp.getProvider();
+        } else if (EconomyType.PLAYERPOINTS == economyType) {
+            playerPointsAPI = PlayerPoints.getInstance().getAPI();
+        }
     }
 
     public static boolean withDrawIfPossible(Player p, double amount){
-        if(economy.getBalance(p) < amount) return false;
+        if(economyType == EconomyType.VAULT) {
+            if(economy.getBalance(p) < amount) return false;
+        } else if (EconomyType.PLAYERPOINTS == economyType) {
+            if(playerPointsAPI.look(p.getUniqueId()) < amount) return false;
+        }
 
-        economy.withdrawPlayer(p, amount);
+        if(economyType == EconomyType.VAULT) {
+            economy.withdrawPlayer(p, amount);
+        } else if (EconomyType.PLAYERPOINTS == economyType) {
+            playerPointsAPI.take(p.getUniqueId(), (int) amount);
+        }
+
         return true;
     }
 
     public static void deposit(Player p, double amount){
-        economy.depositPlayer(p, amount);
-    }
-    public static boolean hasEnoughMoney(Player p, double amount){
-        return economy.getBalance(p) >= amount;
-    }
-
-    public static double getBalance(Player p){
-        return economy.getBalance(p);
-    }
-    public static double getBalance(UUID playerUUID){
-        OfflinePlayer offlinePlayer = PlayerMarket.getInstance().getServer().getOfflinePlayer(playerUUID);
-
-        return economy.getBalance(offlinePlayer);
+        if (EconomyType.PLAYERPOINTS == economyType) {
+            playerPointsAPI.give(p.getUniqueId(), (int) amount);
+        } else if (EconomyType.VAULT == economyType) {
+            economy.depositPlayer(p, amount);
+        }
     }
 }
