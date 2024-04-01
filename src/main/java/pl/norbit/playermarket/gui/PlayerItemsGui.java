@@ -37,7 +37,7 @@ public class PlayerItemsGui extends Gui {
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
-        super(player, "market-gui", ChatUtils.format(Settings.OFFERS_GUI.getTitle()), 6);
+        super(player, "market-gui", ChatUtils.format(player, Settings.OFFERS_GUI.getTitle()), 6);
 
         this.configGui = Settings.OFFERS_GUI;
 
@@ -97,12 +97,12 @@ public class PlayerItemsGui extends Gui {
             double earnedMoney = playerData.getEarnedMoney();
 
             if(earnedMoney == 0) {
-                player.sendMessage(ChatUtils.format(configGui.getMessage("nothing-to-get-message")));
+                player.sendMessage(ChatUtils.format(player, configGui.getMessage("nothing-to-get-message")));
                 return;
             }
 
             player.sendMessage(ChatUtils.format(
-                    configGui.getMessage("success-message")
+                    player, configGui.getMessage("success-message")
                             .replace("{MONEY}", DoubleFormatter.format(earnedMoney))));
 
             playerData.setEarnedMoney(0);
@@ -122,7 +122,7 @@ public class PlayerItemsGui extends Gui {
     private String formatLine(String line, PlayerData playerData){
         int amount = PermUtils.getAmount(player, Settings.OFFER_COMMAND_LIMIT_PERMISSION, Settings.OFFER_COMMAND_DEFAULT_LIMIT);
 
-        return ChatUtils.format(
+        return ChatUtils.format(player,
                 line.replace("{OFFERS}", String.valueOf(playerData.getPlayerOffers().size()))
                         .replace("{OFFERS_LIMIT}", String.valueOf(amount))
                         .replace("{SOLD}", String.valueOf(playerData.getSoldItems()))

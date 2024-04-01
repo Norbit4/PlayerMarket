@@ -64,7 +64,7 @@ public class LocalPlayerItem {
         this.icon = icon;
     }
 
-    private  ItemStack addPrice(){
+    private ItemStack addPrice(){
         ItemMeta iMeta = itemStack.getItemMeta();
         List<String> lore = iMeta.getLore();
 

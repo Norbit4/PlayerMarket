@@ -55,7 +55,9 @@ public class ConfigGui {
 
             configIcon.setMaterial(mat);
             configIcon.setName(ChatUtils.format(name));
-            configIcon.setLore(stringList.stream().map(ChatUtils::format).collect(Collectors.toList()));
+            configIcon.setLore(stringList.stream()
+                    .map(ChatUtils::format)
+                    .collect(Collectors.toList()));
 
             icons.put(key, configIcon);
         }

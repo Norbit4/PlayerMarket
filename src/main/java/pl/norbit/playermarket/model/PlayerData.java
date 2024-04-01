@@ -24,7 +24,6 @@ public class PlayerData {
     @Builder.Default
     private List<MarketItemData> playerOffers = new ArrayList<>();
 
-
     public MarketItemData getOffer(Long id){
         return playerOffers.stream()
                 .filter(iData -> iData.getId().equals(id))

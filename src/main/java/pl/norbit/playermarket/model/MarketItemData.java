@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
@@ -27,7 +28,7 @@ public class MarketItemData {
     private byte[] itemStack;
     private Long playerId;
 
-    public MarketItemData(Player p, byte[] is, double price){
+    public MarketItemData(OfflinePlayer p, byte[] is, double price){
         this.ownerName = p.getName();
         this.ownerUUID = p.getUniqueId().toString();
 

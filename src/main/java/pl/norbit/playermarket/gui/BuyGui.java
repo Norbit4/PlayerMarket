@@ -24,7 +24,7 @@ public class BuyGui extends Gui {
     private final ConfigGui configGui;
 
     public BuyGui(@NotNull Player player, MarketItemData marketItemData, ItemStack icon) {
-        super(player, "BUY-1", ChatUtils.format(Settings.BUY_GUI.getTitle()), 4);
+        super(player, "BUY-1", ChatUtils.format(player, Settings.BUY_GUI.getTitle()), 4);
         this.marketItemData = marketItemData;
         this.is = icon;
         this.configGui = Settings.BUY_GUI;
@@ -42,7 +42,7 @@ public class BuyGui extends Gui {
     }
 
     private void backToShop(String message){
-        player.sendMessage(ChatUtils.format(message));
+        player.sendMessage(ChatUtils.format(player, message));
         TaskUtils.runTaskLater(() -> new MarketGui(player, CategoryService.getMain()).open(), 0L);
     }
 
@@ -66,7 +66,11 @@ public class BuyGui extends Gui {
         ItemStack item = icon.getItem();
 
         icon.setName(formatLine(item.getItemMeta().getDisplayName()));
-        icon.setLore(item.getItemMeta().getLore().stream().map(this::formatLine).collect(Collectors.toList()));
+        icon.setLore(item.getItemMeta()
+                .getLore()
+                .stream()
+                .map(this::formatLine)
+                .collect(Collectors.toList()));
 
         icon.onClick(e -> {
             e.setCancelled(true);
@@ -97,6 +101,6 @@ public class BuyGui extends Gui {
         return icon;
     }
     private String formatLine(String line){
-        return ChatUtils.format(line.replace("{AMOUNT}", DoubleFormatter.format(marketItemData.getPrice())));
+        return ChatUtils.format(player, line.replace("{AMOUNT}", DoubleFormatter.format(marketItemData.getPrice())));
     }
 }

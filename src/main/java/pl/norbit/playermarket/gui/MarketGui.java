@@ -42,7 +42,7 @@ public class MarketGui extends Gui {
 
     public MarketGui(Player player, Category category) {
         super(player, "market-gui",
-                ChatUtils.format(Settings.MARKET_GUI.getTitle().replace("{CATEGORY}", category.getName())), 6);
+                ChatUtils.format(player, Settings.MARKET_GUI.getTitle().replace("{CATEGORY}", category.getName())), 6);
 
         this.category = category;
         this.configGui = Settings.MARKET_GUI;
@@ -136,7 +136,8 @@ public class MarketGui extends Gui {
 
         boolean isSel = category.getCategoryUUID().equals(this.category.getCategoryUUID());
 
-        icon.setName(ChatUtils.format(Settings.CATEGORY_NAME_FORMAT.replace("{CATEGORY}", category.getName())));
+        icon.setName(ChatUtils.format(player, Settings.CATEGORY_NAME_FORMAT.
+                replace("{CATEGORY}", category.getName())));
 
         icon.hideFlags();
 
@@ -147,7 +148,10 @@ public class MarketGui extends Gui {
             return icon;
         }
 
-        icon.setLore(category.getLore().stream().map(ChatUtils::format).collect(Collectors.toList()));
+        icon.setLore(category.getLore()
+                .stream()
+                .map(line -> ChatUtils.format(player, line))
+                .collect(Collectors.toList()));
 
         icon.onClick(e -> {
             e.setCancelled(true);
