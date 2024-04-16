@@ -85,9 +85,11 @@ public class PlayerItemsGui extends Gui {
         PlayerData playerData = localData.getPlayerData();
         Icon icon = configGui.getIcon("statistics-icon");
 
-
         icon.setLore(icon.getItem()
-                .getLore().stream().map(l -> formatLine(l, playerData)).collect(Collectors.toList()));
+                .getLore()
+                .stream()
+                .map(l -> formatLine(l, playerData))
+                .collect(Collectors.toList()));
         icon.hideFlags();
 
 
