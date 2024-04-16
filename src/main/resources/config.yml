@@ -21,13 +21,10 @@
 # mysql/h2
 database:
   type: 'h2'
-  # use when mysql is enabled
-  dialect: 'org.hibernate.dialect.MySQLDialect'
-
-  database: 'test'
+  database: 'playermarket'
   host: 'jdbc:mysql://localhost:3306'
   user: 'root'
-  password: '$5fKJKrre[do9235uidkdf135'
+  password: 'password'
   use-ssl: false
 
 #---------------------------------------#
@@ -184,6 +181,7 @@ buy-gui:
   title: '&8&lBUY AN ITEM'
   item-sold-message: '&cThis offer is already sold!'
   not-enough-money-message: '&cYou do not have enough money!'
+  player-is-owner-message: '&cYou can not buy your own item!'
   success-message: '&fYou have bought an item for &a&l{COST}$!'
   accept-icon:
     name: '&f&lBuy for &a&l{AMOUNT}$!'

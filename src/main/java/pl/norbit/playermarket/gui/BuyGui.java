@@ -89,6 +89,13 @@ public class BuyGui extends Gui {
                     return;
                 }
 
+                String ownerUUID = marketItemData.getOwnerUUID();
+
+                if(ownerUUID.equals(p.getUniqueId().toString())){
+                    backToShop(configGui.getMessage("player-is-owner-message"));
+                    return;
+                }
+
                 DataService.buyItem(mItemData);
                 p.getInventory().addItem(mItemData.getItemStackDeserialize());
 

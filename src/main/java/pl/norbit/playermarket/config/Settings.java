@@ -84,7 +84,7 @@ public class Settings {
                 new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon"});
 
         BUY_GUI = new ConfigGui(config,"buy-gui",
-                new String[]{"item-sold-message", "not-enough-money-message", "success-message"},
+                new String[]{"item-sold-message", "not-enough-money-message", "success-message", "player-is-owner-message"},
                 new String[]{"accept-icon", "cancel-icon"});
 
         OFFERS_GUI = new ConfigGui(config,"offers-gui",
