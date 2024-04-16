@@ -4,8 +4,7 @@ main: pl.norbit.playermarket.PlayerMarket
 authors: [Norbit4]
 website: https://n0rbit.pl/
 api-version: 1.16
-#depend:
-#  - Vault
+
 softdepend:
   - PlayerPoints
   - Vault
