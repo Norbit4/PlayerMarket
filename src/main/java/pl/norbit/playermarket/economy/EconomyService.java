@@ -15,8 +15,14 @@ public class EconomyService {
 
     private static EconomyType economyType;
 
+    private EconomyService() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void setEconomyType(String type) {
-        if(type == null) throw new IllegalArgumentException("Invalid economy type");
+        if(type == null){
+            throw new IllegalArgumentException("Invalid economy type");
+        }
 
         try {
             economyType = EconomyType.valueOf(type.toUpperCase());
@@ -42,7 +48,9 @@ public class EconomyService {
         if(economyType == EconomyType.VAULT) {
             RegisteredServiceProvider<Economy> rsp = server.getServicesManager().getRegistration(Economy.class);
 
-            if (rsp == null) return;
+            if (rsp == null){
+                return;
+            }
 
             economy = rsp.getProvider();
         } else if (EconomyType.PLAYERPOINTS == economyType) {

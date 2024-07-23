@@ -10,6 +10,10 @@ import java.util.List;
 
 public class CategoryUtils {
 
+    private CategoryUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static List<Category> getCategories(ConfigurationSection section){
 
         List<Category> categories = new ArrayList<>();
@@ -20,7 +24,9 @@ public class CategoryUtils {
 
             Category category = getDefaultCategory(categorySection, CategoryType.NORMAL);
 
-            if(category == null) return;
+            if(category == null){
+                return;
+            }
 
             List<Material> itemsFromCategory = YAMLService.getItemsFromCategory(category.getFile());
 
@@ -33,7 +39,9 @@ public class CategoryUtils {
     }
 
     public static Category getDefaultCategory(ConfigurationSection categorySection, CategoryType type){
-        if(categorySection == null) return null;
+        if(categorySection == null){
+            return null;
+        }
 
         Category category = new Category(type);
 

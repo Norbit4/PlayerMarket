@@ -9,6 +9,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class YAMLService {
+    private YAMLService() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static List<Material> getItemsFromCategory(String file) {
         String categoryPath = CategoryConfig.getCategoryPath();
 

@@ -18,6 +18,10 @@ public class JDBCService {
     private static QueryRunner runner;
     private static final BeanListHandler<PlayerData> playerDataHandler = new BeanListHandler<>(PlayerData.class);
 
+    private JDBCService() {
+        throw new IllegalStateException("Utility class");
+    }
+
     private static final ResultSetHandler<List<MarketItemData>> marketDataHandler = new BeanListHandler<>(MarketItemData.class) {
         @Override
         public List<MarketItemData> handle(ResultSet rs) throws SQLException {

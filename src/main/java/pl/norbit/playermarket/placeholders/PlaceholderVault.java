@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
+
 public class PlaceholderVault {
     private static final Map<UUID, LocalPlayerData> PLAYER_DATA = new HashMap<>();
 
@@ -16,7 +18,7 @@ public class PlaceholderVault {
         throw new IllegalStateException("Utility class");
     }
     public static void start(){
-        TaskUtils.runTaskTimerAsynchronously(PLAYER_DATA::clear, 0L, 60L);
+        asyncTimer(PLAYER_DATA::clear, 0L, 60L);
     }
 
     public static LocalPlayerData getLocalPlayerData(OfflinePlayer player) {

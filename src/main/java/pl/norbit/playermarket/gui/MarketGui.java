@@ -20,11 +20,12 @@ import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.gui.IconType;
-import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
 
 public class MarketGui extends Gui {
     private final PaginationManager marketItemsPagination;
@@ -37,7 +38,7 @@ public class MarketGui extends Gui {
     private static final List<MarketGui> marketGuis = new ArrayList<>();
 
     static {
-        TaskUtils.runTaskTimerAsynchronously(() -> marketGuis.forEach(MarketGui::updateTask), 6L, 4L);
+        asyncTimer(() -> marketGuis.forEach(MarketGui::updateTask), 6L, 4L);
     }
 
     public MarketGui(Player player, Category category) {
@@ -142,7 +143,10 @@ public class MarketGui extends Gui {
         icon.hideFlags();
 
         if(isSel){
-            icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream().map(ChatUtils::format).collect(Collectors.toList()));
+            icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream()
+                    .map(ChatUtils::format)
+                    .collect(Collectors.toList()));
+
             icon.enchant(Enchantment.DURABILITY);
 
             return icon;

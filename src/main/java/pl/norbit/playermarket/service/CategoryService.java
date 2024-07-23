@@ -8,6 +8,10 @@ import java.util.UUID;
 
 public class CategoryService {
 
+    private CategoryService() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static UUID getCategory(LocalMarketItem item){
 
         Category category = Settings.CATEGORIES.stream()

@@ -40,6 +40,10 @@ public class Settings {
 
     public static boolean PLACEHOLDERAPI_IS_ENABLED;
 
+    private Settings() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void load(boolean reload){
         PlayerMarket instance = PlayerMarket.getInstance();
 

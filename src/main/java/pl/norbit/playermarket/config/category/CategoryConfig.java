@@ -13,6 +13,10 @@ public class CategoryConfig {
     private static final String resourcePath = "categories/%s.yml";
     private static final String[] categories = {"armor", "blocks", "combat", "food", "minerals", "nature", "redstone", "tools"};
 
+    private CategoryConfig() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String getCategoryPath() {
         PlayerMarket inst = PlayerMarket.getInstance();
 

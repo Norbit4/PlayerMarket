@@ -11,6 +11,9 @@ import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
 import java.util.List;
 
 public class DataService {
+    private DataService() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void start(){
         JDBCService.init();

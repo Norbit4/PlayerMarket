@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mc.obliviate.inventory.Icon;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,6 +17,9 @@ import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static pl.norbit.playermarket.utils.TaskUtils.async;
+import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 @Data
 @NoArgsConstructor
@@ -47,7 +49,7 @@ public class LocalPlayerItem {
         icon.onClick(e->{
             e.setCancelled(true);
 
-            TaskUtils.runTaskLaterAsynchronously(() -> {
+            async(() -> {
                 Player p = (Player) e.getWhoClicked();
 
                 ItemStack itemStack1 = DataService.removeItemFromOffer(p, id);
@@ -58,8 +60,8 @@ public class LocalPlayerItem {
 
                 LocalPlayerData pLocalData = DataService.getPlayerLocalData(p);
 
-                TaskUtils.runTaskLater(() -> new PlayerItemsGui(p, pLocalData, 0).open(), 0L);
-            }, 0L);
+                sync(() -> new PlayerItemsGui(p, pLocalData, 0).open());
+            });
         });
         this.icon = icon;
     }

@@ -12,6 +12,10 @@ import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.PermUtils;
 import pl.norbit.playermarket.utils.TaskUtils;
+
+import static pl.norbit.playermarket.utils.TaskUtils.async;
+import static pl.norbit.playermarket.utils.TaskUtils.sync;
+
 public class OfferCommand extends BukkitCommand {
 
     public OfferCommand() {
@@ -54,7 +58,7 @@ public class OfferCommand extends BukkitCommand {
             return true;
         }
 
-        TaskUtils.runTaskLaterAsynchronously(() ->{
+        async(() ->{
             PlayerData playerData = DataService.getPlayerData(p.getUniqueId().toString());
 
             //check offers limit
@@ -69,11 +73,11 @@ public class OfferCommand extends BukkitCommand {
                 }
             }
 
-            TaskUtils.runTaskLater(() -> p.getInventory().setItemInMainHand(null),0L);
+            sync(() -> p.getInventory().setItemInMainHand(null));
 
             DataService.addItemToOffer(p,itemInMainHand, price);
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
-        }, 0L);
+        });
 
 
         return true;

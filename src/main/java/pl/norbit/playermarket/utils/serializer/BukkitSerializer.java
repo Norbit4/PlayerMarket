@@ -10,6 +10,10 @@ import java.io.IOException;
 
 public class BukkitSerializer {
 
+    private BukkitSerializer() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static byte[] serializeItems(ItemStack itemStacks) {
         try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             try (BukkitObjectOutputStream objectStream = new BukkitObjectOutputStream(stream)) {

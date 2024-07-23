@@ -5,8 +5,12 @@ import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
 
 public class GuiIconUtil {
-    public static Icon getPaginationItem(PaginationManager pagination, IconType type, Icon icon){
 
+    private GuiIconUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static Icon getPaginationItem(PaginationManager pagination, IconType type, Icon icon){
         icon.hideFlags();
         icon.onClick(e -> {
             e.setCancelled(true);

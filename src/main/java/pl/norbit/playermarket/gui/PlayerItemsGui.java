@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
+
 public class PlayerItemsGui extends Gui {
 
     private final PaginationManager pagination;
@@ -33,7 +35,7 @@ public class PlayerItemsGui extends Gui {
     private static final List<PlayerItemsGui> itemsGui = new ArrayList<>();
 
     static {
-        TaskUtils.runTaskTimerAsynchronously(() -> itemsGui.forEach(PlayerItemsGui::updateTask), 6L, 8L);
+        asyncTimer(() -> itemsGui.forEach(PlayerItemsGui::updateTask), 6L, 8L);
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {

@@ -5,21 +5,21 @@ import pl.norbit.playermarket.PlayerMarket;
 
 public class TaskUtils {
 
-    public static void runTaskLater(Runnable runnable, long delay){
-        PlayerMarket inst = PlayerMarket.getInstance();
-        inst.getServer().getScheduler().runTaskLater(inst, runnable, delay);
-    }
-    public static void runTaskTimer(Runnable runnable, long delay, long period){
-        PlayerMarket inst = PlayerMarket.getInstance();
-        inst.getServer().getScheduler().runTaskTimer(inst, runnable, delay, period);
+    private TaskUtils() {
+        throw new IllegalStateException("Utility class");
     }
 
-    public static void runTaskLaterAsynchronously(Runnable runnable, long delay){
+    public static void sync(Runnable runnable){
         PlayerMarket inst = PlayerMarket.getInstance();
-        inst.getServer().getScheduler().runTaskLaterAsynchronously(inst, runnable, delay);
+        inst.getServer().getScheduler().runTask(inst, runnable);
     }
 
-    public static void runTaskTimerAsynchronously(Runnable runnable, long delay, long period){
+    public static void async(Runnable runnable){
+        PlayerMarket inst = PlayerMarket.getInstance();
+        inst.getServer().getScheduler().runTaskAsynchronously(inst, runnable);
+    }
+
+    public static void asyncTimer(Runnable runnable, long delay, long period){
         PlayerMarket inst = PlayerMarket.getInstance();
         inst.getServer().getScheduler().runTaskTimerAsynchronously(inst, runnable, delay, period);
     }

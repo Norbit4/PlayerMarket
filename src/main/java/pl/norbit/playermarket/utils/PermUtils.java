@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 public class PermUtils {
 
+    private PermUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static boolean hasPermission(String perm, CommandSender sender){
         if(sender.isOp()) return true;
 

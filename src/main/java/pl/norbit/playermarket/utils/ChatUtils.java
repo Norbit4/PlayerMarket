@@ -6,6 +6,11 @@ import org.bukkit.entity.Player;
 import pl.norbit.playermarket.config.Settings;
 
 public class ChatUtils {
+
+    private ChatUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String format(Player p, String text) {
         if(Settings.PLACEHOLDERAPI_IS_ENABLED) {
             text = PlaceholderAPI.setPlaceholders(p, text);

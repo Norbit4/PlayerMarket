@@ -18,6 +18,9 @@ import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.stream.Collectors;
 
+import static pl.norbit.playermarket.utils.TaskUtils.async;
+import static pl.norbit.playermarket.utils.TaskUtils.sync;
+
 public class BuyGui extends Gui {
     private final MarketItemData marketItemData;
     private final ItemStack is;
@@ -43,7 +46,7 @@ public class BuyGui extends Gui {
 
     private void backToShop(String message){
         player.sendMessage(ChatUtils.format(player, message));
-        TaskUtils.runTaskLater(() -> new MarketGui(player, CategoryService.getMain()).open(), 0L);
+        sync(() -> new MarketGui(player, CategoryService.getMain()).open());
     }
 
     private static Icon getIcon(ItemStack is){
@@ -76,7 +79,7 @@ public class BuyGui extends Gui {
             e.setCancelled(true);
             Player p = (Player) e.getWhoClicked();
 
-            TaskUtils.runTaskLaterAsynchronously(() -> {
+            async(() -> {
                 MarketItemData mItemData = DataService.getMarketItemData(marketItemData.getId());
 
                 if(mItemData == null){
@@ -103,7 +106,7 @@ public class BuyGui extends Gui {
                         .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
                 );
 
-            },0L);
+            });
         });
         return icon;
     }

@@ -9,9 +9,15 @@ import pl.norbit.playermarket.utils.TaskUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
+
 public class MarketService {
 
     private static HashMap<UUID, List<LocalMarketItem>> marketItems = new HashMap<>();
+
+    private MarketService() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static List<LocalMarketItem> getIcons(Category category){
         if (Objects.requireNonNull(category.getType()) == CategoryType.ALL) {
@@ -23,7 +29,7 @@ public class MarketService {
     }
 
     public static void start() {
-        TaskUtils.runTaskTimerAsynchronously(() -> {
+        asyncTimer(() -> {
             HashMap<UUID, List<LocalMarketItem>> newMarketItems = new HashMap<>();
 
             DataService.getAll().stream()
@@ -31,7 +37,7 @@ public class MarketService {
                         .forEach(item -> addToMarketItems(CategoryService.getCategory(item), item, newMarketItems));
 
             marketItems = newMarketItems;
-        }, 0, 7);
+        }, 0, 8L);
     }
 
     private static void addToMarketItems(UUID category, LocalMarketItem item, HashMap<UUID, List<LocalMarketItem>> marketItems){
