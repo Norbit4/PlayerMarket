@@ -1,7 +1,7 @@
 <div align="center">
   
   <a href="https://github.com/Norbit4/PlayerMarket/" target="_blank" rel="noreferrer"> 
-  <img src="https://github.com/user-attachments/assets/4297e35f-8d3f-4d36-aa49-c2a962353586" width=550" alt="logo"/></a>
+  <img src="https://github.com/user-attachments/assets/4297e35f-8d3f-4d36-aa49-c2a962353586" width=400" alt="logo"/></a>
   <br><br>
   
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/DiscordMc/blob/master/LICENSE)
