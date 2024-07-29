@@ -7,6 +7,7 @@
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/DiscordMc/blob/master/LICENSE)
   [![Github tag](https://badgen.net/github/tag/Norbit4/PlayerMarket)](https://github.com/Norbit4/PlayerMarket/tags/)
   [![Github all releases](https://img.shields.io/github/downloads/Norbit4/PlayerMarket/total.svg)](https://GitHub.com/Norbit4/PlayerMarket/releases/)
+  [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0c23b77e9cd8475fa12780c3d5cdbcca)](https://app.codacy.com/gh/Norbit4/PlayerMarket/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
   <h6 align="center">Used Languages and Tools:</h6>
   
