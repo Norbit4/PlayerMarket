@@ -4,6 +4,7 @@
   <img src="https://github.com/user-attachments/assets/4297e35f-8d3f-4d36-aa49-c2a962353586" width=400" alt="logo"/></a>
   <br><br>
   
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f2094f94d36e4d619ac420de49bb5d0b)](https://app.codacy.com/gh/Norbit4/PlayerMarket?utm_source=github.com&utm_medium=referral&utm_content=Norbit4/PlayerMarket&utm_campaign=Badge_Grade)
   [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-orange.svg)](https://github.com/Norbit4/DiscordMc/blob/master/LICENSE)
   [![Github tag](https://badgen.net/github/tag/Norbit4/PlayerMarket)](https://github.com/Norbit4/PlayerMarket/tags/)
   [![Github all releases](https://img.shields.io/github/downloads/Norbit4/PlayerMarket/total.svg)](https://GitHub.com/Norbit4/PlayerMarket/releases/)
