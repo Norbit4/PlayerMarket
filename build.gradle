@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.0.1'
+version = 'v1.1.0'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -24,6 +24,9 @@ repositories {
     maven { url 'https://jitpack.io' }
     maven {
         url = 'https://repo.rosewooddev.io/repository/public/'
+    }
+    maven {
+        url "https://repo.codemc.io/repository/maven-snapshots/"
     }
 }
 
@@ -51,8 +54,11 @@ dependencies {
     implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.2.0'
     implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.2.0'
 
+    //yaml
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
+    //anvilgui
+    implementation 'net.wesjd:anvilgui:1.10.0-SNAPSHOT'
 }
 
 def targetJavaVersion = 11
