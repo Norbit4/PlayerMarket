@@ -5,6 +5,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.exception.SQLQueryException;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.PlayerData;
 
@@ -41,7 +42,7 @@ public class JDBCService {
         }
     };
 
-    public static void init() {
+    protected static void init() {
         try {
             connection = getConnection();
             runner = new QueryRunner();
@@ -53,10 +54,11 @@ public class JDBCService {
         }
     }
 
-    public static void close() {
+    protected static void close() {
         try {
-            if (connection != null) connection.close();
-
+            if (connection != null){
+                connection.close();
+            }
         } catch (SQLException ignored) {
         }
     }
@@ -119,7 +121,7 @@ public class JDBCService {
                     player.getId());
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error while adding market item for player", e);
+            throw new SQLQueryException("Error while adding market item for player with id: " + player.getId(), e);
         }
     }
 
@@ -129,7 +131,7 @@ public class JDBCService {
         try {
             return runner.query(connection, query, marketDataHandler, playerId);
         } catch (SQLException e) {
-            throw new RuntimeException("Error while fetching market items for player with id: " + playerId, e);
+            throw new SQLQueryException("Error while getting all market items for player with id: " + playerId, e);
         }
     }
 
@@ -157,7 +159,9 @@ public class JDBCService {
 
 
     public static List<MarketItemData> getAllMarketItems() {
-        if(connection == null) return new ArrayList<>();
+        if(connection == null){
+            return new ArrayList<>();
+        }
 
         String query = "SELECT * FROM MarketItemData";
 
@@ -176,7 +180,7 @@ public class JDBCService {
         try {
             runner.update(connection, query, id);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLQueryException("Error while removing market item with id: " + id, e);
         }
     }
 
@@ -186,7 +190,9 @@ public class JDBCService {
         try {
             List<MarketItemData> employees = runner.query(connection, query, marketDataHandler, id);
 
-            if(employees.isEmpty()) return null;
+            if(employees.isEmpty()){
+                return null;
+            }
 
             return employees.get(0);
         } catch (SQLException e) {
@@ -204,7 +210,7 @@ public class JDBCService {
                     playerData.getTotalSoldItems(), playerData.getEarnedMoney(),
                     playerData.getTotalEarnedMoney());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLQueryException("Error while creating player data for player with id: " + playerData.getId(), e);
         }
     }
 
@@ -218,7 +224,7 @@ public class JDBCService {
                     playerData.getEarnedMoney(), playerData.getTotalEarnedMoney(),
                     playerData.getPlayerUUID());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLQueryException("Error while updating player data for player with id: " + playerData.getId(), e);
         }
     }
 }

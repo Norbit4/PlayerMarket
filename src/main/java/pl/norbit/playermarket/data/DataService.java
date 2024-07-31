@@ -26,9 +26,11 @@ public class DataService {
     public static void buyItem(MarketItemData marketItemData){
 
         PlayerData playerData = getPlayerData(marketItemData.getOwnerUUID());
-        Long id = marketItemData.getId();
+        Long itemId = marketItemData.getId();
 
-        if(playerData == null) return;
+        if(playerData == null){
+            return;
+        }
 
         //update stats for seller
         playerData.setSoldItems(playerData.getSoldItems() + 1);
@@ -37,7 +39,7 @@ public class DataService {
         playerData.setTotalSoldItems(playerData.getTotalSoldItems() + 1);
 
         //remove item from seller
-        removeMarketItem(id);
+        removeMarketItem(itemId);
 
         updatePlayerData(playerData);
     }
@@ -53,11 +55,15 @@ public class DataService {
     public static ItemStack removeItemFromOffer(Player p,Long itemId){
         PlayerData pData = getPlayerData(p.getUniqueId().toString());
 
-        if(pData == null) return null;
+        if(pData == null){
+            return null;
+        }
 
         MarketItemData offer = pData.getOffer(itemId);
 
-        if(offer == null) return null;
+        if(offer == null){
+            return null;
+        }
 
         ItemStack itemStack = offer.getItemStackDeserialize();
 
