@@ -34,9 +34,6 @@ public class MainCommand extends BukkitCommand {
                 Settings.load(true);
                 p.sendMessage(ChatUtils.format(Settings.MAIN_COMMAND_RELOAD_MESSAGE));
                 return true;
-            } else if (arg.equalsIgnoreCase("test")){
-                ItemTypeSearchGui.open(p);
-                return true;
             }
         }
 
@@ -46,7 +43,7 @@ public class MainCommand extends BukkitCommand {
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
-        return List.of("reload", "help", "test");
+        return List.of("reload", "help");
     }
 
     private String format(String message){
