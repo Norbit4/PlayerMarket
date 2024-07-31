@@ -4,7 +4,6 @@ import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,31 +20,62 @@ public class MarketService {
 
     public static List<LocalMarketItem> getIcons(Category category){
         if (Objects.requireNonNull(category.getType()) == CategoryType.ALL) {
-            return marketItems.values().stream()
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
+            return getAllIcons();
         }
-        return marketItems.get(category.getCategoryUUID());
+        List<LocalMarketItem> localMarketItems = marketItems.get(category.getCategoryUUID());
+
+        if(localMarketItems == null){
+            return new ArrayList<>();
+        }
+
+        List<LocalMarketItem> reverse = new ArrayList<>(localMarketItems);
+
+        Collections.reverse(reverse);
+        return reverse;
+    }
+
+    private static List<LocalMarketItem> getAllIcons(){
+        List<LocalMarketItem> all = marketItems.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        Collections.reverse(all);
+        return all;
+    }
+
+    public static List<LocalMarketItem> searchItemsByMaterial(String itemMatName){
+        List<LocalMarketItem> items = marketItems.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(item -> item.getItemStack().getType().name().contains(itemMatName.toUpperCase()))
+                .collect(Collectors.toList());
+
+        Collections.reverse(items);
+        return items;
     }
 
     public static void start() {
         asyncTimer(() -> {
             HashMap<UUID, List<LocalMarketItem>> newMarketItems = new HashMap<>();
 
-            DataService.getAll().stream()
-                        .map(LocalMarketItem::new)
-                        .forEach(item -> addToMarketItems(CategoryService.getCategory(item), item, newMarketItems));
+            DataService.getAll()
+                    .stream()
+                    .map(LocalMarketItem::new)
+                    .forEach(item -> addToMarketItems(CategoryService.getCategoryUUID(item), item, newMarketItems));
 
             marketItems = newMarketItems;
-        }, 0, 8L);
+        }, 30L, 8L);
     }
 
-    private static void addToMarketItems(UUID category, LocalMarketItem item, HashMap<UUID, List<LocalMarketItem>> marketItems){
-        if(marketItems.containsKey(category)) marketItems.get(category).add(item);
+    private static void addToMarketItems(UUID categoryUUID, LocalMarketItem item, HashMap<UUID, List<LocalMarketItem>> marketItems){
+        if(marketItems.containsKey(categoryUUID)) {
+            marketItems.get(categoryUUID).add(item);
+        }
         else{
             List<LocalMarketItem> itemsInCategory = new ArrayList<>();
             itemsInCategory.add(item);
-            marketItems.put(category, itemsInCategory);
+            marketItems.put(categoryUUID, itemsInCategory);
         }
     }
 }

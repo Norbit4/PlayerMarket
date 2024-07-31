@@ -35,7 +35,9 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         if (params.contains("player_limit")) {
 
-            if(!player.isOnline()) return "";
+            if(!player.isOnline()){
+                return "";
+            }
 
             Player p = player.getPlayer();
 

@@ -8,6 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import pl.norbit.playermarket.gui.anvil.ItemTypeSearchGui;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
 import pl.norbit.playermarket.gui.template.TemplateService;
 import pl.norbit.playermarket.model.local.Category;
@@ -17,6 +18,7 @@ import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.MarketService;
+import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.gui.IconType;
@@ -42,8 +44,7 @@ public class MarketGui extends Gui {
     }
 
     public MarketGui(Player player, Category category) {
-        super(player, "market-gui",
-                ChatUtils.format(player, Settings.MARKET_GUI.getTitle().replace("{CATEGORY}", category.getName())), 6);
+        super(player, "market-gui", "", 6);
 
         this.category = category;
         this.configGui = Settings.MARKET_GUI;
@@ -63,14 +64,33 @@ public class MarketGui extends Gui {
         //add categories
         this.categoriesPagination.addItem(createCategory(Settings.ALL_CATEGORY));
 
-        Settings.CATEGORIES.stream().map(this::createCategory).forEach(this.categoriesPagination::addItem);
+        Settings.CATEGORIES.stream()
+                .map(this::createCategory)
+                .forEach(this.categoriesPagination::addItem);
 
         this.categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
+
+        updateTitle();
     }
 
+    public void updateTitle(){
+        int lastPage = this.marketItemsPagination.getLastPage() + 1;
+
+        if(lastPage == 0){
+            lastPage = 1;
+        }
+
+        String title = ChatUtils.format(player, Settings.MARKET_GUI.getTitle()
+                .replace("{CATEGORY}", category.getName())
+                .replace("{TOTAL}", String.valueOf(lastPage)));
+
+        this.setTitle(ChatUtils.format(title));
+    }
 
     public void updateTask(){
-        if(!isClosed()) updatePage(category);
+        if(!isClosed()) {
+            updatePage(category);
+        }
     }
 
     @Override
@@ -82,7 +102,9 @@ public class MarketGui extends Gui {
         this.marketItemsPagination.getItems().clear();
 
         List<LocalMarketItem> icons = MarketService.getIcons(category);
-        if(icons != null) icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+        if(icons != null){
+            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+        }
 
         this.marketItemsPagination.update();
     }
@@ -92,7 +114,9 @@ public class MarketGui extends Gui {
         this.marketItemsPagination.goFirstPage();
 
         List<LocalMarketItem> icons = MarketService.getIcons(category);
-        if(icons != null) icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+        if(icons != null){
+            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+        }
     }
 
     @Override
@@ -107,11 +131,14 @@ public class MarketGui extends Gui {
                 IconType.LEFT,
                 configGui.getIcon("previous-page-icon")));
         addItem(50, getProfileIcon());
+        addItem(52, getSearchIcon());
         addItem(53,GuiIconUtil.getPaginationItem(marketItemsPagination,
                 IconType.RIGHT,
                 configGui.getIcon("next-page-icon")));
 
         marketGuis.add(this);
+
+        SearchStorage.clear(player.getUniqueId());
     }
 
     private Icon getProfileIcon(){
@@ -162,6 +189,14 @@ public class MarketGui extends Gui {
 
             new MarketGui(player, category).open();
         });
+        return icon;
+    }
+
+    private Icon getSearchIcon(){
+        Icon icon = configGui.getIcon("search-icon");
+
+        icon.hideFlags();
+        icon.onClick(e -> ItemTypeSearchGui.open(player));
         return icon;
     }
 }

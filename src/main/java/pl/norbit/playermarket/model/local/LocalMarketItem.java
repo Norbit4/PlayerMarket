@@ -55,7 +55,9 @@ public class LocalMarketItem {
 
             MarketItemData mtItemData = DataService.getMarketItemData(id);
 
-            if(mtItemData == null) return;
+            if(mtItemData == null){
+                return;
+            }
 
             new BuyGui(p, mtItemData, currentItem).open();
         });

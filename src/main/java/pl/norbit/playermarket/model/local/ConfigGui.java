@@ -71,7 +71,7 @@ public class ConfigGui {
         icon.setName(configIcon.getName());
         icon.setLore(configIcon.getLore());
 
-        return  icon;
+        return icon;
     }
 
     public String getMessage(String key){

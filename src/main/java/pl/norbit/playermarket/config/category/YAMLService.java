@@ -16,7 +16,9 @@ public class YAMLService {
     public static List<Material> getItemsFromCategory(String file) {
         String categoryPath = CategoryConfig.getCategoryPath();
 
-        if(!file.endsWith(".yml")) file = file.concat(".yml");
+        if(!file.endsWith(".yml")){
+            file = file.concat(".yml");
+        }
 
         String filePath = categoryPath + file;
 

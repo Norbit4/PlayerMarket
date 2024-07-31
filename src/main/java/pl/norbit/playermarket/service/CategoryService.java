@@ -12,14 +12,15 @@ public class CategoryService {
         throw new IllegalStateException("Utility class");
     }
 
-    public static UUID getCategory(LocalMarketItem item){
-
+    public static UUID getCategoryUUID(LocalMarketItem item){
         Category category = Settings.CATEGORIES.stream()
                 .filter(c -> c.getMaterials().contains(item.getItemStack().getType()))
                 .findFirst()
                 .orElse(null);
 
-        if(category == null) return Settings.OTHER_CATEGORY.getCategoryUUID();
+        if(category == null){
+            return Settings.OTHER_CATEGORY.getCategoryUUID();
+        }
 
         return category.getCategoryUUID();
     }
@@ -27,7 +28,9 @@ public class CategoryService {
     public static Category getMain(){
         Category all = Settings.ALL_CATEGORY;
 
-        if(all.isEnabled()) return all;
+        if(all.isEnabled()){
+            return all;
+        }
 
         return Settings.CATEGORIES.get(0);
     }

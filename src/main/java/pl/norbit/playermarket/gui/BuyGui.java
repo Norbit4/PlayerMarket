@@ -12,6 +12,7 @@ import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.service.CategoryService;
+import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
 import pl.norbit.playermarket.utils.TaskUtils;
@@ -28,6 +29,7 @@ public class BuyGui extends Gui {
 
     public BuyGui(@NotNull Player player, MarketItemData marketItemData, ItemStack icon) {
         super(player, "BUY-1", ChatUtils.format(player, Settings.BUY_GUI.getTitle()), 4);
+
         this.marketItemData = marketItemData;
         this.is = icon;
         this.configGui = Settings.BUY_GUI;
@@ -46,7 +48,14 @@ public class BuyGui extends Gui {
 
     private void backToShop(String message){
         player.sendMessage(ChatUtils.format(player, message));
-        sync(() -> new MarketGui(player, CategoryService.getMain()).open());
+        String search = SearchStorage.getSearch(player.getUniqueId());
+        sync(() -> {
+            if(search != null){
+                new MarketSearchGui(player, search).open();
+                return;
+            }
+            new MarketGui(player, CategoryService.getMain()).open();
+        });
     }
 
     private static Icon getIcon(ItemStack is){
@@ -58,7 +67,15 @@ public class BuyGui extends Gui {
 
         icon.onClick(e -> {
             e.setCancelled(true);
-            new MarketGui((Player)e.getWhoClicked(), CategoryService.getMain()).open();
+
+            String search = SearchStorage.getSearch(player.getUniqueId());
+
+            if(search != null){
+                new MarketSearchGui(player, search).open();
+                return;
+            }
+
+            new MarketGui(player, CategoryService.getMain()).open();
         });
         return icon;
     }

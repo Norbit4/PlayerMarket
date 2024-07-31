@@ -55,7 +55,9 @@ public class PlayerItemsGui extends Gui {
     }
 
     public void updateTask(){
-        if(!isClosed()) updateCategory();
+        if(!isClosed()) {
+            updateCategory();
+        }
     }
 
     @Override
@@ -93,7 +95,6 @@ public class PlayerItemsGui extends Gui {
                 .map(l -> formatLine(l, playerData))
                 .collect(Collectors.toList()));
         icon.hideFlags();
-
 
         icon.onClick(e -> {
             e.setCancelled(true);

@@ -79,7 +79,6 @@ public class OfferCommand extends BukkitCommand {
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
         });
 
-
         return true;
     }
 

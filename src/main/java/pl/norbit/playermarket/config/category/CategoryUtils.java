@@ -47,11 +47,15 @@ public class CategoryUtils {
 
         String mat = categorySection.getString("icon");
 
-        if(mat == null) return null;
+        if(mat == null){
+            return null;
+        }
 
         Material material = Material.getMaterial(mat.toUpperCase());
 
-        if(material == null) throw new NullPointerException("Material " + mat + " not found");
+        if(material == null){
+            throw new NullPointerException("Material " + mat + " not found");
+        }
 
         category.setName(categorySection.getString("name"));
         category.setFile(categorySection.getString("file"));

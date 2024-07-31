@@ -5,6 +5,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.gui.anvil.ItemTypeSearchGui;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.PermUtils;
@@ -33,6 +34,9 @@ public class MainCommand extends BukkitCommand {
                 Settings.load(true);
                 p.sendMessage(ChatUtils.format(Settings.MAIN_COMMAND_RELOAD_MESSAGE));
                 return true;
+            } else if (arg.equalsIgnoreCase("test")){
+                ItemTypeSearchGui.open(p);
+                return true;
             }
         }
 
@@ -42,7 +46,7 @@ public class MainCommand extends BukkitCommand {
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
-        return List.of("reload", "help");
+        return List.of("reload", "help", "test");
     }
 
     private String format(String message){

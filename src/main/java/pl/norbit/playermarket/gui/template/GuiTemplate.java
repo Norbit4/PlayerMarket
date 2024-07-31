@@ -7,6 +7,7 @@ import mc.obliviate.inventory.pagination.PaginationManager;
 @Data
 @Builder
 public class GuiTemplate {
-
-    private PaginationManager marketItemsPagination, categoriesPagination, borderPagination;
+    private PaginationManager marketItemsPagination;
+    private PaginationManager categoriesPagination;
+    private PaginationManager borderPagination;
 }

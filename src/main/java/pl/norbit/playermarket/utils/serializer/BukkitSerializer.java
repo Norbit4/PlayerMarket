@@ -3,6 +3,7 @@ package pl.norbit.playermarket.utils.serializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import pl.norbit.playermarket.exception.BukkitSerializationException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +22,7 @@ public class BukkitSerializer {
             }
             return stream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("Could not serialize itemstacks", e);
+            throw new BukkitSerializationException("Could not serialize itemstacks", e);
         }
     }
 
@@ -31,7 +32,7 @@ public class BukkitSerializer {
                 return (ItemStack) objectStream.readObject();
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Could not deserialize itemstacks", e);
+            throw new BukkitSerializationException("Could not deserialize itemstacks", e);
         }
     }
 }

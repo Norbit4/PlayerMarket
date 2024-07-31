@@ -14,13 +14,17 @@ public class PermUtils {
     }
 
     public static boolean hasPermission(String perm, CommandSender sender){
-        if(sender.isOp()) return true;
+        if(sender.isOp()){
+            return true;
+        }
 
         return sender.hasPermission(perm);
     }
 
     public static boolean hasPermission(String perm, Player sender){
-        if(sender.isOp()) return true;
+        if(sender.isOp()){
+            return true;
+        }
 
         return sender.hasPermission(perm);
     }
