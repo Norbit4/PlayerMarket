@@ -11,9 +11,13 @@
 # PlayerMarket by Norbit4
 
 # github: https://github.com/Norbit4
-# website https://n0rbit.pl/
+# wiki: https://github.com/Norbit4/PlayerMarket
 
 # If you like the plugin, support me with a positive opinion, thanks! <3
+
+# HEX CODES SUPPORTED
+# &<code> ex. &#ff5733
+# https://htmlcolorcodes.com/
 
 #---------------------------------------#
 #             [ DATABASE ]              #
@@ -33,6 +37,7 @@ database:
 
 # /playermarket - help command
 # /playermarket reload - reload plugin
+
 main-command:
   permission: 'playermarket.command.main'
   no-permission: '&cYou do not have access to this command!'
@@ -81,43 +86,82 @@ economy:
 market-offer-item-lore:
   - '&8{DATE}'
   - ''
-  - '&7Price: &a{PRICE}$'
-  - '&7Seller: &a{SELLER}'
+  - '&fPrice: &a{PRICE}$'
+  - '&fSeller: &a{SELLER}'
   - ''
-  - '&eClick to buy!'
+  - '&#dcee9aClick to buy!'
 
 # {DATE} - item offer date
 # {PRICE} - item price
 player-offer-item-lore:
   - '&8{DATE}'
   - ''
-  - '&7Price: &a{PRICE}$'
+  - '&fPrice: &a{PRICE}$'
   - ''
-  - '&eClick to delete!'
+  - '&#dcee9aClick to delete!'
 
 #---------------------------------------#
 #            [ MARKET - GUI ]           #
 #---------------------------------------#
 market-gui:
-  title: '&8&lMARKET &7&l» &8&l{CATEGORY}'
+  title: '&8&lMARKET &7&l» &8&l{CATEGORY} ({TOTAL})'
   your-offers-icon:
-    name: '&a&lYour offers'
+    name: '&#93f182&lYOUR OFFERS'
     icon: 'CHEST'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
+  search-icon:
+    name: '&#93f182&lSEARCH'
+    icon: 'NAME_TAG'
+    lore:
+      - ''
+      - '&7Type item name...'
+      - ''
+      - '&#dcee9aClick to search!'
   previous-page-icon:
-    name: '&f&lPrevious Page'
+    name: '&f&lPREVIOUS PAGE'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   next-page-icon:
-    name: '&f&lNext Page'
+    name: '&f&lNEXT PAGE'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
+
+#---------------------------------------#
+#       [ ANVIL- INPUT - SEARCH ]       #
+#---------------------------------------#
+anvil-input:
+  title: '&8&lTYPE ITEM'
+  empty: 'Empty!'
+
+#---------------------------------------#
+#            [ SEARCH - GUI ]           #
+#---------------------------------------#
+search-gui:
+  title: '&8&lSEARCH &7&l» &8&l{SEARCH}'
+  back-to-market-icon:
+    name: '&#93f182&lBACK TO MARKET'
+    icon: 'BARRIER'
+    lore:
+      - ''
+      - '&#dcee9aClick to go back!'
+  previous-page-icon:
+    name: '&f&lPREVIOUS PAGE'
+    icon: 'ARROW'
+    lore:
+      - ''
+      - '&#dcee9aClick to browse!'
+  next-page-icon:
+    name: '&f&lNEXT PAGE'
+    icon: 'ARROW'
+    lore:
+      - ''
+      - '&#dcee9aClick to browse!'
 
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
@@ -137,7 +181,7 @@ offers-gui:
   nothing-to-get-message: '&cYou have nothing to claim!'
   success-message: '&aYou have successfully received &2{MONEY}$ &afor your sold offers!'
   statistics-icon:
-    name: '&a&lYour account'
+    name: '&#93f182&lYOUR ACCOUNT'
     icon: 'CHEST'
     lore:
       # {OFFERS} - player offers
@@ -146,33 +190,33 @@ offers-gui:
       # {ALL_SOLD} - all time player sold items
       # {ALL_MONEY_EARNED} - all time player money earned
       - ''
-      - '&6◆ &fOffers: &6{OFFERS}/{OFFERS_LIMIT}'
+      - '&b◆ &fOffers: &b{OFFERS}&8/&b{OFFERS_LIMIT}'
       - '&d◆ &fSold offers: &d{SOLD}'
       - '&a$ &fMoney to claim: &a{MONEY_EARNED}$'
       - ''
       - '&d◆ &fAll time sold offers: &d{ALL_SOLD}'
       - '&a$ &fAll time money earned: &a{ALL_MONEY_EARNED}$'
       - ''
-      - '&eClick to claim!'
+      - '&#dcee9aClick to claim!'
 
   back-to-market-icon:
-    name: '&a&lBack to market'
+    name: '&#93f182&lBACK TO MARKET'
     icon: 'BARRIER'
     lore:
       - ''
-      - '&eClick to go back!'
+      - '&#dcee9aClick to go back!'
   previous-page-icon:
-    name: '&f&lPrevious Page'
+    name: '&f&lPREVIOUS PAGE'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   next-page-icon:
-    name: '&f&lNext Page'
+    name: '&f&lNEXT PAGE'
     icon: 'ARROW'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
 
 #---------------------------------------#
 #            [ BUY - GUI ]              #
@@ -188,18 +232,18 @@ buy-gui:
     icon: 'GREEN_WOOL'
     lore:
       - ''
-      - '&eClick to buy!'
+      - '&#dcee9aClick to buy!'
   cancel-icon:
     name: '&c&lBack'
     icon: 'RED_WOOL'
     lore:
       - ''
-      - '&eClick to go back!'
+      - '&#dcee9aClick to go back!'
 
 #---------------------------------------#
 #            [ CATEGORIES ]             #
 #---------------------------------------#
-category-name-format: '&a&l{CATEGORY}'
+category-name-format: '&#93f182&l{CATEGORY}'
 category-selected-lore:
   - ''
   - '&a&lSelected!'
@@ -208,77 +252,77 @@ category-selected-lore:
 other-category:
   # if disabled, all items without category will be not available to buy in shop
   enabled: true
-  name: "Other"
+  name: "OTHER"
   icon: "ENDER_PEARL"
   lore:
     - ''
-    - '&eClick to browse!'
+    - '&#dcee9aClick to browse!'
 
 # main page category, all items will be displayed here
 all-category:
   enabled: true
-  name: "Main Page"
+  name: "MAIN"
   icon: "NETHER_STAR"
   lore:
     - ''
-    - '&eClick to browse!'
+    - '&#dcee9aClick to browse!'
 
 # categories, you can add more categories
 # file is the name of the file /categories/{file}.yml
 categories:
   1:
-    name: 'Blocks'
+    name: 'BLOCKS'
     icon: 'BRICKS'
     file: 'blocks'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   2:
-    name: 'Armor'
+    name: 'ARMOR'
     icon: 'DIAMOND_CHESTPLATE'
     file: 'armor'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   3:
-    name: 'Combat'
+    name: 'COMBAT'
     icon: 'GOLDEN_SWORD'
     file: 'combat'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   4:
-    name: 'Minerals'
+    name: 'MINERALS'
     icon: 'AMETHYST_SHARD'
     file: 'minerals'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   5:
-    name: 'Nature'
+    name: 'NATURE'
     icon: 'BAMBOO'
     file: 'nature'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   6:
-    name: 'Redstone'
+    name: 'REDSTONE'
     icon: 'REDSTONE'
     file: 'redstone'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   7:
-    name: 'Tools'
+    name: 'TOOLS'
     icon: 'IRON_PICKAXE'
     file: 'tools'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'
   8:
-    name: 'Food'
+    name: 'FOOD'
     icon: 'ENCHANTED_GOLDEN_APPLE'
     file: 'food'
     lore:
       - ''
-      - '&eClick to browse!'
+      - '&#dcee9aClick to browse!'

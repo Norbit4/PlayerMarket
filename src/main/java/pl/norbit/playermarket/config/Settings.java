@@ -1,5 +1,6 @@
 package pl.norbit.playermarket.config;
 
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import pl.norbit.playermarket.PlayerMarket;
@@ -22,7 +23,7 @@ public class Settings {
     public static List<Category> CATEGORIES;
     public static Category OTHER_CATEGORY, ALL_CATEGORY;
 
-    public static ConfigGui MARKET_GUI, OFFERS_GUI, BUY_GUI;
+    public static ConfigGui MARKET_GUI, OFFERS_GUI, BUY_GUI, SEARCH_GUI;
 
     public static String CATEGORY_NAME_FORMAT;
     public static List<String> CATEGORY_SELECTED_LORE, MARKET_OFFER_ITEM_LORE, PLAYER_OFFER_ITEM_LORE;
@@ -40,6 +41,12 @@ public class Settings {
 
     public static boolean PLACEHOLDERAPI_IS_ENABLED;
 
+    @Getter
+    private static String anvilTitle;
+
+    @Getter
+    private static String anvilEmpty;
+
     private Settings() {
         throw new IllegalStateException("Utility class");
     }
@@ -47,9 +54,13 @@ public class Settings {
     public static void load(boolean reload){
         PlayerMarket instance = PlayerMarket.getInstance();
 
-        if(!reload) instance.saveDefaultConfig();
+        if(!reload){
+            instance.saveDefaultConfig();
+        }
 
-        if(reload) instance.reloadConfig();
+        if(reload){
+            instance.reloadConfig();
+        }
 
         FileConfiguration config = instance.getConfig();
 
@@ -85,7 +96,7 @@ public class Settings {
 
         MARKET_GUI = new ConfigGui(config,"market-gui",
                 new String[0],
-                new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon"});
+                new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon"});
 
         BUY_GUI = new ConfigGui(config,"buy-gui",
                 new String[]{"item-sold-message", "not-enough-money-message", "success-message", "player-is-owner-message"},
@@ -94,6 +105,10 @@ public class Settings {
         OFFERS_GUI = new ConfigGui(config,"offers-gui",
                 new String[]{"remove-offer-message", "nothing-to-get-message", "success-message"},
                 new String[]{"statistics-icon", "back-to-market-icon", "previous-page-icon", "next-page-icon"});
+
+        SEARCH_GUI = new ConfigGui(config,"search-gui",
+                new String[0],
+                new String[]{"previous-page-icon", "next-page-icon", "back-to-market-icon"});
 
         CATEGORY_NAME_FORMAT = config.getString("category-name-format");
 
@@ -120,5 +135,9 @@ public class Settings {
         MAIN_COMMAND_NO_PERMISSION = config.getString("main-command.no-permission");
         MAIN_COMMAND_RELOAD_MESSAGE = config.getString("main-command.reload");
         MAIN_COMMAND_HELP_MESSAGE = config.getStringList("main-command.help");
+
+        //anvil
+        anvilTitle = config.getString("anvil-input.title");
+        anvilEmpty = config.getString("anvil-input.empty");
     }
 }
