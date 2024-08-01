@@ -24,6 +24,47 @@
 <p align="left">
 A Minecraft plugin that facilitates easier player-to-player trading through a simple GUI, with straightforward configuration and developer support on a dedicated Discord server, making it incredibly user-friendly and accessible.
 
-**wiki: coming soon...**
+<h2 align="left" id="content">Table of contents</h2>
 
-**Download:** [CLICK](https://github.com/Norbit4/PlayerMarket/releases/latest)
+- [Features](#features)
+- [Commands](#commands)
+- [Plaeholders](#placeholders)
+- [Download](https://github.com/Norbit4/PlayerMarket/releases/latest)
+- [Config](https://github.com/Norbit4/PlayerMarket/blob/master/src/main/resources/config.yml)
+
+<h2 align="left" id="features">Features</h2>
+
+> [!note]
+> - Support **Vault** and **PlayerPoints**
+> - Lightweight
+> - **Easy setup**
+> - Auctions limit
+> - Highly optimized
+> - Permissions
+> - **Full Configurable**
+
+  
+<h2 align="left" id="commands">Commands</h2>
+
+> [!note]
+> All comands prefix and permissions are configurable
+
+Command | Permission | Info | 
+--- | --- | --- |
+**/market** | *playermarket.command.market* | Help  |
+**/offer <price>** | *playermarket.command.offer* | Returns some helpful info  |
+**/playermarket** | *playermarket.command.main* | Opens the global market  |
+
+<h2 align="left" id="placeholder">Placeholders</h2>
+
+> [!warning]
+> To use placeholders you need the [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) plugin
+
+Placeholder | Info | 
+--- | --- | 
+**%playermarket_player_limit%** | Returns player offers limit | 
+**%playermarket_player_offers%** | Returns player active offers |
+**%playermarket_player_sold%** | Returns player last sold items |
+**%playermarket_player_earned%** | Returns player last money earned |
+**%playermarket_player_all_sold%** | Returns player all-time sold items |
+**%playermarket_player_all_earned%** | Returns player all-time money earned |
