@@ -28,12 +28,12 @@ public class Settings {
     public static String CATEGORY_NAME_FORMAT;
     public static List<String> CATEGORY_SELECTED_LORE, MARKET_OFFER_ITEM_LORE, PLAYER_OFFER_ITEM_LORE;
 
-    public static String OFFER_COMMAND_NAME, OFFER_COMMAND_PERMISSION, OFFER_COMMAND_USAGE,OFFER_COMMAND_NO_PERMISSION,
+    public static String OFFER_COMMAND_PERMISSION, OFFER_COMMAND_USAGE,OFFER_COMMAND_NO_PERMISSION,
             OFFER_COMMAND_WRONG_PRICE, OFFER_COMMAND_SUCCESS, OFFER_COMMAND_WRONG_ITEM;
 
-    public static String MARKET_COMMAND_NAME, MARKET_COMMAND_PERMISSION, MARKET_COMMAND_NO_PERMISSION;
-    public static String MAIN_COMMAND_PERMISSION, MAIN_COMMAND_NO_PERMISSION, MAIN_COMMAND_RELOAD_MESSAGE;
-    public static List<String> MAIN_COMMAND_HELP_MESSAGE;
+    public static String  MARKET_COMMAND_PERMISSION, MARKET_COMMAND_NO_PERMISSION;
+    public static String MAIN_COMMAND_RELOAD_PERMISSION, MAIN_COMMAND_HELP_PERMISSION, MAIN_COMMAND_NO_PERMISSION, MAIN_COMMAND_RELOAD_MESSAGE;
+    public static List<String> MAIN_COMMAND_HELP_MESSAGE, MAIN_COMMAND_HELP_RELOAD_MESSAGE;
 
     public static String OFFER_COMMAND_LIMIT_PERMISSION, OFFER_COMMAND_LIMIT_MESSAGE;
     public static int OFFER_COMMAND_DEFAULT_LIMIT;
@@ -87,7 +87,9 @@ public class Settings {
 
         ConfigurationSection configurationSection = config.getConfigurationSection("categories");
 
-        if(configurationSection == null) return;
+        if(configurationSection == null){
+            return;
+        }
 
         CATEGORIES = CategoryUtils.getCategories(configurationSection);
 
@@ -117,7 +119,6 @@ public class Settings {
         PLAYER_OFFER_ITEM_LORE = config.getStringList("player-offer-item-lore");
 
         //offer command
-        OFFER_COMMAND_NAME = config.getString("offer-command.command");
         OFFER_COMMAND_PERMISSION = config.getString("offer-command.permission");
         OFFER_COMMAND_USAGE = config.getString("offer-command.usage");
         OFFER_COMMAND_NO_PERMISSION = config.getString("offer-command.no-permission");
@@ -126,15 +127,18 @@ public class Settings {
         OFFER_COMMAND_WRONG_ITEM = config.getString("offer-command.wrong-item");
 
         //market command
-        MARKET_COMMAND_NAME = config.getString("market-command.command");
         MARKET_COMMAND_PERMISSION = config.getString("market-command.permission");
         MARKET_COMMAND_NO_PERMISSION = config.getString("market-command.no-permission");
 
         //main command
-        MAIN_COMMAND_PERMISSION = config.getString("main-command.permission");
         MAIN_COMMAND_NO_PERMISSION = config.getString("main-command.no-permission");
-        MAIN_COMMAND_RELOAD_MESSAGE = config.getString("main-command.reload");
-        MAIN_COMMAND_HELP_MESSAGE = config.getStringList("main-command.help");
+
+        MAIN_COMMAND_HELP_PERMISSION = config.getString("main-command.help.permission");
+        MAIN_COMMAND_HELP_MESSAGE = config.getStringList("main-command.help.info");
+
+        MAIN_COMMAND_RELOAD_PERMISSION = config.getString("main-command.reload.permission");
+        MAIN_COMMAND_RELOAD_MESSAGE = config.getString("main-command.reload.success");
+        MAIN_COMMAND_HELP_RELOAD_MESSAGE = config.getStringList("main-command.reload.info");
 
         //anvil
         anvilTitle = config.getString("anvil-input.title");

@@ -15,7 +15,6 @@ import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
-import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.stream.Collectors;
 

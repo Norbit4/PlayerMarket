@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.1.1'
+version = 'v1.1.2'
 
 compileJava {options.encoding = "UTF-8"}
 

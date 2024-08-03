@@ -1,30 +1,24 @@
 package pl.norbit.playermarket.commands;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.PermUtils;
-import pl.norbit.playermarket.utils.TaskUtils;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
-public class OfferCommand extends BukkitCommand {
-
-    public OfferCommand() {
-        super(Settings.OFFER_COMMAND_NAME);
-    }
+public class OfferCommand implements CommandExecutor {
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(!PermUtils.hasPermission(Settings.OFFER_COMMAND_PERMISSION, sender)){
             sender.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_NO_PERMISSION));
             return true;
@@ -78,11 +72,6 @@ public class OfferCommand extends BukkitCommand {
             DataService.addItemToOffer(p,itemInMainHand, price);
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
         });
-
         return true;
-    }
-
-    public void register(){
-        PlayerMarket.getInstance().getServer().getCommandMap().register("", this);
     }
 }

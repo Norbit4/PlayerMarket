@@ -39,22 +39,24 @@ database:
 # /playermarket reload - reload plugin
 
 main-command:
-  permission: 'playermarket.command.main'
   no-permission: '&cYou do not have access to this command!'
-  reload: '&aPlugin has been reloaded!'
-  # {CMD_MARKET} - market command prefix
-  # {CMD_OFFER} - offer command prefix
   help:
-    - '&8--------------- &a&lPLAYERMARKET &8---------------'
-    - ''
-    - '&7&l» &8&l/&a{CMD_MARKET} &7- &fOpen the market!'
-    - '&7&l» &8&l/&a{CMD_OFFER} &7- &fOffer an item!'
-    - '&7&l» &8&l/&aplayermarket reload &7- &fReload files!'
-    - ''
+    permission: 'playermarket.command.main.help'
+    info:
+      - '&8--------------- &a&lPLAYERMARKET &8---------------'
+      - ''
+      - '&7&l» &8&l/&amarket &7- &fOpen the market!'
+      - '&7&l» &8&l/&aoffer <cost> &7- &fOffer an item!'
+  reload:
+    permission: 'playermarket.command.main.reload'
+    success: '&aPlugin has been reloaded!'
+    # display in help when player has permission
+    info:
+      - '&7&l» &8&l/&aplayermarket reload &7- &fReload files!'
+      - ''
 
 # /offer <price> - offer an item
 offer-command:
-  command: 'offer'
   permission: 'playermarket.command.offer'
   usage: '&cUsage: /offer <price>'
   no-permission: '&cYou do not have access to this command!'
@@ -64,7 +66,6 @@ offer-command:
 
 # /market - open market
 market-command:
-  command: 'market'
   permission: 'playermarket.command.market'
   no-permission: '&cYou do not have access to this command!'
 

@@ -90,6 +90,7 @@ public class PlayerItemsGui extends Gui {
         Icon icon = configGui.getIcon("statistics-icon");
 
         icon.setLore(icon.getItem()
+                .getItemMeta()
                 .getLore()
                 .stream()
                 .map(l -> formatLine(l, playerData))

@@ -4,8 +4,18 @@ main: pl.norbit.playermarket.PlayerMarket
 authors: [Norbit4]
 website: https://github.com/Norbit4
 api-version: 1.16
-
 softdepend:
   - PlayerPoints
   - Vault
   - PlaceholderAPI
+
+commands:
+    market:
+        description: Open the market!
+        usage: /market
+    offer:
+        description: Offer an item!
+        usage: /offer <cost>
+    playermarket:
+        description: Help command
+        usage: /playermarket

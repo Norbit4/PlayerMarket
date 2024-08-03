@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.playermarket.commands.MainCommand;
 import pl.norbit.playermarket.commands.MarketCommand;
 import pl.norbit.playermarket.commands.OfferCommand;
-import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
@@ -55,9 +55,9 @@ public final class PlayerMarket extends JavaPlugin {
     }
 
     public void registerCommands() {
-        new MarketCommand().register();
-        new OfferCommand().register();
-        new MainCommand().register();
+        getCommand("market").setExecutor(new MarketCommand());
+        getCommand("offer").setExecutor(new OfferCommand());
+        getCommand("playermarket").setExecutor(new MainCommand());
     }
 
     @Override
