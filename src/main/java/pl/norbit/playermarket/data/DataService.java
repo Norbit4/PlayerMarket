@@ -10,6 +10,8 @@ import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
 
 import java.util.List;
 
+import static pl.norbit.playermarket.utils.TaskUtils.async;
+
 public class DataService {
     private DataService() {
         throw new IllegalStateException("Utility class");
@@ -94,12 +96,14 @@ public class DataService {
     }
 
     public static void addItemToOffer(OfflinePlayer p, ItemStack is, double price){
-        PlayerData pData = getPlayerDataCreate(p);
+        async(() ->{
+            PlayerData pData = getPlayerDataCreate(p);
 
-        MarketItemData mItemData = new MarketItemData(p, BukkitSerializer.serializeItems(is), price);
+            MarketItemData mItemData = new MarketItemData(p, BukkitSerializer.serializeItems(is), price);
 
-        updatePlayerData(pData);
-        updateMarketItem(pData, mItemData);
+            updatePlayerData(pData);
+            updateMarketItem(pData, mItemData);
+        });
     }
 
     public static void updatePlayerData(PlayerData pData){

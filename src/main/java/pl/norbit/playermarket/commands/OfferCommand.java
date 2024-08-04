@@ -43,11 +43,9 @@ public class OfferCommand implements CommandExecutor {
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_PRICE));
             return true;
         }
-        ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
-
 
         //check item is not air
-        if(itemInMainHand.getType().isAir()){
+        if(p.getInventory().getItemInMainHand().getType().isAir()){
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_ITEM));
             return true;
         }
@@ -67,10 +65,20 @@ public class OfferCommand implements CommandExecutor {
                 }
             }
 
-            sync(() -> p.getInventory().setItemInMainHand(null));
+            sync(() ->{
+                ItemStack item = p.getInventory().getItemInMainHand();
 
-            DataService.addItemToOffer(p,itemInMainHand, price);
-            p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
+                //check item is not air again because of async, player can quickly drop item
+                if(item.getType().isAir()){
+                    p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_ITEM));
+                    return;
+                }
+                ItemStack clone = item.clone();
+                p.getInventory().setItemInMainHand(null);
+
+                DataService.addItemToOffer(p, clone, price);
+                p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
+            });
         });
         return true;
     }
