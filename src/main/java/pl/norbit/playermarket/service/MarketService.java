@@ -35,24 +35,20 @@ public class MarketService {
     }
 
     private static List<LocalMarketItem> getAllIcons(){
-        List<LocalMarketItem> all = marketItems.values()
+        return marketItems.values()
                 .stream()
                 .flatMap(Collection::stream)
+                .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
                 .collect(Collectors.toList());
-
-        Collections.reverse(all);
-        return all;
     }
 
     public static List<LocalMarketItem> searchItemsByMaterial(String itemMatName){
-        List<LocalMarketItem> items = marketItems.values()
+        return marketItems.values()
                 .stream()
                 .flatMap(Collection::stream)
                 .filter(item -> item.getItemStack().getType().name().contains(itemMatName.toUpperCase()))
+                .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
                 .collect(Collectors.toList());
-
-        Collections.reverse(items);
-        return items;
     }
 
     public static void start() {
