@@ -29,6 +29,7 @@ public class LocalPlayerItem {
     private double price;
     private ItemStack itemStack;
     private long offerDate;
+    private boolean removeProgress;
 
     @Getter
     private Icon icon;
@@ -38,6 +39,7 @@ public class LocalPlayerItem {
         this.id = itemID;
         this.price = price;
         this.offerDate = offerDate;
+        this.removeProgress = false;
 
         updateMarketItem();
     }
@@ -48,14 +50,20 @@ public class LocalPlayerItem {
         icon.onClick(e->{
             e.setCancelled(true);
 
+            if(removeProgress){
+                return;
+            }
+            removeProgress = true;
             async(() -> {
                 Player p = (Player) e.getWhoClicked();
 
-                ItemStack itemStack1 = DataService.removeItemFromOffer(p, id);
+                ItemStack item = DataService.removeItemFromOffer(p, id);
 
                 p.sendMessage(ChatUtils.format(Settings.OFFERS_GUI.getMessage("remove-offer-message")));
 
-                if(itemStack1 != null)  p.getInventory().addItem(itemStack1);
+                if(item != null){
+                    p.getInventory().addItem(item);
+                }
 
                 LocalPlayerData pLocalData = DataService.getPlayerLocalData(p);
 
@@ -80,8 +88,7 @@ public class LocalPlayerItem {
     }
     private String formatLine(String line){
         return ChatUtils.format(
-                line
-                        .replace("{PRICE}", DoubleFormatter.format(price))
+                line.replace("{PRICE}", DoubleFormatter.format(price))
                         .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
         );
     }

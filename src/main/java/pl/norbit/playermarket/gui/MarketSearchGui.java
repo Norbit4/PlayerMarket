@@ -19,8 +19,10 @@ import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.gui.IconType;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static pl.norbit.playermarket.utils.TaskUtils.*;
 
@@ -31,10 +33,10 @@ public class MarketSearchGui extends Gui {
 
     private final ConfigGui configGui;
 
-    private static final List<MarketSearchGui> marketGuis = new ArrayList<>();
+    private static final Map<UUID, MarketSearchGui> playersGui = new ConcurrentHashMap<>();
 
     static {
-        asyncTimer(() -> marketGuis.forEach(MarketSearchGui::updateTask), 6L, 4L);
+        asyncTimer(() -> playersGui.values().forEach(MarketSearchGui::updateTask), 6L, 4L);
     }
 
     public MarketSearchGui(Player player, String search) {
@@ -70,7 +72,7 @@ public class MarketSearchGui extends Gui {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        marketGuis.remove(this);
+        playersGui.remove(player.getUniqueId());
     }
 
     private void updatePage(String search){
@@ -115,7 +117,7 @@ public class MarketSearchGui extends Gui {
                 configGui.getIcon("next-page-icon")));
 
         updateCategory(search);
-        marketGuis.add(this);
+        playersGui.compute(player.getUniqueId(), (k, v) -> this);
 
         SearchStorage.updateSearch(player.getUniqueId(), search);
     }

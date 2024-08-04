@@ -19,11 +19,11 @@ import pl.norbit.playermarket.utils.*;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.gui.IconType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
+import static pl.norbit.playermarket.utils.TaskUtils.*;
 
 public class PlayerItemsGui extends Gui {
 
@@ -31,17 +31,19 @@ public class PlayerItemsGui extends Gui {
     private LocalPlayerData localData;
 
     private final ConfigGui configGui;
+    private boolean updateProgress;
 
-    private static final List<PlayerItemsGui> itemsGui = new ArrayList<>();
+    private static final Map<UUID, PlayerItemsGui> playersGui = new ConcurrentHashMap<>();
 
     static {
-        asyncTimer(() -> itemsGui.forEach(PlayerItemsGui::updateTask), 6L, 8L);
+        asyncTimer(() -> playersGui.values().forEach(PlayerItemsGui::updateTask), 6L, 8L);
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
         super(player, "market-gui", ChatUtils.format(player, Settings.OFFERS_GUI.getTitle()), 6);
 
         this.configGui = Settings.OFFERS_GUI;
+        this.updateProgress = false;
 
         this.pagination = new PaginationManager(this);
 
@@ -55,6 +57,10 @@ public class PlayerItemsGui extends Gui {
     }
 
     public void updateTask(){
+        if(updateProgress) {
+            return;
+        }
+
         if(!isClosed()) {
             updateCategory();
         }
@@ -62,7 +68,7 @@ public class PlayerItemsGui extends Gui {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        itemsGui.remove(this);
+        playersGui.remove(player.getUniqueId());
     }
 
     @Override
@@ -82,7 +88,7 @@ public class PlayerItemsGui extends Gui {
                 IconType.RIGHT,
                 configGui.getIcon("next-page-icon")));
 
-        itemsGui.add(this);
+        playersGui.compute(player.getUniqueId(), (k, v) -> this);
     }
 
     private Icon getProfileIcon(){
@@ -111,16 +117,23 @@ public class PlayerItemsGui extends Gui {
                     player, configGui.getMessage("success-message")
                             .replace("{MONEY}", DoubleFormatter.format(earnedMoney))));
 
-            playerData.setEarnedMoney(0);
-            playerData.setSoldItems(0);
+            if(this.updateProgress) {
+                return;
+            }
+            this.updateProgress = true;
 
-            DataService.updatePlayerData(playerData);
+            async(() -> {
+                playerData.setEarnedMoney(0);
+                playerData.setSoldItems(0);
 
-            LocalPlayerData pLocalData = DataService.getPlayerLocalData(player);
+                DataService.updatePlayerData(playerData);
 
-            new PlayerItemsGui(player, pLocalData, this.pagination.getCurrentPage()).open();
+                LocalPlayerData pLocalData = DataService.getPlayerLocalData(player);
 
-            EconomyService.deposit(player, earnedMoney);
+                sync(() -> new PlayerItemsGui(player, pLocalData, this.pagination.getCurrentPage()).open());
+
+                EconomyService.deposit(player, earnedMoney);
+            });
         });
         return icon;
     }
@@ -156,7 +169,10 @@ public class PlayerItemsGui extends Gui {
 
         this.pagination.getItems().clear();
 
-        localData.getPlayerOffers().forEach(item -> this.pagination.addItem(item.getIcon()));
+        localData.getPlayerOffers()
+                .stream()
+                .filter(item -> !item.isRemoveProgress())
+                .forEach(item -> this.pagination.addItem(item.getIcon()));
         this.pagination.update();
     }
 }
