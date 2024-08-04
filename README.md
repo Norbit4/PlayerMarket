@@ -51,9 +51,10 @@ A Minecraft plugin that facilitates easier player-to-player trading through a si
 
 Command | Permission | Info | 
 --- | --- | --- |
-**/market** | *playermarket.command.market* | Help  |
-**/offer <price>** | *playermarket.command.offer* | Returns some helpful info  |
-**/playermarket** | *playermarket.command.main* | Opens the global market  |
+**/market** | *playermarket.command.market* | Opens the global market |
+**/offer [price]** | *playermarket.command.offer* | Offer item |
+**/playermarket** | *playermarket.command.main.help* | Help info  |
+**/playermarket reload** | *playermarket.command.main.reload* | Reload plugin  |
 
 <h2 align="left" id="placeholder">Placeholders</h2>
 
