@@ -28,6 +28,8 @@ public class Settings {
     public static String CATEGORY_NAME_FORMAT;
     public static List<String> CATEGORY_SELECTED_LORE, MARKET_OFFER_ITEM_LORE, PLAYER_OFFER_ITEM_LORE;
 
+    public static String SELL_ITEM_MESSAGE, JOIN_MESSAGE;
+
     public static String OFFER_COMMAND_PERMISSION, OFFER_COMMAND_USAGE,OFFER_COMMAND_NO_PERMISSION,
             OFFER_COMMAND_WRONG_PRICE, OFFER_COMMAND_SUCCESS, OFFER_COMMAND_WRONG_ITEM;
 
@@ -117,6 +119,9 @@ public class Settings {
         CATEGORY_SELECTED_LORE = config.getStringList("category-selected-lore");
         MARKET_OFFER_ITEM_LORE = config.getStringList("market-offer-item-lore");
         PLAYER_OFFER_ITEM_LORE = config.getStringList("player-offer-item-lore");
+
+        SELL_ITEM_MESSAGE = config.getString("info-messages.sell-item");
+        JOIN_MESSAGE = config.getString("info-messages.join");
 
         //offer command
         OFFER_COMMAND_PERMISSION = config.getString("offer-command.permission");

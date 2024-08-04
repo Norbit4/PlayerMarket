@@ -5,6 +5,7 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
+import org.h2.engine.Setting;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
@@ -15,7 +16,10 @@ import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
+import pl.norbit.playermarket.utils.PlayerUtils;
+import pl.norbit.playermarket.utils.PluginUtils;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
@@ -122,6 +126,13 @@ public class BuyGui extends Gui {
                         .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
                 );
 
+                //send message to seller
+                PlayerUtils.getPlayer(UUID.fromString(ownerUUID)).ifPresent(seller -> {
+                    String sellerMessages = Settings.SELL_ITEM_MESSAGE
+                            .replace("{PLAYER}", p.getName())
+                            .replace("{PRICE}",  DoubleFormatter.format(mItemData.getPrice()));
+                    seller.sendMessage(ChatUtils.format(seller, sellerMessages));
+                });
             });
         });
         return icon;

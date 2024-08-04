@@ -102,6 +102,13 @@ player-offer-item-lore:
   - '&#dcee9aClick to delete!'
 
 #---------------------------------------#
+#               [ INFO ]                #
+#---------------------------------------#
+info-messages:
+  sell-item: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
+  join: '&7You have &a{MONEY}$ &7to collect for &a{SOLD} &7sold items &a/market'
+
+#---------------------------------------#
 #            [ MARKET - GUI ]           #
 #---------------------------------------#
 market-gui:
@@ -227,7 +234,7 @@ buy-gui:
   item-sold-message: '&cThis offer is already sold!'
   not-enough-money-message: '&cYou do not have enough money!'
   player-is-owner-message: '&cYou can not buy your own item!'
-  success-message: '&fYou have bought an item for &a&l{COST}$!'
+  success-message: '&fYou have bought an item for &a{COST}$!'
   accept-icon:
     name: '&f&lBuy for &a&l{AMOUNT}$!'
     icon: 'GREEN_WOOL'
