@@ -105,7 +105,7 @@ player-offer-item-lore:
 #            [ MARKET - GUI ]           #
 #---------------------------------------#
 market-gui:
-  title: '&8&lMARKET &7&l» &8&l{CATEGORY} ({TOTAL})'
+  title: '&8&lMARKET &7&l» &8&l{CATEGORY} ({CURRENT}/{TOTAL})'
   your-offers-icon:
     name: '&#93f182&lYOUR OFFERS'
     icon: 'CHEST'

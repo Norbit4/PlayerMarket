@@ -20,8 +20,7 @@ import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.gui.GuiIconUtil;
-import pl.norbit.playermarket.utils.gui.IconType;
+import pl.norbit.playermarket.utils.pagination.GuiPages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +29,13 @@ import java.util.stream.Collectors;
 import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
 
 public class MarketGui extends Gui {
-    private final PaginationManager marketItemsPagination;
+    private final PaginationManager marketItems;
     private final PaginationManager categoriesPagination;
     private final PaginationManager borderPagination;
     private final Category category;
 
     private final ConfigGui configGui;
+    private final GuiPages guiPages;
 
     private static final List<MarketGui> marketGuis = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class MarketGui extends Gui {
 
         GuiTemplate template = TemplateService.getTemplate(this);
 
-        this.marketItemsPagination = template.getMarketItemsPagination();
+        this.marketItems = template.getMarketItemsPagination();
         this.categoriesPagination = template.getCategoriesPagination();
         this.borderPagination = template.getBorderPagination();
 
@@ -70,21 +70,13 @@ public class MarketGui extends Gui {
 
         this.categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
 
-        updateTitle();
-    }
-
-    public void updateTitle(){
-        int lastPage = this.marketItemsPagination.getLastPage() + 1;
-
-        if(lastPage == 0){
-            lastPage = 1;
-        }
+        Icon left = configGui.getIcon("previous-page-icon");
+        Icon right = configGui.getIcon("next-page-icon");
 
         String title = ChatUtils.format(player, Settings.MARKET_GUI.getTitle()
-                .replace("{CATEGORY}", category.getName())
-                .replace("{TOTAL}", String.valueOf(lastPage)));
+                .replace("{CATEGORY}", category.getName()));
 
-        this.setTitle(ChatUtils.format(title));
+        this.guiPages = new GuiPages(this, title, marketItems, 47, left, 53, right);
     }
 
     public void updateTask(){
@@ -99,43 +91,40 @@ public class MarketGui extends Gui {
     }
 
     private void updatePage(Category category){
-        this.marketItemsPagination.getItems().clear();
+        this.marketItems.getItems().clear();
 
         List<LocalMarketItem> icons = MarketService.getIcons(category);
         if(icons != null){
-            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+            icons.forEach(item -> this.marketItems.addItem(item.getMarketItem()));
         }
 
-        this.marketItemsPagination.update();
+        this.marketItems.update();
+        this.guiPages.update();
     }
 
     private void updateCategory(Category category) {
-        this.marketItemsPagination.getItems().clear();
-        this.marketItemsPagination.goFirstPage();
+        this.marketItems.getItems().clear();
+        this.marketItems.goFirstPage();
 
         List<LocalMarketItem> icons = MarketService.getIcons(category);
         if(icons != null){
-            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+            icons.forEach(item -> this.marketItems.addItem(item.getMarketItem()));
         }
     }
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-
         //update pagination
-        this.marketItemsPagination.update();
+        this.marketItems.update();
         this.categoriesPagination.update();
         this.borderPagination.update();
 
-        addItem(47,GuiIconUtil.getPaginationItem(marketItemsPagination,
-                IconType.LEFT,
-                configGui.getIcon("previous-page-icon")));
         addItem(50, getProfileIcon());
         addItem(52, getSearchIcon());
-        addItem(53,GuiIconUtil.getPaginationItem(marketItemsPagination,
-                IconType.RIGHT,
-                configGui.getIcon("next-page-icon")));
 
+        this.guiPages.update();
+
+        setClosed(false);
         marketGuis.add(this);
 
         SearchStorage.clear(player.getUniqueId());
