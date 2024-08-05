@@ -27,6 +27,7 @@ A Minecraft plugin that facilitates easier player-to-player trading through a si
 <h2 align="left" id="content">Table of contents</h2>
 
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Commands](#commands)
 - [Plaeholders](#placeholders)
 - [Download](https://github.com/Norbit4/PlayerMarket/releases/latest)
@@ -38,11 +39,34 @@ A Minecraft plugin that facilitates easier player-to-player trading through a si
 > - Support **Vault** and **PlayerPoints**
 > - Lightweight
 > - **Easy setup**
+> - Real time view
+> - Support **multi** servers
 > - Auctions limit
 > - Highly optimized
 > - Permissions
 > - **Full Configurable**
 
+<h2 align="left" id="screenshots">Screenshots</h2>
+
+<details>
+  <summary>Click me</summary>
+
+  <a href="https://github.com/Norbit4/PlayerMarket/" target="_blank" rel="noreferrer"> 
+  <img src="https://github.com/user-attachments/assets/e492493f-9fc1-4a4f-be46-9ea9394b4e00" alt="img1"/></a>
+
+  <a href="https://github.com/Norbit4/PlayerMarket/" target="_blank" rel="noreferrer"> 
+  <img src="https://github.com/user-attachments/assets/229fb980-4ce0-44e9-9f87-f03a6ecc1a8e" alt="img2"/></a>
+
+  <a href="https://github.com/Norbit4/PlayerMarket/" target="_blank" rel="noreferrer"> 
+  <img src="https://github.com/user-attachments/assets/ad25ff9f-1407-4753-ab62-00defe2c8514" alt="img2"/></a>
+
+  <a href="https://github.com/Norbit4/PlayerMarket/" target="_blank" rel="noreferrer"> 
+  <img src="https://github.com/user-attachments/assets/835e7e16-7817-4a15-8a02-2b56f757b03e" alt="img3"/></a>
+
+  <a href="https://github.com/Norbit4/PlayerMarket/" target="_blank" rel="noreferrer"> 
+  <img src="https://github.com/user-attachments/assets/8072b2bd-fcae-4458-aabe-aa4082d2c595" alt="img4"/></a>
+
+</details>
   
 <h2 align="left" id="commands">Commands</h2>
 
