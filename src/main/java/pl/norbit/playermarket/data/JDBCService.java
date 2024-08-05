@@ -50,7 +50,7 @@ public class JDBCService {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new SQLQueryException("Error while initializing JDBCService", e);
         }
     }
 
@@ -89,7 +89,7 @@ public class JDBCService {
             runner.update(connection, createTablePlayer );
             runner.update(connection, createTableMarket);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLQueryException("Error while creating tables", e);
         }
     }
 

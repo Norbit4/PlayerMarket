@@ -59,11 +59,10 @@ public class EconomyService {
     }
 
     public static boolean withDrawIfPossible(Player p, double amount){
-        if(economyType == EconomyType.VAULT) {
-            if(economy.getBalance(p) < amount) return false;
-        } else if (EconomyType.PLAYERPOINTS == economyType) {
-            if(playerPointsAPI.look(p.getUniqueId()) < amount) return false;
-        }
+        if(economyType == EconomyType.VAULT && economy.getBalance(p) < amount) {
+            return false;
+        } else if (economyType == EconomyType.PLAYERPOINTS && playerPointsAPI.look(p.getUniqueId()) < amount)
+            return false;
 
         if(economyType == EconomyType.VAULT) {
             economy.withdrawPlayer(p, amount);

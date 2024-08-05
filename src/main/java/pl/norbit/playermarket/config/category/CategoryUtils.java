@@ -2,6 +2,7 @@ package pl.norbit.playermarket.config.category;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import pl.norbit.playermarket.exception.MaterialException;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 
@@ -54,7 +55,7 @@ public class CategoryUtils {
         Material material = Material.getMaterial(mat.toUpperCase());
 
         if(material == null){
-            throw new NullPointerException("Material " + mat + " not found");
+            throw new MaterialException("Invalid material: " + mat);
         }
 
         category.setName(categorySection.getString("name"));

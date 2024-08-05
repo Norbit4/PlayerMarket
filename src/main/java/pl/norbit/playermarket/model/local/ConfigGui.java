@@ -5,6 +5,8 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import pl.norbit.playermarket.exception.ConfigException;
+import pl.norbit.playermarket.exception.MaterialException;
 import pl.norbit.playermarket.utils.ChatUtils;
 
 import java.util.HashMap;
@@ -26,7 +28,9 @@ public class ConfigGui {
 
         ConfigurationSection section = config.getConfigurationSection(secKey);
 
-        if(section == null) throw new NullPointerException("Section is null!");
+        if(section == null) {
+            throw new ConfigException("Section is null!");
+        }
 
         title = section.getString("title");
 
@@ -39,15 +43,21 @@ public class ConfigGui {
 
             String material = configurationSection.getString("icon");
 
-            if(material == null) throw new NullPointerException("Material is null!");
+            if(material == null){
+                throw new MaterialException("Material is null!");
+            }
 
             Material mat = Material.getMaterial(material.toUpperCase());
 
-            if(mat == null) throw new RuntimeException("This material is not exist!");
+            if(mat == null) {
+                throw new MaterialException("This material is not exist!");
+            }
 
             String name = configurationSection.getString("name");
 
-            if(name == null) throw new NullPointerException("Name is null!");
+            if(name == null){
+                throw new ConfigException("Name is null!");
+            }
 
             List<String> stringList = configurationSection.getStringList("lore");
 
