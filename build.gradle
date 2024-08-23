@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.2.0'
+version = 'v1.2.1'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -34,7 +34,7 @@ dependencies {
     compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
 
     //playerpoints
-    compileOnly( 'org.black_ixx:playerpoints:3.2.6')
+    compileOnly 'org.black_ixx:playerpoints:3.2.6'
 
     //lombok
     compileOnly 'org.projectlombok:lombok:1.18.26'
@@ -75,16 +75,6 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
-}
-
-tasks.register('copyJar', Copy) {
-    dependsOn jar
-    from 'build/libs'
-    into '/home/norbit/mc/1.20.4-purpur/plugins'
-    include '*all.jar'
-}
-shadowJar {
-    finalizedBy(copyJar)
 }
 
 processResources {
