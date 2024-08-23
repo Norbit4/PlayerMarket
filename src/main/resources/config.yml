@@ -151,7 +151,7 @@ anvil-input:
 #            [ SEARCH - GUI ]           #
 #---------------------------------------#
 search-gui:
-  title: '&8&lSEARCH &7&l» &8&l{SEARCH}'
+  title: '&8&lSEARCH &7&l» &8&l{SEARCH} ({CURRENT}/{TOTAL})'
   back-to-market-icon:
     name: '&#93f182&lBACK TO MARKET'
     icon: 'BARRIER'
@@ -187,6 +187,7 @@ offers-gui:
   title: '&8&lYOUR OFFERS'
   remove-offer-message: '&cYour offer has been removed!'
   nothing-to-get-message: '&cYou have nothing to claim!'
+  inventory-full-message: '&cYour inventory is full!'
   success-message: '&aYou have successfully received &2{MONEY}$ &afor your sold offers!'
   statistics-icon:
     name: '&#93f182&lYOUR ACCOUNT'
@@ -235,6 +236,7 @@ buy-gui:
   not-enough-money-message: '&cYou do not have enough money!'
   player-is-owner-message: '&cYou can not buy your own item!'
   success-message: '&fYou have bought an item for &a{COST}$!'
+  inventory-full-message: '&cYour inventory is full!'
   accept-icon:
     name: '&f&lBuy for &a&l{AMOUNT}$!'
     icon: 'GREEN_WOOL'

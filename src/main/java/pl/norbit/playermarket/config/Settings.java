@@ -103,11 +103,12 @@ public class Settings {
                 new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon"});
 
         BUY_GUI = new ConfigGui(config,"buy-gui",
-                new String[]{"item-sold-message", "not-enough-money-message", "success-message", "player-is-owner-message"},
+                new String[]{"item-sold-message", "not-enough-money-message", "success-message",
+                        "player-is-owner-message", "inventory-full-message"},
                 new String[]{"accept-icon", "cancel-icon"});
 
         OFFERS_GUI = new ConfigGui(config,"offers-gui",
-                new String[]{"remove-offer-message", "nothing-to-get-message", "success-message"},
+                new String[]{"remove-offer-message", "nothing-to-get-message", "success-message", "inventory-full-message"},
                 new String[]{"statistics-icon", "back-to-market-icon", "previous-page-icon", "next-page-icon"});
 
         SEARCH_GUI = new ConfigGui(config,"search-gui",
