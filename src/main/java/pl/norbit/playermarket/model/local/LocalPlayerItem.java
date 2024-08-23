@@ -12,6 +12,7 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
+import pl.norbit.playermarket.utils.PlayerUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ public class LocalPlayerItem {
     private ItemStack itemStack;
     private long offerDate;
     private boolean removeProgress;
+
+    private static final ConfigGui configGui = Settings.OFFERS_GUI;
 
     @Getter
     private Icon icon;
@@ -50,13 +53,18 @@ public class LocalPlayerItem {
         icon.onClick(e->{
             e.setCancelled(true);
 
+            Player p = (Player) e.getWhoClicked();
+
+            if(PlayerUtils.isInventoryFull(p)){
+                p.sendMessage(ChatUtils.format(configGui.getMessage("inventory-full-message")));
+                return;
+            }
+
             if(removeProgress){
                 return;
             }
             removeProgress = true;
             async(() -> {
-                Player p = (Player) e.getWhoClicked();
-
                 ItemStack item = DataService.removeItemFromOffer(p, id);
 
                 p.sendMessage(ChatUtils.format(Settings.OFFERS_GUI.getMessage("remove-offer-message")));

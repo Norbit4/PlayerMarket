@@ -5,7 +5,6 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
-import org.h2.engine.Setting;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
@@ -17,7 +16,6 @@ import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
 import pl.norbit.playermarket.utils.PlayerUtils;
-import pl.norbit.playermarket.utils.PluginUtils;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -117,6 +115,12 @@ public class BuyGui extends Gui {
                 if(ownerUUID.equals(p.getUniqueId().toString())){
                     backToShop(configGui.getMessage("player-is-owner-message"));
                     return;
+                }
+
+                if(PlayerUtils.isInventoryFull(p)){
+                    backToShop(configGui.getMessage("inventory-full-message"));
+                    return;
+
                 }
 
                 DataService.buyItem(mItemData);
