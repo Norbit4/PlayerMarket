@@ -17,7 +17,7 @@ import pl.norbit.playermarket.model.local.LocalPlayerItem;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.*;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
-import pl.norbit.playermarket.utils.gui.IconType;
+import pl.norbit.playermarket.utils.pagination.GuiPages;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +32,7 @@ public class PlayerItemsGui extends Gui {
 
     private final ConfigGui configGui;
     private boolean updateProgress;
+    private final GuiPages guiPages;
 
     private static final Map<UUID, PlayerItemsGui> playersGui = new ConcurrentHashMap<>();
 
@@ -40,7 +41,7 @@ public class PlayerItemsGui extends Gui {
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
-        super(player, "market-gui", ChatUtils.format(player, Settings.OFFERS_GUI.getTitle()), 6);
+        super(player, "market-gui", "", 6);
 
         this.configGui = Settings.OFFERS_GUI;
         this.updateProgress = false;
@@ -53,7 +54,12 @@ public class PlayerItemsGui extends Gui {
 
         this.localData = lPlayerData;
 
+        Icon left = configGui.getIcon("previous-page-icon");
+        Icon right = configGui.getIcon("next-page-icon");
+
         updateCategory(lPlayerData.getPlayerOffers(), page);
+
+        this.guiPages = new GuiPages(this, Settings.OFFERS_GUI.getTitle(), pagination, 46, left, 52, right);
     }
 
     public void updateTask(){
@@ -74,20 +80,14 @@ public class PlayerItemsGui extends Gui {
     @Override
     public void onOpen(InventoryOpenEvent event) {
         this.pagination.update();
+        this.guiPages.update();
 
         addItem(4, getProfileIcon());
-
-        addItem(46,GuiIconUtil.getPaginationItem(pagination,
-                IconType.LEFT,
-                configGui.getIcon("previous-page-icon")));
 
         addItem(49, GuiIconUtil.getOpenGuItem(configGui.getIcon("back-to-market-icon"),
                 new MarketGui(player, CategoryService.getMain())));
 
-        addItem(52,GuiIconUtil.getPaginationItem(pagination,
-                IconType.RIGHT,
-                configGui.getIcon("next-page-icon")));
-
+        setClosed(false);
         playersGui.compute(player.getUniqueId(), (k, v) -> this);
     }
 
@@ -174,5 +174,6 @@ public class PlayerItemsGui extends Gui {
                 .filter(item -> !item.isRemoveProgress())
                 .forEach(item -> this.pagination.addItem(item.getIcon()));
         this.pagination.update();
+        this.guiPages.update();
     }
 }

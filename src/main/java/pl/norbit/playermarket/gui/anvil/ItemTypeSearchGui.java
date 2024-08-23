@@ -21,16 +21,15 @@ public class ItemTypeSearchGui {
                 .onClose(state -> {
                     String text = state.getText().replace(" ", "");
 
+                    if(text.isEmpty() || text.equals(Settings.getAnvilEmpty())){
+                        return;
+                    }
+
                     new MarketSearchGui(p, text).open();
                 })
                 .onClick((slot, state) -> {
                     if (slot != AnvilGUI.Slot.OUTPUT) {
                         return Collections.emptyList();
-                    }
-                    String text = state.getText().replace(" ", "");
-
-                    if(text.isEmpty() || text.equals(Settings.getAnvilEmpty())){
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText(ChatUtils.format(Settings.getAnvilEmpty())));
                     }
 
                     return List.of(AnvilGUI.ResponseAction.close());
