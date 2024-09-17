@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.2.1'
+version = 'v1.2.2'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -58,7 +58,7 @@ dependencies {
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
     //anvilgui
-    implementation 'net.wesjd:anvilgui:1.10.0-SNAPSHOT'
+    implementation 'net.wesjd:anvilgui:1.10.2-SNAPSHOT'
 }
 
 def targetJavaVersion = 11
