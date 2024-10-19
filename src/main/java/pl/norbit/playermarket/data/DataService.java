@@ -106,6 +106,21 @@ public class DataService {
         });
     }
 
+    public static void clearPlayerData(OfflinePlayer p){
+        async(() ->{
+            PlayerData pData = getPlayerDataCreate(p);
+
+            pData.setEarnedMoney(0);
+            pData.setSoldItems(0);
+            pData.setTotalEarnedMoney(0);
+            pData.setTotalSoldItems(0);
+
+            pData.getPlayerOffers().forEach(mItem -> removeMarketItem(mItem.getId()));
+
+            updatePlayerData(pData);
+        });
+    }
+
     public static void updatePlayerData(PlayerData pData){
         JDBCService.updatePlayerData(pData);
     }
