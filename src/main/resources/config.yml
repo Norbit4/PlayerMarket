@@ -37,9 +37,14 @@ database:
 
 # /playermarket - help command
 # /playermarket reload - reload plugin
+# /playermarket clear <player> - clear player data
 
 main-command:
   no-permission: '&cYou do not have access to this command!'
+  clear:
+    permission: 'playermarket.command.main.clear'
+    success: '&7Data for &e{PLAYER} &7has been cleared!'
+    player-not-found: '&cPlayer not found!'
   help:
     permission: 'playermarket.command.main.help'
     info:
@@ -53,6 +58,7 @@ main-command:
     # display in help when player has permission
     info:
       - '&7&l» &8&l/&aplayermarket reload &7- &fReload files!'
+      - '&7&l» &8&l/&aplayermarket clear <player> &7- &fClear player data!'
       - ''
 
 # /offer <price> - offer an item
@@ -81,23 +87,41 @@ market-command:
 economy:
   type: 'vault'
 
+expire:
+  # expire time in minutes
+  # 0 - never expire
+  time: 10080 # 7 days
+  status: '&cExpired!'
+  never: '&dNever'
+  message: '&cThis offer has expired!'
+  prefix:
+    days: 'd'
+    hours: 'h'
+    minutes: 'm'
+    # seconds show up when expiration time is less than an hour
+    seconds: 's'
+
 # {DATE} - item offer date
 # {PRICE} - item price
 # {SELLER} - item seller
+# {EXPIRE} - item expire time
 market-offer-item-lore:
   - '&8{DATE}'
   - ''
   - '&fPrice: &a{PRICE}$'
   - '&fSeller: &a{SELLER}'
+  - '&fExpire: &a{EXPIRE}'
   - ''
   - '&#dcee9aClick to buy!'
 
 # {DATE} - item offer date
 # {PRICE} - item price
+# {EXPIRE} - item expire time
 player-offer-item-lore:
   - '&8{DATE}'
   - ''
   - '&fPrice: &a{PRICE}$'
+  - '&fExpire: &a{EXPIRE}'
   - ''
   - '&#dcee9aClick to delete!'
 

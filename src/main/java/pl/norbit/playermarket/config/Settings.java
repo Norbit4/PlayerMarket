@@ -49,6 +49,29 @@ public class Settings {
     @Getter
     private static String anvilEmpty;
 
+    @Getter
+    private static int expireTime;
+    @Getter
+    private static String expireStatus;
+    @Getter
+    private static String expireNever;
+    @Getter
+    private static String expireMessage;
+    @Getter
+    private static String days;
+    @Getter
+    private static String hours;
+    @Getter
+    private static String minutes;
+    @Getter
+    private static String seconds;
+    @Getter
+    private static String clearPermission;
+    @Getter
+    private static String clearSuccess;
+    @Getter
+    private static String playerNotFound;
+
     private Settings() {
         throw new IllegalStateException("Utility class");
     }
@@ -149,5 +172,20 @@ public class Settings {
         //anvil
         anvilTitle = config.getString("anvil-input.title");
         anvilEmpty = config.getString("anvil-input.empty");
+
+        //expire
+        expireTime = config.getInt("expire.time");
+        expireStatus = config.getString("expire.status");
+        expireMessage = config.getString("expire.message");
+        days = config.getString("expire.prefix.days");
+        hours = config.getString("expire.prefix.hours");
+        minutes = config.getString("expire.prefix.minutes");
+        seconds = config.getString("expire.prefix.seconds");
+        expireNever = config.getString("expire.never");
+
+        //clear
+        clearPermission = config.getString("main-command.clear.permission");
+        clearSuccess = config.getString("main-command.clear.success");
+        playerNotFound = config.getString("main-command.clear.player-not-found");
     }
 }
