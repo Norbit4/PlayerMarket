@@ -73,12 +73,13 @@ A Minecraft plugin that facilitates easier player-to-player trading through a si
 > [!note]
 > All comands prefix and permissions are configurable
 
-Command | Permission | Info | 
+Command | Default permission | Info | 
 --- | --- | --- |
 **/market** | *playermarket.command.market* | Opens the global market |
 **/offer [price]** | *playermarket.command.offer* | Offer item |
 **/playermarket** | *playermarket.command.main.help* | Help info  |
 **/playermarket reload** | *playermarket.command.main.reload* | Reload plugin  |
+**/playermarket cleardata [player]** | *playermarket.command.main.clear* | Clear data for player |
 
 <h2 align="left" id="placeholder">Placeholders</h2>
 
