@@ -15,6 +15,7 @@ import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
+import pl.norbit.playermarket.utils.ExpireUtils;
 import pl.norbit.playermarket.utils.PlayerUtils;
 
 import java.util.UUID;
@@ -102,6 +103,11 @@ public class BuyGui extends Gui {
 
                 if(mItemData == null){
                     backToShop(configGui.getMessage("item-sold-message"));
+                    return;
+                }
+
+                if(ExpireUtils.isExpired(mItemData.getOfferDate())){
+                    backToShop(Settings.getExpireMessage());
                     return;
                 }
 

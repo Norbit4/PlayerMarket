@@ -4,6 +4,7 @@ import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.utils.ExpireUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ public class MarketService {
             DataService.getAll()
                     .stream()
                     .map(LocalMarketItem::new)
+                    .filter(item -> !ExpireUtils.isExpired(item.getOfferDate()))
                     .forEach(item -> addToMarketItems(CategoryService.getCategoryUUID(item), item, newMarketItems));
 
             marketItems = newMarketItems;

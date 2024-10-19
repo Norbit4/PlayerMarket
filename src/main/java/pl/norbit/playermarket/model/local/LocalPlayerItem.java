@@ -12,6 +12,7 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
+import pl.norbit.playermarket.utils.ExpireUtils;
 import pl.norbit.playermarket.utils.PlayerUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
@@ -97,6 +98,7 @@ public class LocalPlayerItem {
     private String formatLine(String line){
         return ChatUtils.format(
                 line.replace("{PRICE}", DoubleFormatter.format(price))
+                        .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
                         .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
         );
     }

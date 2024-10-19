@@ -12,6 +12,7 @@ import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.gui.BuyGui;
 import pl.norbit.playermarket.utils.ChatUtils;
 import pl.norbit.playermarket.utils.DoubleFormatter;
+import pl.norbit.playermarket.utils.ExpireUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class LocalMarketItem {
 
         updateMarketItem();
     }
+
     public Icon getMarketItem() {
         return this.icon;
     }
@@ -80,6 +82,7 @@ public class LocalMarketItem {
     private String formatLine(String line){
         return ChatUtils.format(
                 line
+                        .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
                         .replace("{PRICE}", DoubleFormatter.format(price))
                         .replace("{SELLER}", ownerName)
                         .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
