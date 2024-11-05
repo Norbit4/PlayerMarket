@@ -23,10 +23,11 @@ public class Settings {
     public static List<Category> CATEGORIES;
     public static Category OTHER_CATEGORY, ALL_CATEGORY;
 
-    public static ConfigGui MARKET_GUI, OFFERS_GUI, BUY_GUI, SEARCH_GUI;
+    public static ConfigGui MARKET_GUI, OFFERS_GUI, BUY_GUI, SEARCH_GUI, SHULKER_GUI;
 
     public static String CATEGORY_NAME_FORMAT;
-    public static List<String> CATEGORY_SELECTED_LORE, MARKET_OFFER_ITEM_LORE, PLAYER_OFFER_ITEM_LORE;
+    public static List<String> CATEGORY_SELECTED_LORE, MARKET_OFFER_ITEM_LORE, MARKET_OFFER_SHULKER_LORE,
+            PLAYER_OFFER_ITEM_LORE, PLAYER_OFFER_SHULKER_LORE;
 
     public static String SELL_ITEM_MESSAGE, JOIN_MESSAGE;
 
@@ -138,11 +139,18 @@ public class Settings {
                 new String[0],
                 new String[]{"previous-page-icon", "next-page-icon", "back-to-market-icon"});
 
+        SHULKER_GUI = new ConfigGui(config,"shulker-gui",
+                new String[]{"item-sold-message"},
+                new String[]{"back-icon", "buy-icon"});
+
         CATEGORY_NAME_FORMAT = config.getString("category-name-format");
 
         CATEGORY_SELECTED_LORE = config.getStringList("category-selected-lore");
         MARKET_OFFER_ITEM_LORE = config.getStringList("market-offer-item-lore");
+        MARKET_OFFER_SHULKER_LORE = config.getStringList("market-offer-shulker-lore");
+
         PLAYER_OFFER_ITEM_LORE = config.getStringList("player-offer-item-lore");
+        PLAYER_OFFER_SHULKER_LORE = config.getStringList("player-offer-shulker-lore");
 
         SELL_ITEM_MESSAGE = config.getString("info-messages.sell-item");
         JOIN_MESSAGE = config.getString("info-messages.join");

@@ -114,6 +114,17 @@ market-offer-item-lore:
   - ''
   - '&#dcee9aClick to buy!'
 
+# Icon for not empty shulker box
+market-offer-shulker-lore:
+  - '&8{DATE}'
+  - ''
+  - '&fPrice: &a{PRICE}$'
+  - '&fSeller: &a{SELLER}'
+  - '&fExpire: &a{EXPIRE}'
+  - ''
+  - '&#dcee9a[LPM] Click to buy!'
+  - '&#dcee9a[PPM] Click to preview!'
+
 # {DATE} - item offer date
 # {PRICE} - item price
 # {EXPIRE} - item expire time
@@ -124,6 +135,15 @@ player-offer-item-lore:
   - '&fExpire: &a{EXPIRE}'
   - ''
   - '&#dcee9aClick to delete!'
+
+player-offer-shulker-lore:
+  - '&8{DATE}'
+  - ''
+  - '&fPrice: &a{PRICE}$'
+  - '&fExpire: &a{EXPIRE}'
+  - ''
+  - '&#dcee9a[LPM] Click to delete!'
+  - '&#dcee9a[PPM] Click to preview!'
 
 #---------------------------------------#
 #               [ INFO ]                #
@@ -273,6 +293,27 @@ buy-gui:
     lore:
       - ''
       - '&#dcee9aClick to go back!'
+
+#---------------------------------------#
+#         [ SHULKERBOX - GUI ]          #
+#---------------------------------------#
+# shulker box gui, opens when player click shulker box for preview
+
+shulker-gui:
+  title: '&8&lITEM PREVIEW'
+  item-sold-message: '&cThis offer is already sold!'
+  back-icon:
+    name: '&#93f182&lBACK'
+    icon: 'BARRIER'
+    lore:
+      - ''
+      - '&#dcee9aClick to go back!'
+  buy-icon:
+    name: '&#93f182&lBUY'
+    icon: 'GREEN_WOOL'
+    lore:
+      - ''
+      - '&#dcee9aClick to buy!'
 
 #---------------------------------------#
 #            [ CATEGORIES ]             #
