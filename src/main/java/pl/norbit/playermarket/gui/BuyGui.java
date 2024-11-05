@@ -13,10 +13,10 @@ import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
-import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.DoubleFormatter;
-import pl.norbit.playermarket.utils.ExpireUtils;
-import pl.norbit.playermarket.utils.PlayerUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.format.DoubleFormatter;
+import pl.norbit.playermarket.utils.time.ExpireUtils;
+import pl.norbit.playermarket.utils.player.PlayerUtils;
 
 import java.util.UUID;
 import java.util.stream.Collectors;

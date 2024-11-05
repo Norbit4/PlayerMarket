@@ -3,7 +3,6 @@ package pl.norbit.playermarket.placeholders;
 import org.bukkit.OfflinePlayer;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
-import pl.norbit.playermarket.utils.TaskUtils;
 
 import java.util.HashMap;
 import java.util.Map;

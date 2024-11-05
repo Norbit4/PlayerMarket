@@ -3,7 +3,7 @@ package pl.norbit.playermarket.utils.pagination;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
-import pl.norbit.playermarket.utils.ChatUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 public class GuiPages {
     private final PaginationManager paginationManager;

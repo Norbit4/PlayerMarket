@@ -1,4 +1,4 @@
-package pl.norbit.playermarket.utils;
+package pl.norbit.playermarket.utils.time;
 
 import pl.norbit.playermarket.config.Settings;
 

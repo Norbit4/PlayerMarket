@@ -15,9 +15,11 @@ import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.model.local.LocalPlayerItem;
 import pl.norbit.playermarket.service.CategoryService;
-import pl.norbit.playermarket.utils.*;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
+import pl.norbit.playermarket.utils.player.PermUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

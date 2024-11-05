@@ -1,4 +1,4 @@
-package pl.norbit.playermarket.utils;
+package pl.norbit.playermarket.utils.format;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;

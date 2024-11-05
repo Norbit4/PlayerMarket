@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.gui.MarketSearchGui;
-import pl.norbit.playermarket.utils.ChatUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.Collections;
 import java.util.List;

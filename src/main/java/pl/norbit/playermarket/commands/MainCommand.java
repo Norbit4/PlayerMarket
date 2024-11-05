@@ -6,15 +6,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.PermUtils;
-import pl.norbit.playermarket.utils.PlayerUtils;
+import pl.norbit.playermarket.gui.GuiType;
+import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.player.ItemsUtils;
+import pl.norbit.playermarket.utils.player.PermUtils;
+import pl.norbit.playermarket.utils.player.PlayerUtils;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabCompleter {

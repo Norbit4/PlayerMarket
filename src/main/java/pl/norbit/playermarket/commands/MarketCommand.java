@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.gui.MarketGui;
 import pl.norbit.playermarket.service.CategoryService;
-import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.PermUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.player.PermUtils;
 
 public class MarketCommand implements CommandExecutor {
 

@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.model.PlayerData;
-import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.PermUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.player.PermUtils;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
 import static pl.norbit.playermarket.utils.TaskUtils.sync;

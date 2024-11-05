@@ -1,4 +1,4 @@
-package pl.norbit.playermarket.utils;
+package pl.norbit.playermarket.utils.player;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

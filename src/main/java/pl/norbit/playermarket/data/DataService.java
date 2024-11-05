@@ -25,6 +25,10 @@ public class DataService {
         return JDBCService.getPlayerData(playerUUID);
     }
 
+    public static boolean isReady(){
+        return JDBCService.isReady();
+    }
+
     public static void buyItem(MarketItemData marketItemData){
 
         PlayerData playerData = getPlayerData(marketItemData.getOwnerUUID());

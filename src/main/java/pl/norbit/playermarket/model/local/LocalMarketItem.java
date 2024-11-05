@@ -4,19 +4,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.gui.GuiType;
+import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.gui.BuyGui;
-import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.DoubleFormatter;
-import pl.norbit.playermarket.utils.ExpireUtils;
+import pl.norbit.playermarket.utils.TaskUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.format.DoubleFormatter;
+import pl.norbit.playermarket.utils.player.ItemsUtils;
+import pl.norbit.playermarket.utils.time.ExpireUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static pl.norbit.playermarket.utils.TaskUtils.async;
+import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 @Data
 @NoArgsConstructor
@@ -30,8 +38,10 @@ public class LocalMarketItem {
 
     private ItemStack itemStack;
     private Icon icon;
+    private MarketItemData marketItemData;
 
     public LocalMarketItem(MarketItemData marketItemData){
+        this.marketItemData = marketItemData;
         this.itemStack = marketItemData.getItemStackDeserialize();
         this.id = marketItemData.getId();
         this.ownerName = marketItemData.getOwnerName();
@@ -53,15 +63,23 @@ public class LocalMarketItem {
 
             Player p = (Player) e.getWhoClicked();
 
-            ItemStack currentItem = e.getCurrentItem();
+            ClickType click = e.getClick();
 
-            MarketItemData mtItemData = DataService.getMarketItemData(id);
+            async(()->{
+                MarketItemData mtItemData = DataService.getMarketItemData(id);
 
-            if(mtItemData == null){
-                return;
-            }
+                if(mtItemData == null){
+                    return;
+                }
+                ItemStack currentItem = e.getCurrentItem();
 
-            new BuyGui(p, mtItemData, currentItem).open();
+                if(click == ClickType.RIGHT && ItemsUtils.isShulkerBox(itemStack)){
+                    sync(()-> new ShulkerContentGui(p, mtItemData, currentItem).open());
+                    return;
+                }
+
+                sync(()-> new BuyGui(p, mtItemData, currentItem).open());
+            });
         });
         this.icon = icon;
     }
@@ -70,9 +88,21 @@ public class LocalMarketItem {
         ItemMeta iMeta = itemStack.getItemMeta();
         List<String> lore = iMeta.getLore();
 
-        if(lore == null) lore = new ArrayList<>();
+        if(lore == null){
+            lore = new ArrayList<>();
+        }
 
-        for (String line : Settings.MARKET_OFFER_ITEM_LORE) lore.add(formatLine(line));
+        List<String> loreToFormat;
+
+        if(ItemsUtils.isShulkerBox(itemStack)){
+             loreToFormat = Settings.MARKET_OFFER_SHULKER_LORE;
+        }else {
+            loreToFormat = Settings.MARKET_OFFER_ITEM_LORE;
+        }
+
+        for (String line : loreToFormat){
+            lore.add(formatLine(line));
+        }
 
         iMeta.setLore(lore);
         itemStack.setItemMeta(iMeta);

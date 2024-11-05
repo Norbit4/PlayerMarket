@@ -7,7 +7,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.norbit.playermarket.exception.ConfigException;
 import pl.norbit.playermarket.exception.MaterialException;
-import pl.norbit.playermarket.utils.ChatUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.HashMap;
 import java.util.List;

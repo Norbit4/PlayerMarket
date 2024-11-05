@@ -18,6 +18,10 @@ public class TaskUtils {
         PlayerMarket inst = PlayerMarket.getInstance();
         inst.getServer().getScheduler().runTaskAsynchronously(inst, runnable);
     }
+    public static void asyncLater(Runnable runnable, long delay){
+        PlayerMarket inst = PlayerMarket.getInstance();
+        inst.getServer().getScheduler().runTaskLaterAsynchronously(inst, runnable, delay);
+    }
 
     public static void asyncTimer(Runnable runnable, long delay, long period){
         PlayerMarket inst = PlayerMarket.getInstance();

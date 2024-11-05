@@ -4,7 +4,7 @@ import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.utils.ExpireUtils;
+import pl.norbit.playermarket.utils.time.ExpireUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +39,7 @@ public class MarketService {
         return marketItems.values()
                 .stream()
                 .flatMap(Collection::stream)
+                // Sort by date
                 .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
                 .collect(Collectors.toList());
     }
@@ -48,6 +49,7 @@ public class MarketService {
                 .stream()
                 .flatMap(Collection::stream)
                 .filter(item -> item.getItemStack().getType().name().contains(itemMatName.toUpperCase()))
+                // Sort by date
                 .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
                 .collect(Collectors.toList());
     }
@@ -59,6 +61,7 @@ public class MarketService {
             DataService.getAll()
                     .stream()
                     .map(LocalMarketItem::new)
+                    // Filter out expired items
                     .filter(item -> !ExpireUtils.isExpired(item.getOfferDate()))
                     .forEach(item -> addToMarketItems(CategoryService.getCategoryUUID(item), item, newMarketItems));
 
@@ -69,8 +72,7 @@ public class MarketService {
     private static void addToMarketItems(UUID categoryUUID, LocalMarketItem item, HashMap<UUID, List<LocalMarketItem>> marketItems){
         if(marketItems.containsKey(categoryUUID)) {
             marketItems.get(categoryUUID).add(item);
-        }
-        else{
+        }else{
             List<LocalMarketItem> itemsInCategory = new ArrayList<>();
             itemsInCategory.add(item);
             marketItems.put(categoryUUID, itemsInCategory);

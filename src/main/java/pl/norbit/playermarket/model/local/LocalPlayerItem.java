@@ -5,15 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.gui.GuiType;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
-import pl.norbit.playermarket.utils.ChatUtils;
-import pl.norbit.playermarket.utils.DoubleFormatter;
-import pl.norbit.playermarket.utils.ExpireUtils;
-import pl.norbit.playermarket.utils.PlayerUtils;
+import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
+import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.format.DoubleFormatter;
+import pl.norbit.playermarket.utils.player.ItemsUtils;
+import pl.norbit.playermarket.utils.time.ExpireUtils;
+import pl.norbit.playermarket.utils.player.PlayerUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
 import java.util.ArrayList;
@@ -65,6 +69,14 @@ public class LocalPlayerItem {
                 return;
             }
             removeProgress = true;
+
+            ClickType click = e.getClick();
+
+            if(click == ClickType.RIGHT && ItemsUtils.isShulkerBox(itemStack)){
+                new ShulkerContentGui(p, itemStack).open();
+                return;
+            }
+
             async(() -> {
                 ItemStack item = DataService.removeItemFromOffer(p, id);
 
@@ -86,9 +98,21 @@ public class LocalPlayerItem {
         ItemMeta iMeta = itemStack.getItemMeta();
         List<String> lore = iMeta.getLore();
 
-        if(lore == null) lore = new ArrayList<>();
+        if(lore == null){
+            lore = new ArrayList<>();
+        }
 
-        for (String line : Settings.PLAYER_OFFER_ITEM_LORE) lore.add(formatLine(line));
+        List<String> loreToFormat;
+
+        if(ItemsUtils.isShulkerBox(itemStack)){
+            loreToFormat = Settings.PLAYER_OFFER_SHULKER_LORE;
+        }else {
+            loreToFormat = Settings.PLAYER_OFFER_ITEM_LORE;
+        }
+
+        for (String line : loreToFormat){
+            lore.add(formatLine(line));
+        }
 
         iMeta.setLore(lore);
         itemStack.setItemMeta(iMeta);

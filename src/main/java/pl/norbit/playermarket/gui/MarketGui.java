@@ -19,7 +19,7 @@ import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
-import pl.norbit.playermarket.utils.ChatUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
+import static pl.norbit.playermarket.utils.TaskUtils.*;
 
 public class MarketGui extends Gui {
     private final PaginationManager marketItems;
@@ -139,9 +139,12 @@ public class MarketGui extends Gui {
         icon.onClick(e -> {
             e.setCancelled(true);
 
-            LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
+            async(() -> {
+                Player player = (Player) e.getWhoClicked();
+                LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
 
-            new PlayerItemsGui(player, playerLocalData ,0).open();
+                sync(() -> new PlayerItemsGui(player, playerLocalData, 0).open());
+            });
         });
         return icon;
     }
@@ -161,7 +164,8 @@ public class MarketGui extends Gui {
         icon.hideFlags();
 
         if(isSel){
-            icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream()
+            icon.setLore(Settings.CATEGORY_SELECTED_LORE
+                    .stream()
                     .map(ChatUtils::format)
                     .collect(Collectors.toList()));
 

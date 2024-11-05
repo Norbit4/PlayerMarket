@@ -1,5 +1,7 @@
 package pl.norbit.playermarket.data;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -17,6 +19,8 @@ import java.util.List;
 public class JDBCService {
     private static Connection connection;
     private static QueryRunner runner;
+    @Getter(AccessLevel.PROTECTED)
+    private static boolean ready = false;
     private static final BeanListHandler<PlayerData> playerDataHandler = new BeanListHandler<>(PlayerData.class);
 
     private JDBCService() {
@@ -47,6 +51,7 @@ public class JDBCService {
             connection = getConnection();
             runner = new QueryRunner();
             createTable();
+            ready = true;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {

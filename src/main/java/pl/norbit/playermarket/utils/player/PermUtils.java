@@ -1,4 +1,4 @@
-package pl.norbit.playermarket.utils;
+package pl.norbit.playermarket.utils.player;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

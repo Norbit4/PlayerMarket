@@ -15,7 +15,7 @@ import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
-import pl.norbit.playermarket.utils.ChatUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiIconUtil;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 

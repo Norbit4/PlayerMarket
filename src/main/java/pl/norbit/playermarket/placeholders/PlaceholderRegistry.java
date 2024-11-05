@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
-import pl.norbit.playermarket.utils.DoubleFormatter;
-import pl.norbit.playermarket.utils.PermUtils;
+import pl.norbit.playermarket.utils.format.DoubleFormatter;
+import pl.norbit.playermarket.utils.player.PermUtils;
 
 public class PlaceholderRegistry extends PlaceholderExpansion {
     @Override
@@ -34,7 +34,6 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (params.contains("player_limit")) {
-
             if(!player.isOnline()){
                 return "";
             }
