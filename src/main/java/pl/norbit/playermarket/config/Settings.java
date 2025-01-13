@@ -18,6 +18,8 @@ public class Settings {
          [ database ]
     */
 
+    public static boolean DEBUG;
+
     public static String TYPE, DIALECT, DATABASE, HOST, USER, PASSWORD, USE_SSL;
 
     public static List<Category> CATEGORIES;
@@ -104,6 +106,8 @@ public class Settings {
 
             EconomyService.setEconomyType(type);
         }
+
+        DEBUG = config.getBoolean("debug");
 
         //offers limit
         OFFER_COMMAND_LIMIT_ENABLED = config.getBoolean("offers-limit.enabled");

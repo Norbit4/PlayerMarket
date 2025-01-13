@@ -19,6 +19,9 @@
 # &<code> ex. &#ff5733
 # https://htmlcolorcodes.com/
 
+# advanced logs
+debug: false
+
 #---------------------------------------#
 #             [ DATABASE ]              #
 #---------------------------------------#
