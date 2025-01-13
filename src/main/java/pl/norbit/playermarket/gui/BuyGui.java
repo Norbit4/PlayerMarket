@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.ConfigGui;
@@ -111,11 +112,6 @@ public class BuyGui extends Gui {
                     return;
                 }
 
-                if(!EconomyService.withDrawIfPossible(p, mItemData.getPrice())){
-                    backToShop(configGui.getMessage("not-enough-money-message"));
-                    return;
-                }
-
                 String ownerUUID = marketItemData.getOwnerUUID();
 
                 if(ownerUUID.equals(p.getUniqueId().toString())){
@@ -126,11 +122,20 @@ public class BuyGui extends Gui {
                 if(PlayerUtils.isInventoryFull(p)){
                     backToShop(configGui.getMessage("inventory-full-message"));
                     return;
+                }
 
+                if(!EconomyService.withDrawIfPossible(p, mItemData.getPrice())){
+                    backToShop(configGui.getMessage("not-enough-money-message"));
+                    return;
                 }
 
                 DataService.buyItem(mItemData);
-                p.getInventory().addItem(mItemData.getItemStackDeserialize());
+                ItemStack iStack = mItemData.getItemStackDeserialize();
+
+                p.getInventory().addItem(iStack);
+
+                LogService.log("Player " + p.getName() + " buy item " + iStack.getType() + " x" + iStack.getAmount()
+                        + " from " + mItemData.getOwnerName() + " cost: " + mItemData.getPrice());
 
                 backToShop(configGui.getMessage("success-message")
                         .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
