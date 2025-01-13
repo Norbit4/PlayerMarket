@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.PermUtils;
@@ -40,6 +41,11 @@ public class OfferCommand implements CommandExecutor {
 
         //check price
         if(price <= 0){
+            p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_PRICE));
+            return true;
+        }
+
+        if(price > 99999999){
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_PRICE));
             return true;
         }
@@ -78,8 +84,11 @@ public class OfferCommand implements CommandExecutor {
 
                 DataService.addItemToOffer(p, clone, price);
                 p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
+
+                LogService.log("Player " + p.getName() + " offer item " + clone.getType() + " x" + clone.getAmount() + " - " + price);
             });
         });
+
         return true;
     }
 }

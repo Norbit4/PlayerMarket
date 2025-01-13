@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.logs.LogService;
 
 public class EconomyService {
     private static Economy economy;
@@ -70,6 +71,7 @@ public class EconomyService {
             playerPointsAPI.take(p.getUniqueId(), (int) amount);
         }
 
+        LogService.log("Player " + p.getName() + " eco remove: " + amount + " $");
         return true;
     }
 
@@ -79,5 +81,6 @@ public class EconomyService {
         } else if (EconomyType.VAULT == economyType) {
             economy.depositPlayer(p, amount);
         }
+        LogService.log("Player " + p.getName() + " eco add: " + amount + " $");
     }
 }

@@ -13,6 +13,7 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.GuiType;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
+import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
@@ -84,6 +85,9 @@ public class LocalPlayerItem {
 
                 if(item != null){
                     p.getInventory().addItem(item);
+                    LogService.log("Player " + p.getName() + " remove offer item" + item.getType() + " x" + item.getAmount());
+                }else {
+                    LogService.log("Player " + p.getName() + " remove offer item failed (null)");
                 }
 
                 LocalPlayerData pLocalData = DataService.getPlayerLocalData(p);
