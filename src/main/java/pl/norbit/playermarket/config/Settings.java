@@ -75,6 +75,11 @@ public class Settings {
     @Getter
     private static String playerNotFound;
 
+    @Getter
+    private static boolean taxEnabled;
+    @Getter
+    private static double taxValue;
+
     private Settings() {
         throw new IllegalStateException("Utility class");
     }
@@ -199,5 +204,9 @@ public class Settings {
         clearPermission = config.getString("main-command.clear.permission");
         clearSuccess = config.getString("main-command.clear.success");
         playerNotFound = config.getString("main-command.clear.player-not-found");
+
+        //tax
+        taxEnabled = config.getBoolean("tax.enabled");
+        taxValue = config.getDouble("tax.value");
     }
 }

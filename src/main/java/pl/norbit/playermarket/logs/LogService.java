@@ -18,4 +18,13 @@ public class LogService {
         Server server = PlayerMarket.getInstance().getServer();
         server.getLogger().info("[PLAYERMARKET-LOG] " + message);
     }
+
+    public static void warn(String message){
+        if(!Settings.DEBUG){
+            return;
+        }
+
+        Server server = PlayerMarket.getInstance().getServer();
+        server.getLogger().warning("[PLAYERMARKET-WARN] " + message);
+    }
 }

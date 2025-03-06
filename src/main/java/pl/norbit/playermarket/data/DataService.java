@@ -3,12 +3,15 @@ package pl.norbit.playermarket.data;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
 
@@ -38,10 +41,24 @@ public class DataService {
             return;
         }
 
+        double price = marketItemData.getPrice();
+
+        //calculate tax
+        if(Settings.isTaxEnabled()){
+            double taxValue = Settings.getTaxValue();
+
+            if(taxValue < 1){
+                double tax = price * taxValue;
+                price = price - tax;
+            }else {
+                LogService.warn("Tax value is higher than 1. Tax value should be in range 0-1");
+            }
+        }
+
         //update stats for seller
         playerData.setSoldItems(playerData.getSoldItems() + 1);
-        playerData.setEarnedMoney(playerData.getEarnedMoney() + marketItemData.getPrice());
-        playerData.setTotalEarnedMoney(playerData.getTotalEarnedMoney() + marketItemData.getPrice());
+        playerData.setEarnedMoney(playerData.getEarnedMoney() + price);
+        playerData.setTotalEarnedMoney(playerData.getTotalEarnedMoney() + price);
         playerData.setTotalSoldItems(playerData.getTotalSoldItems() + 1);
 
         //remove item from seller

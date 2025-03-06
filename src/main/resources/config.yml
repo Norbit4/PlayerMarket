@@ -104,6 +104,14 @@ expire:
     # seconds show up when expiration time is less than an hour
     seconds: 's'
 
+# tax system, tax will be taken from the seller
+tax:
+  # tax in percent
+  enabled: false
+  # tax value must be between 0 and 1
+  # 0.15 = 15%
+  value: 0.15
+
 # {DATE} - item offer date
 # {PRICE} - item price
 # {SELLER} - item seller
