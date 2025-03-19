@@ -21,9 +21,10 @@ public class PlayerUtils {
         return PlayerMarket.getInstance().getServer().getOfflinePlayer(name);
     }
 
-    public static List<String> getOfflineNames() {
-        return Arrays.stream(PlayerMarket.getInstance().getServer().getOfflinePlayers())
-                .map(OfflinePlayer::getName)
+    public static List<String> getOnlineNames() {
+        return PlayerMarket.getInstance().getServer().getOnlinePlayers()
+                .stream()
+                .map(Player::getName)
                 .collect(Collectors.toList());
     }
 

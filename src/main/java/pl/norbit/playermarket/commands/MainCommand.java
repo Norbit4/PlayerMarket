@@ -87,7 +87,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         }
 
         if(strings.length == 2){
-            return PlayerUtils.getOfflineNames();
+            return PlayerUtils.getOnlineNames();
         }
 
         return List.of("");
