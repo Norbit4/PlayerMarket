@@ -111,6 +111,10 @@ tax:
   # tax value must be between 0 and 1
   # 0.15 = 15%
   value: 0.15
+  # tax command executed when player buy item, {PRICE} - tax money value
+  command:
+    enabled: false
+    execute: 'eco give Norbit4 {PRICE}' # example: add tax money to server owner
 
 # {DATE} - item offer date
 # {PRICE} - item price
@@ -162,6 +166,27 @@ player-offer-shulker-lore:
 info-messages:
   sell-item: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
   join: '&7You have &a{MONEY}$ &7to collect for &a{SOLD} &7sold items &a/market'
+
+#---------------------------------------#
+#             [ DISCORD ]               #
+#---------------------------------------#
+# Discord Webhook Logs
+discord:
+  enabled: false
+  webhook-url: ''
+  messages:
+    # {PLAYER} - player name
+    # {ITEM} - item material
+    # {PRICE} - item price
+    # {SELLER} - item seller
+    buy:
+      enabled: true
+      color: 65280 # GREEN
+      message: 'Player **{PLAYER}** bought **{ITEM}** for **{PRICE}$** from **{SELLER}**'
+    offer:
+      enabled: true
+      color: 16776960 # YELLOW
+      message: 'Player **{SELLER}** offered **{ITEM}** for **{PRICE}$**'
 
 #---------------------------------------#
 #            [ MARKET - GUI ]           #

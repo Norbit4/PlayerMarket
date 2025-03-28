@@ -39,4 +39,8 @@ public class MarketItemData {
     public ItemStack getItemStackDeserialize(){
         return BukkitSerializer.deserializeItems(itemStack);
     }
+
+    public String getItemName(){
+        return getItemStackDeserialize().getType().toString();
+    }
 }

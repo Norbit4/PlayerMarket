@@ -4,6 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.logs.DiscordLogs;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
@@ -32,23 +33,24 @@ public class DataService {
         return JDBCService.isReady();
     }
 
-    public static void buyItem(MarketItemData marketItemData){
+    public static double buyItem(MarketItemData marketItemData){
 
         PlayerData playerData = getPlayerData(marketItemData.getOwnerUUID());
         Long itemId = marketItemData.getId();
 
         if(playerData == null){
-            return;
+            return 0;
         }
 
         double price = marketItemData.getPrice();
 
         //calculate tax
+        double tax = 0;
         if(Settings.isTaxEnabled()){
             double taxValue = Settings.getTaxValue();
 
             if(taxValue < 1){
-                double tax = price * taxValue;
+                tax = price * taxValue;
                 price = price - tax;
             }else {
                 LogService.warn("Tax value is higher than 1. Tax value should be in range 0-1");
@@ -65,6 +67,8 @@ public class DataService {
         removeMarketItem(itemId);
 
         updatePlayerData(playerData);
+
+        return tax;
     }
 
     public static void close(){
@@ -124,6 +128,8 @@ public class DataService {
 
             updatePlayerData(pData);
             updateMarketItem(pData, mItemData);
+
+            DiscordLogs.offerItem(mItemData);
         });
     }
 

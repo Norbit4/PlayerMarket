@@ -80,6 +80,15 @@ public class Settings {
     @Getter
     private static double taxValue;
 
+    @Getter
+    private static String taxCommand;
+
+    @Getter
+    private static boolean taxCommandEnabled;
+
+    @Getter
+    private static DiscordConfig discordConfig;
+
     private Settings() {
         throw new IllegalStateException("Utility class");
     }
@@ -208,5 +217,43 @@ public class Settings {
         //tax
         taxEnabled = config.getBoolean("tax.enabled");
         taxValue = config.getDouble("tax.value");
+        taxCommandEnabled = config.getBoolean("tax.command.enabled");
+        taxCommand = config.getString("tax.command.execute");
+
+        //discord
+        ConfigurationSection discordSection = config.getConfigurationSection("discord");
+
+        if(discordSection == null){
+            discordConfig = DiscordConfig.createDefault();
+
+        }else {
+            discordConfig = getDiscordConfig(discordSection);
+        }
+    }
+
+    private static DiscordConfig getDiscordConfig(ConfigurationSection section){
+        DiscordConfig discordConfig = new DiscordConfig(
+                section.getBoolean("enabled"),
+                section.getString("webhook-url")
+        );
+
+        discordConfig.setBuyEmbed(getEmbed(section, "messages.buy"));
+        discordConfig.setOfferEmbed(getEmbed(section, "messages.offer"));
+
+        return discordConfig;
+    }
+
+    private static DiscordEmbed getEmbed(ConfigurationSection section, String key){
+        ConfigurationSection embedSection = section.getConfigurationSection(key);
+
+        if(embedSection == null){
+            return DiscordEmbed.createDefault();
+        }
+
+        return new DiscordEmbed(
+                embedSection.getBoolean("enabled"),
+                embedSection.getString("message"),
+                embedSection.getInt("color")
+        );
     }
 }

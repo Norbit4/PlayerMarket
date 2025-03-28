@@ -2,12 +2,14 @@ package pl.norbit.playermarket.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.logs.DiscordLogs;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.economy.EconomyService;
@@ -129,13 +131,24 @@ public class BuyGui extends Gui {
                     return;
                 }
 
-                DataService.buyItem(mItemData);
+                double taxValue = DataService.buyItem(mItemData);
                 ItemStack iStack = mItemData.getItemStackDeserialize();
 
                 p.getInventory().addItem(iStack);
 
                 LogService.log("Player " + p.getName() + " buy item " + iStack.getType() + " x" + iStack.getAmount()
                         + " from " + mItemData.getOwnerName() + " cost: " + mItemData.getPrice());
+
+                //send message to discord
+                DiscordLogs.buyItem(p.getName(), mItemData);
+
+                if(Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()){
+                    String command = Settings.getTaxCommand()
+                            .replace("{PLAYER}", p.getName())
+                            .replace("{PRICE}", String.valueOf(taxValue));
+                    Server server = p.getServer();
+                    sync(() -> server.dispatchCommand(server.getConsoleSender(), command));
+                }
 
                 backToShop(configGui.getMessage("success-message")
                         .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))

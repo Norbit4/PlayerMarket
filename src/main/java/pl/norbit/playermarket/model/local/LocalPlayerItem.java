@@ -13,6 +13,7 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.GuiType;
 import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
+import pl.norbit.playermarket.logs.DiscordLogs;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
