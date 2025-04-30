@@ -4,6 +4,8 @@ import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.config.discord.DiscordConfig;
+import pl.norbit.playermarket.config.discord.DiscordEmbed;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.config.category.CategoryUtils;
@@ -46,6 +48,8 @@ public class Settings {
 
     public static boolean PLACEHOLDERAPI_IS_ENABLED;
 
+    @Getter
+    private static String cooldownMessage;
     @Getter
     private static String anvilTitle;
 
@@ -142,24 +146,25 @@ public class Settings {
 
         MARKET_GUI = new ConfigGui(config,"market-gui",
                 new String[0],
-                new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon"});
+                new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon", "border-icon"});
 
         BUY_GUI = new ConfigGui(config,"buy-gui",
                 new String[]{"item-sold-message", "not-enough-money-message", "success-message",
                         "player-is-owner-message", "inventory-full-message"},
-                new String[]{"accept-icon", "cancel-icon"});
+                new String[]{"accept-icon", "cancel-icon", "border-icon"});
 
         OFFERS_GUI = new ConfigGui(config,"offers-gui",
                 new String[]{"remove-offer-message", "nothing-to-get-message", "success-message", "inventory-full-message"},
-                new String[]{"statistics-icon", "back-to-market-icon", "previous-page-icon", "next-page-icon"});
+                new String[]{"statistics-icon", "back-to-market-icon", "previous-page-icon", "next-page-icon", "border-icon"});
+
 
         SEARCH_GUI = new ConfigGui(config,"search-gui",
                 new String[0],
-                new String[]{"previous-page-icon", "next-page-icon", "back-to-market-icon"});
+                new String[]{"previous-page-icon", "next-page-icon", "back-to-market-icon", "border-icon"});
 
         SHULKER_GUI = new ConfigGui(config,"shulker-gui",
                 new String[]{"item-sold-message"},
-                new String[]{"back-icon", "buy-icon"});
+                new String[]{"back-icon", "buy-icon", "border-icon"});
 
         CATEGORY_NAME_FORMAT = config.getString("category-name-format");
 
@@ -172,6 +177,7 @@ public class Settings {
 
         SELL_ITEM_MESSAGE = config.getString("info-messages.sell-item");
         JOIN_MESSAGE = config.getString("info-messages.join");
+        cooldownMessage = config.getString("info-messages.cooldown");
 
         //offer command
         OFFER_COMMAND_PERMISSION = config.getString("offer-command.permission");

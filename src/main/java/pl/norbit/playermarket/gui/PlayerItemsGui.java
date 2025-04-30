@@ -8,16 +8,20 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.gui.template.GuiTemplate;
+import pl.norbit.playermarket.gui.template.TemplateUtils;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.ConfigGui;
+import pl.norbit.playermarket.model.local.ConfigIcon;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.model.local.LocalPlayerItem;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
-import pl.norbit.playermarket.utils.gui.GuiIconUtil;
+import pl.norbit.playermarket.utils.gui.GuiUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 import pl.norbit.playermarket.utils.player.PermUtils;
 
@@ -29,7 +33,8 @@ import static pl.norbit.playermarket.utils.TaskUtils.*;
 
 public class PlayerItemsGui extends Gui {
 
-    private final PaginationManager pagination;
+    private final PaginationManager itemsPagination;
+    private final PaginationManager borderPagination;
     private LocalPlayerData localData;
 
     private final ConfigGui configGui;
@@ -43,25 +48,39 @@ public class PlayerItemsGui extends Gui {
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
-        super(player, "market-gui", "", 6);
+        super(player, "player-items-gui", "", Settings.OFFERS_GUI.getSize());
 
         this.configGui = Settings.OFFERS_GUI;
         this.updateProgress = false;
 
-        this.pagination = new PaginationManager(this);
+        GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
 
-        this.pagination.registerPageSlotsBetween(10, 16);
-        this.pagination.registerPageSlotsBetween(19, 25);
-        this.pagination.registerPageSlotsBetween(28, 34);
-
+        this.itemsPagination = template.getMarketItemsPagination();
         this.localData = lPlayerData;
 
-        Icon left = configGui.getIcon("previous-page-icon");
-        Icon right = configGui.getIcon("next-page-icon");
+        if(this.configGui.isFill()){
+            this.borderPagination = new PaginationManager(this);
+        }else {
+            this.borderPagination = template.getBorderPagination();
+        }
+
+        GuiUtils.loadBorder(this.configGui, this.borderPagination, this.configGui.getFillBlackList(), this.getSize());
+
+        ConfigIcon left = configGui.getIcon("previous-page-icon");
+        ConfigIcon right = configGui.getIcon("next-page-icon");
+
+        ConfigIcon fill = configGui.getIcon("border-icon");
+
+        Icon fillIcon = null;
+
+        if(this.configGui.isFill()){
+            fillIcon = fill.getIcon();
+        }
 
         updateCategory(lPlayerData.getPlayerOffers(), page);
 
-        this.guiPages = new GuiPages(this, Settings.OFFERS_GUI.getTitle(), pagination, 46, left, 52, right);
+        this.guiPages = new GuiPages(this, Settings.OFFERS_GUI.getTitle(), itemsPagination, left.getSlot(),
+                left.getIcon(), right.getSlot(), right.getIcon(), fillIcon);
     }
 
     public void updateTask(){
@@ -81,21 +100,23 @@ public class PlayerItemsGui extends Gui {
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        this.pagination.update();
+        this.itemsPagination.update();
         this.guiPages.update();
+        this.borderPagination.update();
 
-        addItem(4, getProfileIcon());
+        ConfigIcon profileIcon = configGui.getIcon("statistics-icon");
+        ConfigIcon backIcon = configGui.getIcon("back-to-market-icon");
 
-        addItem(49, GuiIconUtil.getOpenGuItem(configGui.getIcon("back-to-market-icon"),
+        addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
+        addItem(backIcon.getSlot(), GuiUtils.getOpenGuItem(backIcon.getIcon(),
                 new MarketGui(player, CategoryService.getMain())));
 
         setClosed(false);
         playersGui.compute(player.getUniqueId(), (k, v) -> this);
     }
 
-    private Icon getProfileIcon(){
+    private Icon getProfileIcon(Icon icon){
         PlayerData playerData = localData.getPlayerData();
-        Icon icon = configGui.getIcon("statistics-icon");
 
         icon.setLore(icon.getItem()
                 .getItemMeta()
@@ -107,6 +128,14 @@ public class PlayerItemsGui extends Gui {
 
         icon.onClick(e -> {
             e.setCancelled(true);
+
+            Player p = (Player) e.getWhoClicked();
+
+            if(CooldownService.isOnCooldown(p.getUniqueId())){
+                p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+                return;
+            }
+            CooldownService.updateCooldown(p.getUniqueId());
 
             double earnedMoney = playerData.getEarnedMoney();
 
@@ -132,7 +161,7 @@ public class PlayerItemsGui extends Gui {
 
                 LocalPlayerData pLocalData = DataService.getPlayerLocalData(player);
 
-                sync(() -> new PlayerItemsGui(player, pLocalData, this.pagination.getCurrentPage()).open());
+                sync(() -> new PlayerItemsGui(player, pLocalData, this.itemsPagination.getCurrentPage()).open());
 
                 EconomyService.deposit(player, earnedMoney);
             });
@@ -154,28 +183,28 @@ public class PlayerItemsGui extends Gui {
     }
 
     private void updateCategory(List<LocalPlayerItem> items, int page) {
-        this.pagination.getItems().clear();
-        this.pagination.goFirstPage();
+        this.itemsPagination.getItems().clear();
+        this.itemsPagination.goFirstPage();
 
-        items.forEach(item -> this.pagination.addItem(item.getIcon()));
+        items.forEach(item -> this.itemsPagination.addItem(item.getIcon()));
 
-        if(page < this.pagination.getLastPage()) {
-            this.pagination.setPage(page);
+        if(page < this.itemsPagination.getLastPage()) {
+            this.itemsPagination.setPage(page);
         } else {
-            this.pagination.goLastPage();
+            this.itemsPagination.goLastPage();
         }
     }
     private void updateCategory() {
-        LocalPlayerData localData = DataService.getPlayerLocalData(player);
-        this.localData = localData;
+        LocalPlayerData localPlayerData = DataService.getPlayerLocalData(player);
+        this.localData = localPlayerData;
 
-        this.pagination.getItems().clear();
+        this.itemsPagination.getItems().clear();
 
-        localData.getPlayerOffers()
+        localPlayerData.getPlayerOffers()
                 .stream()
                 .filter(item -> !item.isRemoveProgress())
-                .forEach(item -> this.pagination.addItem(item.getIcon()));
-        this.pagination.update();
+                .forEach(item -> this.itemsPagination.addItem(item.getIcon()));
+        this.itemsPagination.update();
         this.guiPages.update();
     }
 }

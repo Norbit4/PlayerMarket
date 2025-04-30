@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = 'v1.4.1'
+version = 'v1.5.0'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -54,6 +54,9 @@ dependencies {
     implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.2.0'
     implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.2.0'
 
+    //itemsadder
+    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.2-beta-r3-b'
+
     //yaml
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
@@ -62,6 +65,11 @@ dependencies {
 }
 
 def targetJavaVersion = 11
+
+shadowJar {
+    archiveClassifier.set("")
+}
+
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

@@ -11,10 +11,11 @@ public class GuiPages {
     private final PaginationManager rightIconPagination;
     private final Icon rightIcon;
     private final Icon leftIcon;
+    private final Icon fillIcon;
     private final Gui gui;
     private final String guiTitle;
 
-    public GuiPages(Gui gui, String guiTitle, PaginationManager paginationManager, int leftSlot, Icon leftIcon, int rightSlot, Icon rightIcon) {
+    public GuiPages(Gui gui, String guiTitle, PaginationManager paginationManager, int leftSlot, Icon leftIcon, int rightSlot, Icon rightIcon, Icon fillIcon) {
         this.paginationManager = paginationManager;
         this.leftIconPagination = new PaginationManager(gui);
         this.rightIconPagination = new PaginationManager(gui);
@@ -24,6 +25,7 @@ public class GuiPages {
 
         this.gui = gui;
         this.guiTitle = guiTitle;
+        this.fillIcon = fillIcon;
 
         this.leftIcon = leftIcon;
         this.leftIcon.onClick(event -> {
@@ -74,6 +76,10 @@ public class GuiPages {
 
         if(existLeft(paginationManager)){
             leftIconPagination.addItem(leftIcon);
+        }else {
+            if(fillIcon != null){
+                leftIconPagination.addItem(fillIcon);
+            }
         }
 
         leftIconPagination.update();
@@ -84,6 +90,10 @@ public class GuiPages {
 
         if(existRight(paginationManager)){
             rightIconPagination.addItem(rightIcon);
+        }else {
+            if(fillIcon != null){
+                rightIconPagination.addItem(fillIcon);
+            }
         }
         rightIconPagination.update();
     }

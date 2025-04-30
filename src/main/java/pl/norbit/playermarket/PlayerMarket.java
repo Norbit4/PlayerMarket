@@ -27,7 +27,6 @@ public final class PlayerMarket extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         setInstance(this);
 
         CategoryConfig.generateDefaults();

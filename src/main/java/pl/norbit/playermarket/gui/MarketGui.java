@@ -3,7 +3,6 @@ package pl.norbit.playermarket.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -11,15 +10,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.gui.anvil.ItemTypeSearchGui;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
-import pl.norbit.playermarket.gui.template.TemplateService;
-import pl.norbit.playermarket.model.local.Category;
+import pl.norbit.playermarket.gui.template.TemplateUtils;
+import pl.norbit.playermarket.model.local.*;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.model.local.ConfigGui;
-import pl.norbit.playermarket.model.local.LocalMarketItem;
-import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.gui.GuiUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 
 import java.util.List;
@@ -46,22 +43,25 @@ public class MarketGui extends Gui {
     }
 
     public MarketGui(Player player, Category category) {
-        super(player, "market-gui", "", 6);
+        super(player, "market-main-gui", "", Settings.MARKET_GUI.getSize());
 
         this.category = category;
         this.configGui = Settings.MARKET_GUI;
 
-        GuiTemplate template = TemplateService.getTemplate(this);
+        GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
 
         this.marketItems = template.getMarketItemsPagination();
         this.categoriesPagination = template.getCategoriesPagination();
-        this.borderPagination = template.getBorderPagination();
+
+        if(this.configGui.isFill()){
+            this.borderPagination = new PaginationManager(this);
+        }else {
+            this.borderPagination = template.getBorderPagination();
+        }
 
         updateCategory(category);
 
-        for (int i = 0; i < this.borderPagination.getSlots().size(); i++) {
-            this.borderPagination.addItem(getBorderIcon());
-        }
+        GuiUtils.loadBorder(this.configGui, this.borderPagination, this.configGui.getFillBlackList(), this.getSize());
 
         //add categories
         this.categoriesPagination.addItem(createCategory(Settings.ALL_CATEGORY));
@@ -72,13 +72,21 @@ public class MarketGui extends Gui {
 
         this.categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
 
-        Icon left = configGui.getIcon("previous-page-icon");
-        Icon right = configGui.getIcon("next-page-icon");
+        ConfigIcon left = configGui.getIcon("previous-page-icon");
+        ConfigIcon right = configGui.getIcon("next-page-icon");
+        ConfigIcon fill = configGui.getIcon("border-icon");
+
+        Icon fillIcon = null;
+
+        if(this.configGui.isFill()){
+            fillIcon = fill.getIcon();
+        }
 
         String title = ChatUtils.format(player, Settings.MARKET_GUI.getTitle()
                 .replace("{CATEGORY}", category.getName()));
 
-        this.guiPages = new GuiPages(this, title, marketItems, 47, left, 53, right);
+        this.guiPages = new GuiPages(this, title, marketItems, left.getSlot(), left.getIcon(),
+                right.getSlot(), right.getIcon(), fillIcon);
     }
 
     public void updateTask(){
@@ -121,8 +129,11 @@ public class MarketGui extends Gui {
         this.categoriesPagination.update();
         this.borderPagination.update();
 
-        addItem(50, getProfileIcon());
-        addItem(52, getSearchIcon());
+        ConfigIcon profileIcon = configGui.getIcon("your-offers-icon");
+        ConfigIcon searchIcon = configGui.getIcon("search-icon");
+
+        addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
+        addItem(searchIcon.getSlot(), getSearchIcon(searchIcon.getIcon()));
 
         this.guiPages.update();
 
@@ -132,9 +143,7 @@ public class MarketGui extends Gui {
         SearchStorage.clear(player.getUniqueId());
     }
 
-    private Icon getProfileIcon(){
-        Icon icon = configGui.getIcon("your-offers-icon");
-
+    private Icon getProfileIcon(Icon icon){
         icon.hideFlags();
         icon.onClick(e -> {
             e.setCancelled(true);
@@ -147,10 +156,6 @@ public class MarketGui extends Gui {
             });
         });
         return icon;
-    }
-
-    private Icon getBorderIcon(){
-        return new Icon(Material.GRAY_STAINED_GLASS_PANE).setName(" ");
     }
 
     private Icon createCategory(Category category) {
@@ -187,9 +192,7 @@ public class MarketGui extends Gui {
         return icon;
     }
 
-    private Icon getSearchIcon(){
-        Icon icon = configGui.getIcon("search-icon");
-
+    private Icon getSearchIcon(Icon icon){
         icon.hideFlags();
         icon.onClick(e -> ItemTypeSearchGui.open(player));
         return icon;

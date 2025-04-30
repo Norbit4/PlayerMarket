@@ -3,20 +3,19 @@ package pl.norbit.playermarket.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
-import pl.norbit.playermarket.gui.template.TemplateService;
+import pl.norbit.playermarket.gui.template.TemplateUtils;
 import pl.norbit.playermarket.model.local.ConfigGui;
+import pl.norbit.playermarket.model.local.ConfigIcon;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
-import pl.norbit.playermarket.utils.format.ChatUtils;
-import pl.norbit.playermarket.utils.gui.GuiIconUtil;
+import pl.norbit.playermarket.utils.gui.GuiUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 
 import java.util.List;
@@ -41,40 +40,44 @@ public class MarketSearchGui extends Gui {
     }
 
     public MarketSearchGui(Player player, String search) {
-        super(player, "market-search-gui", "", 6);
+        super(player, "market-search-gui", "", Settings.SEARCH_GUI.getSize());
 
         this.configGui = Settings.SEARCH_GUI;
         this.search = search;
 
-        GuiTemplate template = TemplateService.getSearchTemplate(this);
+        GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
 
         this.marketItemsPagination = template.getMarketItemsPagination();
-        this.borderPagination = template.getBorderPagination();
-
-        for (int i = 0; i < this.borderPagination.getSlots().size(); i++) {
-            this.borderPagination.addItem(getBorderIcon());
+        if(this.configGui.isFill()){
+            this.borderPagination = new PaginationManager(this);
+        }else {
+            this.borderPagination = template.getBorderPagination();
         }
 
-        Icon left = configGui.getIcon("previous-page-icon");
-        Icon right = configGui.getIcon("next-page-icon");
+        GuiUtils.loadBorder(this.configGui, this.borderPagination, this.configGui.getFillBlackList(), this.getSize());
+
+        ConfigIcon left = configGui.getIcon("previous-page-icon");
+        ConfigIcon right = configGui.getIcon("next-page-icon");
 
         String title = configGui.getTitle()
                 .replace("{SEARCH}", search.toUpperCase());
 
-        this.guiPages = new GuiPages(this, title, marketItemsPagination, 45, left, 53, right);
+        ConfigIcon fill = configGui.getIcon("border-icon");
+
+        Icon fillIcon = null;
+
+        if(this.configGui.isFill()){
+            fillIcon = fill.getIcon();
+        }
+
+        this.guiPages = new GuiPages(this, title, marketItemsPagination, left.getSlot(), left.getIcon(),
+                right.getSlot(), right.getIcon(), fillIcon);
     }
 
     public void updateTask(){
         if(!isClosed()){
             updatePage(search);
         }
-    }
-
-    public void updateTitle(){
-        String title = configGui.getTitle()
-                .replace("{SEARCH}", search.toUpperCase());
-
-        this.setTitle(ChatUtils.format(title));
     }
 
     @Override
@@ -100,8 +103,18 @@ public class MarketSearchGui extends Gui {
         this.marketItemsPagination.update();
         this.borderPagination.update();
 
-        addItem(49, GuiIconUtil.getOpenGuItem(configGui.getIcon("back-to-market-icon"),
+//        if(!this.configGui.isFill()){
+//            this.borderPagination.update();
+//        }
+
+        ConfigIcon backIcon = configGui.getIcon("back-to-market-icon");
+
+        addItem(backIcon.getSlot(), GuiUtils.getOpenGuItem(backIcon.getIcon(),
                 new MarketGui(player, CategoryService.getMain())));
+
+//        if(this.configGui.isFill()){
+//            fillGui(this.configGui.getBorderIcon(), this.configGui.getFillBlackList());
+//        }
 
         async(() -> {
             updatePage(search);
@@ -111,9 +124,5 @@ public class MarketSearchGui extends Gui {
         playersGui.compute(player.getUniqueId(), (k, v) -> this);
 
         SearchStorage.updateSearch(player.getUniqueId(), search);
-    }
-
-    private Icon getBorderIcon(){
-        return new Icon(Material.GRAY_STAINED_GLASS_PANE).setName(" ");
     }
 }

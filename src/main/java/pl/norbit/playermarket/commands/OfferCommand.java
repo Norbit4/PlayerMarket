@@ -7,14 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.PermUtils;
-
-import static pl.norbit.playermarket.utils.TaskUtils.async;
-import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 public class OfferCommand implements CommandExecutor {
 
@@ -50,44 +48,45 @@ public class OfferCommand implements CommandExecutor {
             return true;
         }
 
+        //check cooldown
+        if(CooldownService.isOnCooldown(p.getUniqueId())){
+            p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+            return true;
+        }
+        CooldownService.updateCooldown(p.getUniqueId());
+
+        ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
+
         //check item is not air
-        if(p.getInventory().getItemInMainHand().getType().isAir()){
+        if(itemInMainHand.getType().isAir()){
+            p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_ITEM));
+            return true;
+        }
+        PlayerData playerData = DataService.getPlayerData(p.getUniqueId().toString());
+
+        //check offers limit
+        if(Settings.OFFER_COMMAND_LIMIT_ENABLED){
+            int amount = PermUtils.getAmount(p, Settings.OFFER_COMMAND_LIMIT_PERMISSION, Settings.OFFER_COMMAND_DEFAULT_LIMIT);
+
+            int offersAmount = playerData.getPlayerOffers().size();
+
+            if(offersAmount >= amount){
+                p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_LIMIT_MESSAGE));
+                return true;
+            }
+        }
+
+        if(itemInMainHand.getType().isAir()){
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_ITEM));
             return true;
         }
 
-        async(() ->{
-            PlayerData playerData = DataService.getPlayerData(p.getUniqueId().toString());
+        p.getInventory().setItemInMainHand(null);
 
-            //check offers limit
-            if(Settings.OFFER_COMMAND_LIMIT_ENABLED){
-                int amount = PermUtils.getAmount(p, Settings.OFFER_COMMAND_LIMIT_PERMISSION, Settings.OFFER_COMMAND_DEFAULT_LIMIT);
+        DataService.addItemToOffer(p, itemInMainHand, price);
+        p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
 
-                int offersAmount = playerData.getPlayerOffers().size();
-
-                if(offersAmount >= amount){
-                    p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_LIMIT_MESSAGE));
-                    return;
-                }
-            }
-
-            sync(() ->{
-                ItemStack item = p.getInventory().getItemInMainHand();
-
-                //check item is not air again because of async, player can quickly drop item
-                if(item.getType().isAir()){
-                    p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_ITEM));
-                    return;
-                }
-                ItemStack clone = item.clone();
-                p.getInventory().setItemInMainHand(null);
-
-                DataService.addItemToOffer(p, clone, price);
-                p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_SUCCESS));
-
-                LogService.log("Player " + p.getName() + " offer item " + clone.getType() + " x" + clone.getAmount() + " - " + price);
-            });
-        });
+        LogService.log("Player " + p.getName() + " offer item " + itemInMainHand.getType() + " x" + itemInMainHand.getAmount() + " - " + price);
 
         return true;
     }

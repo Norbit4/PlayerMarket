@@ -1,4 +1,4 @@
-package pl.norbit.playermarket.config;
+package pl.norbit.playermarket.config.discord;
 
 import lombok.Data;
 import lombok.Setter;

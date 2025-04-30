@@ -2,7 +2,7 @@ package pl.norbit.playermarket.logs;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import pl.norbit.playermarket.config.DiscordConfig;
+import pl.norbit.playermarket.config.discord.DiscordConfig;
 
 import java.net.URI;
 import java.net.http.HttpClient;

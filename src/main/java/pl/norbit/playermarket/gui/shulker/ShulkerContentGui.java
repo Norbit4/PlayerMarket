@@ -12,12 +12,14 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.*;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.ConfigGui;
+import pl.norbit.playermarket.model.local.ConfigIcon;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
@@ -66,16 +68,29 @@ public class ShulkerContentGui extends Gui {
     public void onOpen(InventoryOpenEvent event) {
         items.update();
 
-        addItem(40, getBackIcon());
+        ConfigIcon backIcon = configGui.getIcon("back-icon");
+        addItem(backIcon.getSlot(), getBackIcon(backIcon.getIcon()));
+
+        ConfigIcon buyIcon = configGui.getIcon("buy-icon");
+
+
+        if(this.configGui.isFill()){
+            List<Integer> fillBlackList = new ArrayList<>(this.items.getSlots());
+
+            if(guiType == GuiType.MAIN){
+                fillBlackList.add(buyIcon.getSlot());
+            }
+            fillBlackList.add(backIcon.getSlot());
+
+            fillGui(this.configGui.getBorderIcon(), fillBlackList);
+        }
 
         if(guiType == GuiType.MAIN){
-            addItem(36, getBuyIcon());
+            addItem(buyIcon.getSlot(), getBuyIcon(buyIcon.getIcon()));
         }
     }
 
-    public Icon getBuyIcon() {
-        Icon icon = configGui.getIcon("buy-icon");
-
+    public Icon getBuyIcon(Icon icon) {
         icon.onClick(e -> {
             e.setCancelled(true);
 
@@ -106,9 +121,7 @@ public class ShulkerContentGui extends Gui {
         return icon;
     }
 
-    public Icon getBackIcon() {
-        Icon icon = configGui.getIcon("back-icon");
-
+    public Icon getBackIcon(Icon icon) {
         icon.onClick(e -> {
             e.setCancelled(true);
 

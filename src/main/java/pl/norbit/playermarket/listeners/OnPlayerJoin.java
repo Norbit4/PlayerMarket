@@ -43,6 +43,6 @@ public class OnPlayerJoin implements Listener {
 
                 p.sendMessage(ChatUtils.format(p, joinMessage));
             }
-        }, 20L);
+        }, 30L);
     }
 }

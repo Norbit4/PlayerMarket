@@ -164,6 +164,7 @@ player-offer-shulker-lore:
 #               [ INFO ]                #
 #---------------------------------------#
 info-messages:
+  cooldown: '&cSlow down! You need wait a moment!'
   sell-item: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
   join: '&7You have &a{MONEY}$ &7to collect for &a{SOLD} &7sold items &a/market'
 
@@ -193,15 +194,23 @@ discord:
 #---------------------------------------#
 market-gui:
   title: '&8&lMARKET &7&l» &8&l{CATEGORY} ({CURRENT}/{TOTAL})'
+  fill: false # if true, all empty slots will be filled with border icons, ignores border layout
+  size: 6 # in rows
+  border-icon:
+    name: ' '
+    icon: 'GRAY_STAINED_GLASS_PANE'
+    lore: []
   your-offers-icon:
     name: '&#93f182&lYOUR OFFERS'
     icon: 'CHEST'
+    slot: 49
     lore:
       - ''
       - '&#dcee9aClick to browse!'
   search-icon:
     name: '&#93f182&lSEARCH'
     icon: 'NAME_TAG'
+    slot: 51
     lore:
       - ''
       - '&7Type item name...'
@@ -210,15 +219,66 @@ market-gui:
   previous-page-icon:
     name: '&f&lPREVIOUS PAGE'
     icon: 'ARROW'
+    slot: 46
     lore:
       - ''
       - '&#dcee9aClick to browse!'
   next-page-icon:
     name: '&f&lNEXT PAGE'
     icon: 'ARROW'
+    slot: 52
     lore:
       - ''
       - '&#dcee9aClick to browse!'
+  layout:
+    border:
+      - 1
+      - 10
+      - 19
+      - 28
+      - 37
+      - 7
+      - 16
+      - 25
+      - 34
+      - 43
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+    items:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+    categories:
+      - 0
+      - 8
+      - 9
+      - 17
+      - 18
+      - 26
+      - 27
+      - 35
+      - 36
+      - 44
 
 #---------------------------------------#
 #       [ ANVIL- INPUT - SEARCH ]       #
@@ -232,24 +292,81 @@ anvil-input:
 #---------------------------------------#
 search-gui:
   title: '&8&lSEARCH &7&l» &8&l{SEARCH} ({CURRENT}/{TOTAL})'
+  size: 6 # in rows
+  fill: false # if true, all empty slots will be filled with border icons, ignores border layout
+  border-icon:
+    name: ' '
+    icon: 'GRAY_STAINED_GLASS_PANE'
+    lore: []
   back-to-market-icon:
     name: '&#93f182&lBACK TO MARKET'
     icon: 'BARRIER'
+    slot: 49
     lore:
       - ''
       - '&#dcee9aClick to go back!'
   previous-page-icon:
     name: '&f&lPREVIOUS PAGE'
     icon: 'ARROW'
+    slot: 45
     lore:
       - ''
       - '&#dcee9aClick to browse!'
   next-page-icon:
     name: '&f&lNEXT PAGE'
     icon: 'ARROW'
+    slot: 53
     lore:
       - ''
       - '&#dcee9aClick to browse!'
+  layout:
+    border:
+      - 36
+      - 37
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+      - 43
+      - 44
+    items:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 26
+      - 27
+      - 28
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+      - 34
+      - 35
 
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
@@ -257,7 +374,7 @@ search-gui:
 
 offers-limit:
   enabled: true
-  default-limit: 5
+  default-limit: 4
   # usage:
   # ex. 'playermarket.offers.limit.15' => 15 offers
   permission: 'playermarket.offers.limit'
@@ -265,13 +382,20 @@ offers-limit:
 
 offers-gui:
   title: '&8&lYOUR OFFERS'
+  size: 6 # in rows
+  fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   remove-offer-message: '&cYour offer has been removed!'
   nothing-to-get-message: '&cYou have nothing to claim!'
   inventory-full-message: '&cYour inventory is full!'
   success-message: '&aYou have successfully received &2{MONEY}$ &afor your sold offers!'
+  border-icon:
+    name: ' '
+    icon: 'GRAY_STAINED_GLASS_PANE'
+    lore: []
   statistics-icon:
     name: '&#93f182&lYOUR ACCOUNT'
     icon: 'CHEST'
+    slot: 4
     lore:
       # {OFFERS} - player offers
       # {OFFERS_LIMIT} - player offers limit
@@ -287,45 +411,79 @@ offers-gui:
       - '&a$ &fAll time money earned: &a{ALL_MONEY_EARNED}$'
       - ''
       - '&#dcee9aClick to claim!'
-
   back-to-market-icon:
     name: '&#93f182&lBACK TO MARKET'
     icon: 'BARRIER'
+    slot: 49
     lore:
       - ''
       - '&#dcee9aClick to go back!'
   previous-page-icon:
     name: '&f&lPREVIOUS PAGE'
     icon: 'ARROW'
+    slot: 46
     lore:
       - ''
       - '&#dcee9aClick to browse!'
   next-page-icon:
     name: '&f&lNEXT PAGE'
     icon: 'ARROW'
+    slot: 52
     lore:
       - ''
       - '&#dcee9aClick to browse!'
+  layout:
+    border: []
+    items:
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+      - 28
+      - 29
+      - 30
+      - 31
+      - 32
+      - 33
+      - 34
 
 #---------------------------------------#
 #            [ BUY - GUI ]              #
 #---------------------------------------#
 buy-gui:
   title: '&8&lBUY AN ITEM'
+  size: 4 # in rows
+  fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   item-sold-message: '&cThis offer is already sold!'
   not-enough-money-message: '&cYou do not have enough money!'
   player-is-owner-message: '&cYou can not buy your own item!'
   success-message: '&fYou have bought an item for &a{COST}$!'
   inventory-full-message: '&cYour inventory is full!'
+  border-icon:
+    name: ' '
+    icon: 'GRAY_STAINED_GLASS_PANE'
+    lore: []
   accept-icon:
     name: '&f&lBuy for &a&l{AMOUNT}$!'
     icon: 'GREEN_WOOL'
+    slot: 20
     lore:
       - ''
       - '&#dcee9aClick to buy!'
   cancel-icon:
     name: '&c&lBack'
     icon: 'RED_WOOL'
+    slot: 24
     lore:
       - ''
       - '&#dcee9aClick to go back!'
@@ -337,16 +495,23 @@ buy-gui:
 
 shulker-gui:
   title: '&8&lITEM PREVIEW'
+  fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   item-sold-message: '&cThis offer is already sold!'
+  border-icon:
+    name: ' '
+    icon: 'GRAY_STAINED_GLASS_PANE'
+    lore: []
   back-icon:
     name: '&#93f182&lBACK'
     icon: 'BARRIER'
+    slot: 40
     lore:
       - ''
       - '&#dcee9aClick to go back!'
   buy-icon:
     name: '&#93f182&lBUY'
     icon: 'GREEN_WOOL'
+    slot: 36
     lore:
       - ''
       - '&#dcee9aClick to buy!'
@@ -377,6 +542,7 @@ all-category:
   lore:
     - ''
     - '&#dcee9aClick to browse!'
+    -
 
 # categories, you can add more categories
 # file is the name of the file /categories/{file}.yml

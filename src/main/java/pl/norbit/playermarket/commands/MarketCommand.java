@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.gui.MarketGui;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
@@ -19,7 +20,20 @@ public class MarketCommand implements CommandExecutor {
             sender.sendMessage(ChatUtils.format(Settings.MARKET_COMMAND_NO_PERMISSION));
             return true;
         }
-        new MarketGui((Player) sender, CategoryService.getMain()).open();
+
+        if(!(sender instanceof Player)){
+            return true;
+        }
+
+        Player p = (Player) sender;
+
+        if(CooldownService.isOnCooldown(p.getUniqueId())){
+            p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+            return true;
+        }
+        CooldownService.updateCooldown(p.getUniqueId());
+
+        new MarketGui(p, CategoryService.getMain()).open();
 
         return true;
     }

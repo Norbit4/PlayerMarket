@@ -66,7 +66,7 @@ public class MarketService {
                     .forEach(item -> addToMarketItems(CategoryService.getCategoryUUID(item), item, newMarketItems));
 
             marketItems = newMarketItems;
-        }, 30L, 8L);
+        }, 40L, 8L);
     }
 
     private static void addToMarketItems(UUID categoryUUID, LocalMarketItem item, HashMap<UUID, List<LocalMarketItem>> marketItems){

@@ -8,6 +8,7 @@ softdepend:
   - PlayerPoints
   - Vault
   - PlaceholderAPI
+  - ItemsAdder
 
 commands:
     market:

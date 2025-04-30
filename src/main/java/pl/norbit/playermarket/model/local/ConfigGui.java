@@ -5,10 +5,13 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import pl.norbit.playermarket.config.layout.GuiLayout;
 import pl.norbit.playermarket.exception.ConfigException;
 import pl.norbit.playermarket.exception.MaterialException;
 import pl.norbit.playermarket.utils.format.ChatUtils;
+import pl.norbit.playermarket.utils.item.CustomItem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +19,15 @@ import java.util.stream.Collectors;
 
 @Data
 public class ConfigGui {
-
     private String title;
+    private int size;
+    private boolean fill;
+
+    private GuiLayout layout;
     private Map<String, ConfigIcon> icons;
     private Map<String, String> messages;
 
     public ConfigGui(Configuration config, String secKey, String[] messagesKeys, String[] iconsKeys){
-
         this.icons = new HashMap<>();
         this.messages = new HashMap<>();
 
@@ -33,6 +38,18 @@ public class ConfigGui {
         }
 
         title = section.getString("title");
+        size = section.getInt("size");
+        fill = section.getBoolean("fill");
+
+        ConfigurationSection layoutSection = section.getConfigurationSection("layout");
+
+        if(layoutSection != null) {
+            GuiLayout guiLayout = new GuiLayout();
+            guiLayout.setBorderLayout(layoutSection.getIntegerList("border"));
+            guiLayout.setCategoryLayout(layoutSection.getIntegerList("categories"));
+            guiLayout.setItemsLayout(layoutSection.getIntegerList("items"));
+            this.layout = guiLayout;
+        }
 
         for(String key : messagesKeys){
             messages.put(key, section.getString(key));
@@ -41,16 +58,10 @@ public class ConfigGui {
         for(String key : iconsKeys){
             ConfigurationSection configurationSection = section.getConfigurationSection(key);
 
-            String material = configurationSection.getString("icon");
+            String matId = configurationSection.getString("icon");
 
-            if(material == null){
+            if(matId == null){
                 throw new MaterialException("Material is null!");
-            }
-
-            Material mat = Material.getMaterial(material.toUpperCase());
-
-            if(mat == null) {
-                throw new MaterialException("This material is not exist!");
             }
 
             String name = configurationSection.getString("name");
@@ -61,10 +72,17 @@ public class ConfigGui {
 
             List<String> stringList = configurationSection.getStringList("lore");
 
+            int slot = configurationSection.getInt("slot");
+
+            if(!configurationSection.contains("slot")){
+                slot = -1;
+            }
+
             ConfigIcon configIcon = new ConfigIcon();
 
-            configIcon.setMaterial(mat);
+            configIcon.setCustomItem(new CustomItem(matId));
             configIcon.setName(ChatUtils.format(name));
+            configIcon.setSlot(slot);
             configIcon.setLore(stringList.stream()
                     .map(ChatUtils::format)
                     .collect(Collectors.toList()));
@@ -73,15 +91,52 @@ public class ConfigGui {
         }
     }
 
-    public Icon getIcon(String key){
+    public List<Integer> getFillBlackList(){
+        List<Integer> layoutBlackList = new ArrayList<>(getLayoutBlackList());
+
+        for (ConfigIcon value : icons.values()) {
+            if(value.getSlot() == -1){
+                continue;
+            }
+            layoutBlackList.add(value.getSlot());
+        }
+
+        return layoutBlackList;
+    }
+
+    private List<Integer> getLayoutBlackList(){
+        if(layout == null){
+            return List.of();
+        }
+
+        List<Integer> blackList = layout.getCategoryLayout();
+        blackList.addAll(layout.getItemsLayout());
+
+        return blackList;
+    }
+
+    public int getSlot(String key){
         ConfigIcon configIcon = icons.get(key);
 
-        Icon icon = new Icon(configIcon.getMaterial());
+        if(configIcon == null){
+            return 0;
+        }
 
-        icon.setName(configIcon.getName());
-        icon.setLore(configIcon.getLore());
+        return configIcon.getSlot();
+    }
 
-        return icon;
+    public Icon getBorderIcon(){
+        ConfigIcon borderIcon = icons.get("border-icon");
+
+        if(borderIcon == null){
+            return null;
+        }
+
+        return borderIcon.getIcon();
+    }
+
+    public ConfigIcon getIcon(String key){
+        return icons.get(key);
     }
 
     public String getMessage(String key){

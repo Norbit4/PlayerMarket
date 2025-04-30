@@ -1,7 +1,7 @@
 package pl.norbit.playermarket.logs;
 
-import pl.norbit.playermarket.config.DiscordConfig;
-import pl.norbit.playermarket.config.DiscordEmbed;
+import pl.norbit.playermarket.config.discord.DiscordConfig;
+import pl.norbit.playermarket.config.discord.DiscordEmbed;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
