@@ -198,7 +198,7 @@ market-gui:
   size: 6 # in rows
   border-icon:
     name: ' '
-    icon: 'GRAY_STAINED_GLASS_PANE'
+    icon: 'GRAY_STAINED_GLASS_PANE' # for itemsadder use ia:<id>
     lore: []
   your-offers-icon:
     name: '&#93f182&lYOUR OFFERS'
@@ -296,7 +296,7 @@ search-gui:
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   border-icon:
     name: ' '
-    icon: 'GRAY_STAINED_GLASS_PANE'
+    icon: 'GRAY_STAINED_GLASS_PANE' # for itemsadder use ia:<id>
     lore: []
   back-to-market-icon:
     name: '&#93f182&lBACK TO MARKET'
