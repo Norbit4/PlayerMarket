@@ -93,6 +93,14 @@ public class Settings {
     @Getter
     private static DiscordConfig discordConfig;
 
+    @Getter
+    private static boolean blacklistEnabled;
+
+    @Getter
+    private static List<String> blacklistItems;
+    @Getter
+    private static String blacklistMessage;
+
     private Settings() {
         throw new IllegalStateException("Utility class");
     }
@@ -200,6 +208,11 @@ public class Settings {
         MAIN_COMMAND_RELOAD_PERMISSION = config.getString("main-command.reload.permission");
         MAIN_COMMAND_RELOAD_MESSAGE = config.getString("main-command.reload.success");
         MAIN_COMMAND_HELP_RELOAD_MESSAGE = config.getStringList("main-command.reload.info");
+
+        //blacklist
+        blacklistEnabled = config.getBoolean("blacklist.enabled");
+        blacklistItems = config.getStringList("blacklist.items");
+        blacklistMessage = config.getString("blacklist.message");
 
         //anvil
         anvilTitle = config.getString("anvil-input.title");

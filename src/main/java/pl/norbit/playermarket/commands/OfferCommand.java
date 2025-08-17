@@ -11,6 +11,7 @@ import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.PlayerData;
+import pl.norbit.playermarket.utils.BlackListUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.PermUtils;
 
@@ -29,6 +30,8 @@ public class OfferCommand implements CommandExecutor {
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_USAGE));
             return true;
         }
+
+
         double price;
         try{
             price =  Double.parseDouble(args[0]);
@@ -62,6 +65,13 @@ public class OfferCommand implements CommandExecutor {
             p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_ITEM));
             return true;
         }
+
+        //check item is not blacklisted
+        if(BlackListUtils.isBlackListed(itemInMainHand)){
+            p.sendMessage(ChatUtils.format(Settings.getBlacklistMessage()));
+            return true;
+        }
+
         PlayerData playerData = DataService.getPlayerData(p.getUniqueId().toString());
 
         //check offers limit

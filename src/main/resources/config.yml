@@ -116,6 +116,15 @@ tax:
     enabled: false
     execute: 'eco give Norbit4 {PRICE}' # example: add tax money to server owner
 
+blacklist:
+  # if enabled, players will not be able to offer items from this list
+  enabled: false
+  message: '&cYou can not offer this item!'
+  # items in blacklist, you can use item ids or names
+  items:
+    - 'DIAMOND_SWORD' # example of item id
+    - 'test item' # example of item name
+
 # {DATE} - item offer date
 # {PRICE} - item price
 # {SELLER} - item seller
