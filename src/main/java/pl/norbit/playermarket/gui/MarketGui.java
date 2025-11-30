@@ -19,6 +19,7 @@ import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,6 +33,9 @@ public class MarketGui extends Gui {
     private final PaginationManager categoriesPagination;
     private final PaginationManager borderPagination;
     private final Category category;
+    private List<LocalMarketItem> lastItems = null;
+    private final List<Integer> visibleSlots = new ArrayList<>();
+    private int itemsPerPage = 0;
 
     private final ConfigGui configGui;
     private final GuiPages guiPages;
@@ -39,7 +43,7 @@ public class MarketGui extends Gui {
     private static final Map<UUID, MarketGui> playersGui = new ConcurrentHashMap<>();
 
     static {
-        asyncTimer(() -> playersGui.values().forEach(MarketGui::updateTask), 6L, 4L);
+        asyncTimer(() -> playersGui.values().forEach(MarketGui::updateTask), 10L, 10L);
     }
 
     public MarketGui(Player player, Category category) {
@@ -100,17 +104,17 @@ public class MarketGui extends Gui {
         playersGui.remove(player.getUniqueId());
     }
 
-    private void updatePage(Category category){
-        this.marketItems.getItems().clear();
-
-        List<LocalMarketItem> icons = MarketService.getIcons(category);
-        if(icons != null){
-            icons.forEach(item -> this.marketItems.addItem(item.getMarketItem()));
-        }
-
-        this.marketItems.update();
-        this.guiPages.update();
-    }
+//    private void updatePage(Category category){
+//        this.marketItems.getItems().clear();
+//
+//        List<LocalMarketItem> icons = MarketService.getIcons(category);
+//        if(icons != null){
+//            icons.forEach(item -> this.marketItems.addItem(item.getMarketItem()));
+//        }
+//
+//        this.marketItems.update();
+//        this.guiPages.update();
+//    }
 
     private void updateCategory(Category category) {
         this.marketItems.getItems().clear();
@@ -122,12 +126,79 @@ public class MarketGui extends Gui {
         }
     }
 
+    private void rebuildPagination(List<LocalMarketItem> list) {
+        marketItems.getItems().clear();
+        list.forEach(i -> marketItems.addItem(i.getMarketItem()));
+
+        marketItems.update();
+        guiPages.update();
+
+        // detect visible slots ONCE
+        if (visibleSlots.isEmpty()) {
+            visibleSlots.addAll(marketItems.getSlots());
+            itemsPerPage = visibleSlots.size();
+        }
+    }
+
+    private void updatePage(Category category) {
+        List<LocalMarketItem> newItems = MarketService.getIcons(category);
+
+        // first load
+        if (lastItems == null) {
+            lastItems = new ArrayList<>(newItems);
+            rebuildPagination(newItems);
+            return;
+        }
+
+        // item count changed -> rebuild
+        if (newItems.size() != lastItems.size()) {
+            lastItems = new ArrayList<>(newItems);
+            rebuildPagination(newItems);
+            return;
+        }
+
+        for (int i = 0; i < newItems.size(); i++) {
+            LocalMarketItem oldItem = lastItems.get(i);
+            LocalMarketItem newItem = newItems.get(i);
+
+            if (!equalsItem(oldItem, newItem)) {
+                updateSingleSlot(i, newItem);
+            }
+        }
+
+        lastItems = new ArrayList<>(newItems);
+    }
+
+
+    private boolean equalsItem(LocalMarketItem a, LocalMarketItem b) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+        return a.getId().equals(b.getId())
+                && a.getOfferDate() == b.getOfferDate();
+    }
+
+
+    private void updateSingleSlot(int index, LocalMarketItem newItem) {
+        if (visibleSlots.isEmpty()) return;
+        if (index < 0 || index >= itemsPerPage) return;
+
+        int slot = visibleSlots.get(index);
+        Icon newIcon = newItem.getMarketItem();
+
+        addItem(slot, newIcon);
+    }
+
     @Override
     public void onOpen(InventoryOpenEvent event) {
         //update pagination
         this.marketItems.update();
         this.categoriesPagination.update();
         this.borderPagination.update();
+
+        if (visibleSlots.isEmpty()) {
+            visibleSlots.addAll(marketItems.getSlots());
+            itemsPerPage = visibleSlots.size();
+        }
 
         ConfigIcon profileIcon = configGui.getIcon("your-offers-icon");
         ConfigIcon searchIcon = configGui.getIcon("search-icon");

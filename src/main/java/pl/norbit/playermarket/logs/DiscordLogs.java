@@ -4,6 +4,7 @@ import pl.norbit.playermarket.config.discord.DiscordConfig;
 import pl.norbit.playermarket.config.discord.DiscordEmbed;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.model.MarketItemData;
+import pl.norbit.playermarket.utils.TaskUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 
 public class DiscordLogs {
@@ -18,7 +19,6 @@ public class DiscordLogs {
         if(!discordConfig.isEnabled()){
             return;
         }
-
 
         send(discordConfig, discordConfig.getBuyEmbed(), marketItemData, playerName);
     }
@@ -51,16 +51,19 @@ public class DiscordLogs {
             playerName = "";
         }
 
-        String messages = dcEmbed.getMessage()
-                .replace("{PLAYER}", playerName)
-                .replace("{SELLER}", ownerName)
-                .replace("{ITEM}", item.getItemName())
-                .replace("{PRICE}", DoubleFormatter.format(price));
+        String finalPlayerName = playerName;
+        TaskUtils.async(() ->{
+            String messages = dcEmbed.getMessage()
+                    .replace("{PLAYER}", finalPlayerName)
+                    .replace("{SELLER}", ownerName)
+                    .replace("{ITEM}", item.getItemName())
+                    .replace("{PRICE}", DoubleFormatter.format(price));
 
-        try {
-            DiscordWebhook.send(dcConfig, messages, color);
-        } catch (Exception e){
-            LogService.warn("Error while sending discord message: " + e.getMessage());
-        }
+            try {
+                DiscordWebhook.send(dcConfig, messages, color);
+            } catch (Exception e){
+                LogService.warn("Error while sending discord message: " + e.getMessage());
+            }
+        });
     }
 }

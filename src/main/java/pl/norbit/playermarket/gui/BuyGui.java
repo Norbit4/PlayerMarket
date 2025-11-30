@@ -2,7 +2,6 @@ package pl.norbit.playermarket.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +23,6 @@ import pl.norbit.playermarket.utils.time.ExpireUtils;
 import pl.norbit.playermarket.utils.player.PlayerUtils;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
@@ -67,13 +65,11 @@ public class BuyGui extends Gui {
     private void backToShop(String message){
         player.sendMessage(ChatUtils.format(player, message));
         String search = SearchStorage.getSearch(player.getUniqueId());
-        sync(() -> {
-            if(search != null){
-                new MarketSearchGui(player, search).open();
-                return;
-            }
-            new MarketGui(player, CategoryService.getMain()).open();
-        });
+        if(search != null){
+            new MarketSearchGui(player, search).open();
+            return;
+        }
+        new MarketGui(player, CategoryService.getMain()).open();
     }
 
     private static Icon getIcon(ItemStack is){
@@ -110,7 +106,7 @@ public class BuyGui extends Gui {
             e.setCancelled(true);
             Player p = (Player) e.getWhoClicked();
 
-            if(CooldownService.isOnCooldown(p.getUniqueId())){
+            if (CooldownService.isOnCooldown(p.getUniqueId())) {
                 p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
                 return;
             }
@@ -119,65 +115,130 @@ public class BuyGui extends Gui {
             async(() -> {
                 MarketItemData mItemData = DataService.getMarketItemData(marketItemData.getId());
 
-                if(mItemData == null){
-                    backToShop(configGui.getMessage("item-sold-message"));
-                    return;
+                String result = null;
+
+                if (mItemData == null) {
+                    result = configGui.getMessage("item-sold-message");
+                } else if (ExpireUtils.isExpired(mItemData.getOfferDate())) {
+                    result = Settings.getExpireMessage();
+                } else if (mItemData.getOwnerUUID().equals(p.getUniqueId().toString())) {
+                    result = configGui.getMessage("player-is-owner-message");
+                } else if (PlayerUtils.isInventoryFull(p)) {
+                    result = configGui.getMessage("inventory-full-message");
+                } else if (!EconomyService.withDrawIfPossible(p, mItemData.getPrice())) {
+                    result = configGui.getMessage("not-enough-money-message");
                 }
 
-                if(ExpireUtils.isExpired(mItemData.getOfferDate())){
-                    backToShop(Settings.getExpireMessage());
-                    return;
-                }
+                String finalResult = result;
 
-                String ownerUUID = marketItemData.getOwnerUUID();
+                sync(() -> {
+                    if (finalResult != null) {
+                        backToShop(finalResult);
+                        return;
+                    }
 
-                if(ownerUUID.equals(p.getUniqueId().toString())){
-                    backToShop(configGui.getMessage("player-is-owner-message"));
-                    return;
-                }
+                    if(mItemData == null){
+                        backToShop(configGui.getMessage("item-sold-message"));
+                        return;
+                    }
 
-                if(PlayerUtils.isInventoryFull(p)){
-                    backToShop(configGui.getMessage("inventory-full-message"));
-                    return;
-                }
+                    double taxValue = DataService.buyItem(mItemData);
+                    ItemStack iStack = mItemData.getItemStackDeserialize();
+                    p.getInventory().addItem(iStack);
 
-                if(!EconomyService.withDrawIfPossible(p, mItemData.getPrice())){
-                    backToShop(configGui.getMessage("not-enough-money-message"));
-                    return;
-                }
+                    LogService.log("Player " + p.getName() + " buy item " + iStack.getType());
 
-                double taxValue = DataService.buyItem(mItemData);
-                ItemStack iStack = mItemData.getItemStackDeserialize();
+                    DiscordLogs.buyItem(p.getName(), mItemData);
 
-                p.getInventory().addItem(iStack);
+                    if (Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()) {
+                        String command = Settings.getTaxCommand()
+                                .replace("{PLAYER}", p.getName())
+                                .replace("{PRICE}", String.valueOf(taxValue));
 
-                LogService.log("Player " + p.getName() + " buy item " + iStack.getType() + " x" + iStack.getAmount()
-                        + " from " + mItemData.getOwnerName() + " cost: " + mItemData.getPrice());
+                        p.getServer().dispatchCommand(
+                                p.getServer().getConsoleSender(), command
+                        );
+                    }
 
-                //send message to discord
-                DiscordLogs.buyItem(p.getName(), mItemData);
-
-                if(Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()){
-                    String command = Settings.getTaxCommand()
-                            .replace("{PLAYER}", p.getName())
-                            .replace("{PRICE}", String.valueOf(taxValue));
-                    Server server = p.getServer();
-                    sync(() -> server.dispatchCommand(server.getConsoleSender(), command));
-                }
-
-                backToShop(configGui.getMessage("success-message")
-                        .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
-                );
-
-                //send message to seller
-                PlayerUtils.getPlayer(UUID.fromString(ownerUUID)).ifPresent(seller -> {
-                    String sellerMessages = Settings.SELL_ITEM_MESSAGE
-                            .replace("{PLAYER}", p.getName())
-                            .replace("{PRICE}",  DoubleFormatter.format(mItemData.getPrice()));
-                    seller.sendMessage(ChatUtils.format(seller, sellerMessages));
+                    backToShop(configGui.getMessage("success-message")
+                            .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
+                    );
                 });
             });
         });
+
+//        icon.onClick(e -> {
+//            e.setCancelled(true);
+//            Player p = (Player) e.getWhoClicked();
+//
+//            if(CooldownService.isOnCooldown(p.getUniqueId())){
+//                p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+//                return;
+//            }
+//            CooldownService.updateCooldown(p.getUniqueId());
+//
+//            async(() -> {
+//                MarketItemData mItemData = DataService.getMarketItemData(marketItemData.getId());
+//
+//                if(mItemData == null){
+//                    backToShop(configGui.getMessage("item-sold-message"));
+//                    return;
+//                }
+//
+//                if(ExpireUtils.isExpired(mItemData.getOfferDate())){
+//                    backToShop(Settings.getExpireMessage());
+//                    return;
+//                }
+//
+//                String ownerUUID = marketItemData.getOwnerUUID();
+//
+//                if(ownerUUID.equals(p.getUniqueId().toString())){
+//                    backToShop(configGui.getMessage("player-is-owner-message"));
+//                    return;
+//                }
+//
+//                if(PlayerUtils.isInventoryFull(p)){
+//                    backToShop(configGui.getMessage("inventory-full-message"));
+//                    return;
+//                }
+//
+//                if(!EconomyService.withDrawIfPossible(p, mItemData.getPrice())){
+//                    backToShop(configGui.getMessage("not-enough-money-message"));
+//                    return;
+//                }
+//
+//                double taxValue = DataService.buyItem(mItemData);
+//                ItemStack iStack = mItemData.getItemStackDeserialize();
+//
+//                p.getInventory().addItem(iStack);
+//
+//                LogService.log("Player " + p.getName() + " buy item " + iStack.getType() + " x" + iStack.getAmount()
+//                        + " from " + mItemData.getOwnerName() + " cost: " + mItemData.getPrice());
+//
+//                //send message to discord
+//                DiscordLogs.buyItem(p.getName(), mItemData);
+//
+//                if(Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()){
+//                    String command = Settings.getTaxCommand()
+//                            .replace("{PLAYER}", p.getName())
+//                            .replace("{PRICE}", String.valueOf(taxValue));
+//                    Server server = p.getServer();
+//                    sync(() -> server.dispatchCommand(server.getConsoleSender(), command));
+//                }
+//
+//                backToShop(configGui.getMessage("success-message")
+//                        .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
+//                );
+//
+//                //send message to seller
+//                PlayerUtils.getPlayer(UUID.fromString(ownerUUID)).ifPresent(seller -> {
+//                    String sellerMessages = Settings.SELL_ITEM_MESSAGE
+//                            .replace("{PLAYER}", p.getName())
+//                            .replace("{PRICE}",  DoubleFormatter.format(mItemData.getPrice()));
+//                    seller.sendMessage(ChatUtils.format(seller, sellerMessages));
+//                });
+//            });
+//        });
         return icon;
     }
     private String formatLine(String line){

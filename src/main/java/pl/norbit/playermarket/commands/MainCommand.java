@@ -5,16 +5,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.gui.GuiType;
-import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
 import pl.norbit.playermarket.utils.format.ChatUtils;
-import pl.norbit.playermarket.utils.player.ItemsUtils;
 import pl.norbit.playermarket.utils.player.PermUtils;
 import pl.norbit.playermarket.utils.player.PlayerUtils;
 
@@ -25,7 +20,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(args.length == 1){
-            if(!PermUtils.hasPermission(Settings.MAIN_COMMAND_RELOAD_PERMISSION, sender)){
+            if(!PermUtils.hasPermission(Settings.MAIN_COMMAND_RELOAD_PERMISSION, sender, true)){
                 sender.sendMessage(ChatUtils.format(Settings.MAIN_COMMAND_NO_PERMISSION));
                 return true;
             }
@@ -43,7 +38,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
             String arg = args[0];
             String playerName = args[1];
             if(arg.equalsIgnoreCase("cleardata")){
-                if(!PermUtils.hasPermission(Settings.getClearPermission(), sender)){
+                if(!PermUtils.hasPermission(Settings.getClearPermission(), sender, true)){
                     sender.sendMessage(ChatUtils.format(Settings.MAIN_COMMAND_NO_PERMISSION));
                     return true;
                 }
@@ -66,13 +61,13 @@ public class MainCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if(!PermUtils.hasPermission(Settings.MAIN_COMMAND_HELP_PERMISSION, sender)){
+        if(!PermUtils.hasPermission(Settings.MAIN_COMMAND_HELP_PERMISSION, sender, true)){
             sender.sendMessage(ChatUtils.format(Settings.MAIN_COMMAND_NO_PERMISSION));
             return true;
         }
 
         Settings.MAIN_COMMAND_HELP_MESSAGE.forEach(message -> sender.sendMessage(ChatUtils.format(message)));
-        if(PermUtils.hasPermission(Settings.MAIN_COMMAND_RELOAD_PERMISSION, sender)){
+        if(PermUtils.hasPermission(Settings.MAIN_COMMAND_RELOAD_PERMISSION, sender, true)){
             Settings.MAIN_COMMAND_HELP_RELOAD_MESSAGE.forEach(message -> sender.sendMessage(ChatUtils.format(message)));
             return true;
         }
