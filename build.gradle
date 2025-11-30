@@ -61,7 +61,7 @@ dependencies {
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
     //anvilgui
-    implementation 'net.wesjd:anvilgui:1.10.8-SNAPSHOT'
+    implementation 'net.wesjd:anvilgui:1.10.10-SNAPSHOT'
 }
 
 def targetJavaVersion = 11
