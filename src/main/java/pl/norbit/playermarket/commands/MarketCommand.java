@@ -16,7 +16,7 @@ public class MarketCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(!PermUtils.hasPermission(Settings.MARKET_COMMAND_PERMISSION, sender)){
+        if(!PermUtils.hasPermission(Settings.MARKET_COMMAND_PERMISSION, sender, Settings.MARKET_COMMAND_PERMISSION_ENABLED)){
             sender.sendMessage(ChatUtils.format(Settings.MARKET_COMMAND_NO_PERMISSION));
             return true;
         }

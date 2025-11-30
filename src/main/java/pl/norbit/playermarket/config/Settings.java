@@ -34,10 +34,11 @@ public class Settings {
             PLAYER_OFFER_ITEM_LORE, PLAYER_OFFER_SHULKER_LORE;
 
     public static String SELL_ITEM_MESSAGE, JOIN_MESSAGE;
-
-    public static String OFFER_COMMAND_PERMISSION, OFFER_COMMAND_USAGE,OFFER_COMMAND_NO_PERMISSION,
+    public static boolean OFFER_COMMAND_PERMISSION_ENABLED;
+    public static String  OFFER_COMMAND_PERMISSION, OFFER_COMMAND_USAGE,OFFER_COMMAND_NO_PERMISSION,
             OFFER_COMMAND_WRONG_PRICE, OFFER_COMMAND_SUCCESS, OFFER_COMMAND_WRONG_ITEM;
 
+    public static boolean MARKET_COMMAND_PERMISSION_ENABLED;
     public static String  MARKET_COMMAND_PERMISSION, MARKET_COMMAND_NO_PERMISSION;
     public static String MAIN_COMMAND_RELOAD_PERMISSION, MAIN_COMMAND_HELP_PERMISSION, MAIN_COMMAND_NO_PERMISSION, MAIN_COMMAND_RELOAD_MESSAGE;
     public static List<String> MAIN_COMMAND_HELP_MESSAGE, MAIN_COMMAND_HELP_RELOAD_MESSAGE;
@@ -188,16 +189,18 @@ public class Settings {
         cooldownMessage = config.getString("info-messages.cooldown");
 
         //offer command
-        OFFER_COMMAND_PERMISSION = config.getString("offer-command.permission");
+        OFFER_COMMAND_PERMISSION_ENABLED = config.getBoolean("offer-command.use-permission.enabled");
+        OFFER_COMMAND_PERMISSION = config.getString("offer-command.use-permission.permission");
+        OFFER_COMMAND_NO_PERMISSION = config.getString("offer-command.use-permission.message");
         OFFER_COMMAND_USAGE = config.getString("offer-command.usage");
-        OFFER_COMMAND_NO_PERMISSION = config.getString("offer-command.no-permission");
         OFFER_COMMAND_WRONG_PRICE = config.getString("offer-command.wrong-price");
         OFFER_COMMAND_SUCCESS = config.getString("offer-command.success");
         OFFER_COMMAND_WRONG_ITEM = config.getString("offer-command.wrong-item");
 
         //market command
-        MARKET_COMMAND_PERMISSION = config.getString("market-command.permission");
-        MARKET_COMMAND_NO_PERMISSION = config.getString("market-command.no-permission");
+        MARKET_COMMAND_PERMISSION = config.getString("market-command.use-permission.permission");
+        MARKET_COMMAND_PERMISSION_ENABLED = config.getBoolean("market-command.use-permission.enabled");
+        MARKET_COMMAND_NO_PERMISSION = config.getString("market-command.use-permission.message");
 
         //main command
         MAIN_COMMAND_NO_PERMISSION = config.getString("main-command.no-permission");

@@ -19,7 +19,7 @@ public class OfferCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(!PermUtils.hasPermission(Settings.OFFER_COMMAND_PERMISSION, sender)){
+        if(!PermUtils.hasPermission(Settings.OFFER_COMMAND_PERMISSION, sender, Settings.OFFER_COMMAND_PERMISSION_ENABLED)){
             sender.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_NO_PERMISSION));
             return true;
         }

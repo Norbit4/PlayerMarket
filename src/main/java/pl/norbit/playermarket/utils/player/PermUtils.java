@@ -13,7 +13,11 @@ public class PermUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static boolean hasPermission(String perm, CommandSender sender){
+    public static boolean hasPermission(String perm, CommandSender sender, boolean enabled){
+        if(!enabled){
+            return true;
+        }
+
         if(sender.isOp()){
             return true;
         }

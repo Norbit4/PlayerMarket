@@ -66,17 +66,21 @@ main-command:
 
 # /offer <price> - offer an item
 offer-command:
-  permission: 'playermarket.command.offer'
+  use-permission:
+    enabled: false
+    permission: 'playermarket.command.offer'
+    message: '&cYou do not have access to this command!'
   usage: '&cUsage: /offer <price>'
-  no-permission: '&cYou do not have access to this command!'
   wrong-price: '&cThe price variable is invalid!'
   wrong-item: '&cYou can not offer this item!'
   success: '&aYou have successfully offered this item!'
 
 # /market - open market
 market-command:
-  permission: 'playermarket.command.market'
-  no-permission: '&cYou do not have access to this command!'
+  use-permission:
+    enabled: false
+    permission: 'playermarket.command.market'
+    message: '&cYou do not have access to this command!'
 
 #---------------------------------------#
 #              [ GLOBAL ]               #
