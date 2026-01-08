@@ -19,26 +19,27 @@ import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static pl.norbit.playermarket.utils.TaskUtils.*;
 
 public class MarketGui extends Gui {
+
     private final PaginationManager marketItems;
     private final PaginationManager categoriesPagination;
     private final PaginationManager borderPagination;
+
     private final Category category;
-    private List<LocalMarketItem> lastItems = null;
+    private final ConfigGui configGui;
+    private final GuiPages guiPages;
+
     private final List<Integer> visibleSlots = new ArrayList<>();
     private int itemsPerPage = 0;
 
-    private final ConfigGui configGui;
-    private final GuiPages guiPages;
+    private List<LocalMarketItem> lastItems = null;
+    private int lastViewedPage = -1;
 
     private static final Map<UUID, MarketGui> playersGui = new ConcurrentHashMap<>();
 
@@ -57,44 +58,49 @@ public class MarketGui extends Gui {
         this.marketItems = template.getMarketItemsPagination();
         this.categoriesPagination = template.getCategoriesPagination();
 
-        if(this.configGui.isFill()){
-            this.borderPagination = new PaginationManager(this);
-        }else {
-            this.borderPagination = template.getBorderPagination();
-        }
+        this.borderPagination = this.configGui.isFill()
+                ? new PaginationManager(this)
+                : template.getBorderPagination();
 
         updateCategory(category);
 
-        GuiUtils.loadBorder(this.configGui, this.borderPagination, this.configGui.getFillBlackList(), this.getSize());
+        GuiUtils.loadBorder(
+                this.configGui,
+                this.borderPagination,
+                this.configGui.getFillBlackList(),
+                this.getSize()
+        );
 
-        //add categories
-        this.categoriesPagination.addItem(createCategory(Settings.ALL_CATEGORY));
-
+        categoriesPagination.addItem(createCategory(Settings.ALL_CATEGORY));
         Settings.CATEGORIES.stream()
                 .map(this::createCategory)
-                .forEach(this.categoriesPagination::addItem);
-
-        this.categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
+                .forEach(categoriesPagination::addItem);
+        categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
 
         ConfigIcon left = configGui.getIcon("previous-page-icon");
         ConfigIcon right = configGui.getIcon("next-page-icon");
         ConfigIcon fill = configGui.getIcon("border-icon");
 
-        Icon fillIcon = null;
+        Icon fillIcon = configGui.isFill() ? fill.getIcon() : null;
 
-        if(this.configGui.isFill()){
-            fillIcon = fill.getIcon();
-        }
+        String title = ChatUtils.format(player,
+                Settings.MARKET_GUI.getTitle().replace("{CATEGORY}", category.getName())
+        );
 
-        String title = ChatUtils.format(player, Settings.MARKET_GUI.getTitle()
-                .replace("{CATEGORY}", category.getName()));
-
-        this.guiPages = new GuiPages(this, title, marketItems, left.getSlot(), left.getIcon(),
-                right.getSlot(), right.getIcon(), fillIcon);
+        this.guiPages = new GuiPages(
+                this,
+                title,
+                marketItems,
+                left.getSlot(),
+                left.getIcon(),
+                right.getSlot(),
+                right.getIcon(),
+                fillIcon
+        );
     }
 
-    public void updateTask(){
-        if(!isClosed()) {
+    public void updateTask() {
+        if (!isClosed()) {
             updatePage(category);
         }
     }
@@ -104,96 +110,12 @@ public class MarketGui extends Gui {
         playersGui.remove(player.getUniqueId());
     }
 
-//    private void updatePage(Category category){
-//        this.marketItems.getItems().clear();
-//
-//        List<LocalMarketItem> icons = MarketService.getIcons(category);
-//        if(icons != null){
-//            icons.forEach(item -> this.marketItems.addItem(item.getMarketItem()));
-//        }
-//
-//        this.marketItems.update();
-//        this.guiPages.update();
-//    }
-
-    private void updateCategory(Category category) {
-        this.marketItems.getItems().clear();
-        this.marketItems.goFirstPage();
-
-        List<LocalMarketItem> icons = MarketService.getIcons(category);
-        if(icons != null){
-            icons.forEach(item -> this.marketItems.addItem(item.getMarketItem()));
-        }
-    }
-
-    private void rebuildPagination(List<LocalMarketItem> list) {
-        marketItems.getItems().clear();
-        list.forEach(i -> marketItems.addItem(i.getMarketItem()));
-
-        marketItems.update();
-        guiPages.update();
-
-        // detect visible slots ONCE
-        if (visibleSlots.isEmpty()) {
-            visibleSlots.addAll(marketItems.getSlots());
-            itemsPerPage = visibleSlots.size();
-        }
-    }
-
-    private void updatePage(Category category) {
-        List<LocalMarketItem> newItems = MarketService.getIcons(category);
-
-        // first load
-        if (lastItems == null) {
-            lastItems = new ArrayList<>(newItems);
-            rebuildPagination(newItems);
-            return;
-        }
-
-        // item count changed -> rebuild
-        if (newItems.size() != lastItems.size()) {
-            lastItems = new ArrayList<>(newItems);
-            rebuildPagination(newItems);
-            return;
-        }
-
-        for (int i = 0; i < newItems.size(); i++) {
-            LocalMarketItem oldItem = lastItems.get(i);
-            LocalMarketItem newItem = newItems.get(i);
-
-            if (!equalsItem(oldItem, newItem)) {
-                updateSingleSlot(i, newItem);
-            }
-        }
-
-        lastItems = new ArrayList<>(newItems);
-    }
-
-
-    private boolean equalsItem(LocalMarketItem a, LocalMarketItem b) {
-        if (a == b) return true;
-        if (a == null || b == null) return false;
-        return a.getId().equals(b.getId())
-                && a.getOfferDate() == b.getOfferDate();
-    }
-
-
-    private void updateSingleSlot(int index, LocalMarketItem newItem) {
-        if (visibleSlots.isEmpty()) return;
-        if (index < 0 || index >= itemsPerPage) return;
-
-        int slot = visibleSlots.get(index);
-        Icon newIcon = newItem.getMarketItem();
-
-        addItem(slot, newIcon);
-    }
-
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        //update pagination
-        this.marketItems.update();
-        this.categoriesPagination.update();
-        this.borderPagination.update();
+
+        marketItems.update();
+        categoriesPagination.update();
+        borderPagination.update();
 
         if (visibleSlots.isEmpty()) {
             visibleSlots.addAll(marketItems.getSlots());
@@ -206,66 +128,150 @@ public class MarketGui extends Gui {
         addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
         addItem(searchIcon.getSlot(), getSearchIcon(searchIcon.getIcon()));
 
-        this.guiPages.update();
+        guiPages.update();
 
         setClosed(false);
-        playersGui.compute(player.getUniqueId(), (k, v) -> this);
+        playersGui.put(player.getUniqueId(), this);
 
         SearchStorage.clear(player.getUniqueId());
     }
 
-    private Icon getProfileIcon(Icon icon){
+    private void updateCategory(Category category) {
+        lastItems = null;
+        lastViewedPage = -1;
+
+        marketItems.getItems().clear();
+        marketItems.goFirstPage();
+
+        List<LocalMarketItem> icons = MarketService.getIcons(category);
+        if (icons != null) {
+            icons.forEach(i -> marketItems.addItem(i.getMarketItem()));
+        }
+    }
+
+    private void rebuildPagination(List<LocalMarketItem> list) {
+        marketItems.getItems().clear();
+        list.forEach(i -> marketItems.addItem(i.getMarketItem()));
+
+        marketItems.update();
+        guiPages.update();
+    }
+
+    private void updatePage(Category category) {
+        List<LocalMarketItem> newItems = MarketService.getIcons(category);
+        if (newItems == null) return;
+
+        int currentPage = marketItems.getCurrentPage();
+        int lastPage = marketItems.getLastPage();
+
+        if (newItems.isEmpty()) {
+            if (lastItems != null && lastItems.isEmpty()) {
+                return;
+            }
+            marketItems.getItems().clear();
+            marketItems.goFirstPage();
+            marketItems.update();
+            guiPages.update();
+            lastItems = Collections.emptyList();
+            lastViewedPage = 0;
+            return;
+        }
+
+        if (currentPage != lastViewedPage) {
+            lastViewedPage = currentPage;
+            lastItems = new ArrayList<>(newItems);
+            rebuildPagination(newItems);
+            return;
+        }
+
+        if (lastItems == null || lastItems.size() != newItems.size()) {
+            lastItems = new ArrayList<>(newItems);
+            rebuildPagination(newItems);
+            return;
+        }
+
+        if (currentPage > lastPage) {
+            marketItems.goLastPage();
+            marketItems.update();
+            guiPages.update();
+            lastViewedPage = marketItems.getCurrentPage();
+            return;
+        }
+
+        int startIndex = currentPage * itemsPerPage;
+        int endIndex = Math.min(startIndex + itemsPerPage, newItems.size());
+
+        for (int i = startIndex; i < endIndex; i++) {
+            if (!equalsItem(lastItems.get(i), newItems.get(i))) {
+                updateSingleSlot(i, newItems.get(i));
+            }
+        }
+
+        lastItems = new ArrayList<>(newItems);
+    }
+
+    private void updateSingleSlot(int globalIndex, LocalMarketItem newItem) {
+        int currentPage = marketItems.getCurrentPage();
+        int localIndex = globalIndex - (currentPage * itemsPerPage);
+
+        if (localIndex < 0 || localIndex >= visibleSlots.size()) return;
+
+        int slot = visibleSlots.get(localIndex);
+        addItem(slot, newItem.getMarketItem());
+    }
+
+    private boolean equalsItem(LocalMarketItem a, LocalMarketItem b) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+        return a.getId().equals(b.getId()) && a.getOfferDate() == b.getOfferDate();
+    }
+
+    private Icon getProfileIcon(Icon icon) {
         icon.hideFlags();
         icon.onClick(e -> {
             e.setCancelled(true);
-
             async(() -> {
-                Player player = (Player) e.getWhoClicked();
-                LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
-
-                sync(() -> new PlayerItemsGui(player, playerLocalData, 0).open());
+                Player p = (Player) e.getWhoClicked();
+                LocalPlayerData data = DataService.getPlayerLocalData(p);
+                sync(() -> new PlayerItemsGui(p, data, 0).open());
             });
         });
         return icon;
     }
 
+    private Icon getSearchIcon(Icon icon) {
+        icon.hideFlags();
+        icon.onClick(e -> ItemTypeSearchGui.open(player));
+        return icon;
+    }
+
     private Icon createCategory(Category category) {
         Icon icon = new Icon(category.getIcon());
+        boolean selected = category.getCategoryUUID().equals(this.category.getCategoryUUID());
 
-        boolean isSel = category.getCategoryUUID().equals(this.category.getCategoryUUID());
-
-        icon.setName(ChatUtils.format(player, Settings.CATEGORY_NAME_FORMAT.
-                replace("{CATEGORY}", category.getName())));
-
+        icon.setName(ChatUtils.format(
+                player,
+                Settings.CATEGORY_NAME_FORMAT.replace("{CATEGORY}", category.getName())
+        ));
         icon.hideFlags();
 
-        if(isSel){
-            icon.setLore(Settings.CATEGORY_SELECTED_LORE
-                    .stream()
+        if (selected) {
+            icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream()
                     .map(ChatUtils::format)
                     .collect(Collectors.toList()));
-
             icon.enchant(Enchantment.DURABILITY);
-
             return icon;
         }
 
-        icon.setLore(category.getLore()
-                .stream()
+        icon.setLore(category.getLore().stream()
                 .map(line -> ChatUtils.format(player, line))
                 .collect(Collectors.toList()));
 
         icon.onClick(e -> {
             e.setCancelled(true);
-
             new MarketGui(player, category).open();
         });
-        return icon;
-    }
 
-    private Icon getSearchIcon(Icon icon){
-        icon.hideFlags();
-        icon.onClick(e -> ItemTypeSearchGui.open(player));
         return icon;
     }
 }
