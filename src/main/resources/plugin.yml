@@ -9,7 +9,11 @@ softdepend:
   - Vault
   - PlaceholderAPI
   - ItemsAdder
-
+#libraries:
+#  - com.mysql:mysql-connector-j:8.3.0
+#  - commons-dbutils:commons-dbutils:1.7
+#  - com.h2database:h2:2.2.224
+#  - org.yaml:snakeyaml:2.2
 commands:
     market:
         description: Open the market!
