@@ -15,7 +15,16 @@ public class GuiPages {
     private final Gui gui;
     private final String guiTitle;
 
-    public GuiPages(Gui gui, String guiTitle, PaginationManager paginationManager, int leftSlot, Icon leftIcon, int rightSlot, Icon rightIcon, Icon fillIcon) {
+    public GuiPages(Gui gui,
+                    String guiTitle,
+                    PaginationManager paginationManager,
+                    int leftSlot,
+                    Icon leftIcon,
+                    int rightSlot,
+                    Icon rightIcon,
+                    Icon fillIcon
+    ) {
+
         this.paginationManager = paginationManager;
         this.leftIconPagination = new PaginationManager(gui);
         this.rightIconPagination = new PaginationManager(gui);
