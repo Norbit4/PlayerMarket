@@ -4,6 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import pl.norbit.playermarket.cache.PlayerDataCache;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.model.local.LocalPlayerData;
@@ -44,7 +45,7 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
 
             return String.valueOf(amount);
         }else if (params.contains("player_offers")) {
-            LocalPlayerData pLocalData = PlaceholderVault.getLocalPlayerData(player);
+            LocalPlayerData pLocalData = PlayerDataCache.getPlayerData(player);
 
             return String.valueOf(pLocalData.getPlayerOffers().size());
         }else if (params.contains("player_sold")) {
@@ -67,7 +68,7 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
         return "";
     }
     private static PlayerData getPlayerData(OfflinePlayer player) {
-        LocalPlayerData pLocalData = PlaceholderVault.getLocalPlayerData(player);
+        LocalPlayerData pLocalData = PlayerDataCache.getPlayerData(player);
         return pLocalData.getPlayerData();
     }
 }
