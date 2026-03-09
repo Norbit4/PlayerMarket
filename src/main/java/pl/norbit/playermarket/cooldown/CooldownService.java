@@ -12,7 +12,7 @@ public class CooldownService {
     }
 
     public static boolean isOnCooldown(UUID playerUUID) {
-        return cooldowns.containsKey(playerUUID) && (System.currentTimeMillis() - cooldowns.get(playerUUID)) < 1200;
+        return cooldowns.containsKey(playerUUID) && (System.currentTimeMillis() - cooldowns.get(playerUUID)) < 500;
     }
 
     public static void updateCooldown(UUID playerUUID) {

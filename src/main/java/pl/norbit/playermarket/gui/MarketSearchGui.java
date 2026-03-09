@@ -35,8 +35,10 @@ public class MarketSearchGui extends Gui {
 
     private static final Map<UUID, MarketSearchGui> playersGui = new ConcurrentHashMap<>();
 
-    static {
-        asyncTimer(() -> playersGui.values().forEach(MarketSearchGui::updateTask), 6L, 4L);
+    public static void updateAll(){
+        for (MarketSearchGui value : playersGui.values()) {
+            value.updateTask();
+        }
     }
 
     public MarketSearchGui(Player player, String search) {

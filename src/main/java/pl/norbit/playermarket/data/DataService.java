@@ -7,16 +7,15 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.logs.DiscordLogs;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
-import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.model.PlayerData;
+import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.utils.serializer.BukkitSerializer;
 
 import java.util.List;
-import java.util.logging.Logger;
-
-import static pl.norbit.playermarket.utils.TaskUtils.async;
+import java.util.concurrent.CompletableFuture;
 
 public class DataService {
+
     private DataService() {
         throw new IllegalStateException("Utility class");
     }
@@ -25,88 +24,88 @@ public class DataService {
         JDBCService.init();
     }
 
-    public static PlayerData getPlayerData(String playerUUID){
-        return JDBCService.getPlayerData(playerUUID);
-    }
-
     public static boolean isReady(){
         return JDBCService.isReady();
     }
 
-    public static double buyItem(MarketItemData marketItemData){
+    public static CompletableFuture<PlayerData> getPlayerData(String playerUUID){
+        return JDBCService.getPlayerData(playerUUID);
+    }
 
-        PlayerData playerData = getPlayerData(marketItemData.getOwnerUUID());
-        Long itemId = marketItemData.getId();
+    public static CompletableFuture<MarketItemData> getMarketItemData(Long itemId){
+        return JDBCService.getMarketItem(itemId);
+    }
 
-        if(playerData == null){
-            return 0;
-        }
+    public static CompletableFuture<List<MarketItemData>> getAll(){
+        return JDBCService.getAllMarketItems();
+    }
 
-        double price = marketItemData.getPrice();
+    public static CompletableFuture<Double> buyItem(MarketItemData marketItemData){
 
-        //calculate tax
-        double tax = 0;
-        if(Settings.isTaxEnabled()){
-            double taxValue = Settings.getTaxValue();
+        return getPlayerData(marketItemData.getOwnerUUID()).thenApply(playerData -> {
 
-            if(taxValue < 1){
-                tax = price * taxValue;
-                price = price - tax;
-            }else {
-                LogService.warn("Tax value is higher than 1. Tax value should be in range 0-1");
+            if(playerData == null){
+                return 0.0;
             }
-        }
 
-        //update stats for seller
-        playerData.setSoldItems(playerData.getSoldItems() + 1);
-        playerData.setEarnedMoney(playerData.getEarnedMoney() + price);
-        playerData.setTotalEarnedMoney(playerData.getTotalEarnedMoney() + price);
-        playerData.setTotalSoldItems(playerData.getTotalSoldItems() + 1);
+            Long itemId = marketItemData.getId();
+            double price = marketItemData.getPrice();
 
-        //remove item from seller
-        removeMarketItem(itemId);
+            double tax = 0;
 
-        updatePlayerData(playerData);
+            if(Settings.isTaxEnabled()){
+                double taxValue = Settings.getTaxValue();
 
-        return tax;
+                if(taxValue < 1){
+                    tax = price * taxValue;
+                    price -= tax;
+                } else {
+                    LogService.warn("Tax value is higher than 1. Tax value should be in range 0-1");
+                }
+            }
+
+            playerData.setSoldItems(playerData.getSoldItems() + 1);
+            playerData.setEarnedMoney(playerData.getEarnedMoney() + price);
+            playerData.setTotalEarnedMoney(playerData.getTotalEarnedMoney() + price);
+            playerData.setTotalSoldItems(playerData.getTotalSoldItems() + 1);
+
+            removeMarketItem(itemId);
+            updatePlayerData(playerData);
+
+            return tax;
+        });
     }
 
     public static void close(){
         JDBCService.close();
     }
 
-    public static MarketItemData getMarketItemData(Long itemId){
-        return JDBCService.getMarketItem(itemId);
+    public static CompletableFuture<ItemStack> removeItemFromOffer(Player p, Long itemId){
+
+        return getPlayerData(p.getUniqueId().toString()).thenApply(pData -> {
+
+            if(pData == null){
+                return null;
+            }
+
+            MarketItemData offer = pData.getOffer(itemId);
+
+            if(offer == null){
+                return null;
+            }
+
+            ItemStack itemStack = offer.getItemStackDeserialize();
+
+            removeMarketItem(itemId);
+            updatePlayerData(pData);
+
+            return itemStack;
+        });
     }
 
-    public static ItemStack removeItemFromOffer(Player p,Long itemId){
-        PlayerData pData = getPlayerData(p.getUniqueId().toString());
-
-        if(pData == null){
-            return null;
-        }
-
-        MarketItemData offer = pData.getOffer(itemId);
-
-        if(offer == null){
-            return null;
-        }
-
-        ItemStack itemStack = offer.getItemStackDeserialize();
-
-        removeMarketItem(itemId);
-
-        updatePlayerData(pData);
-
-        return itemStack;
+    public static CompletableFuture<LocalPlayerData> getPlayerLocalData(OfflinePlayer p){
+        return getPlayerDataCreate(p).thenApply(LocalPlayerData::new);
     }
-
-    public static LocalPlayerData getPlayerLocalData(OfflinePlayer p){
-        PlayerData pData = getPlayerDataCreate(p);
-
-        return new LocalPlayerData(pData);
-    }
-
 
     public static void createPlayerData(PlayerData playerData) {
         JDBCService.createPlayerData(playerData);
@@ -116,13 +115,8 @@ public class DataService {
         JDBCService.removeMarketItem(id);
     }
 
-    public static List<MarketItemData> getAll(){
-        return JDBCService.getAllMarketItems();
-    }
-
     public static void addItemToOffer(OfflinePlayer p, ItemStack is, double price){
-        async(() ->{
-            PlayerData pData = getPlayerDataCreate(p);
+        getPlayerDataCreate(p).thenAccept(pData -> {
 
             MarketItemData mItemData = new MarketItemData(p, BukkitSerializer.serializeItems(is), price);
 
@@ -130,12 +124,13 @@ public class DataService {
             updateMarketItem(pData, mItemData);
 
             DiscordLogs.offerItem(mItemData);
+
         });
     }
 
     public static void clearPlayerData(OfflinePlayer p){
-        async(() ->{
-            PlayerData pData = getPlayerDataCreate(p);
+
+        getPlayerDataCreate(p).thenAccept(pData -> {
 
             pData.setEarnedMoney(0);
             pData.setSoldItems(0);
@@ -145,6 +140,7 @@ public class DataService {
             pData.getPlayerOffers().forEach(mItem -> removeMarketItem(mItem.getId()));
 
             updatePlayerData(pData);
+
         });
     }
 
@@ -156,20 +152,21 @@ public class DataService {
         JDBCService.addMarketItemForPlayer(pData, mItemData);
     }
 
-    public static PlayerData getPlayerDataCreate(OfflinePlayer p){
-        String playerStringUUID = p.getUniqueId().toString();
+    public static CompletableFuture<PlayerData> getPlayerDataCreate(OfflinePlayer p){
+        String playerUUID = p.getUniqueId().toString();
 
-        PlayerData pData = getPlayerData(playerStringUUID);
+        return getPlayerData(playerUUID).thenApply(pData -> {
 
-        if(pData != null) return pData;
+            if(pData != null) return pData;
 
-        pData = new PlayerData();
+            PlayerData newData = new PlayerData();
 
-        pData.setPlayerUUID(playerStringUUID);
-        pData.setPlayerName(p.getName());
+            newData.setPlayerUUID(playerUUID);
+            newData.setPlayerName(p.getName());
 
-        createPlayerData(pData);
+            createPlayerData(newData);
 
-        return pData;
+            return newData;
+        });
     }
 }

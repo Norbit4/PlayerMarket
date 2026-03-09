@@ -6,6 +6,7 @@ import lombok.Setter;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.norbit.playermarket.cache.PlayerDataCache;
 import pl.norbit.playermarket.commands.MainCommand;
 import pl.norbit.playermarket.commands.MarketCommand;
 import pl.norbit.playermarket.commands.OfferCommand;
@@ -44,6 +45,7 @@ public final class PlayerMarket extends JavaPlugin {
         async(() -> {
             DataService.start();
             MarketService.start();
+            PlayerDataCache.start();
         });
     }
 

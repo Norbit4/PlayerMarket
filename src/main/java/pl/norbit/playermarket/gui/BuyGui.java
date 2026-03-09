@@ -2,9 +2,11 @@ package pl.norbit.playermarket.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
@@ -22,10 +24,10 @@ import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 import pl.norbit.playermarket.utils.player.PlayerUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pl.norbit.playermarket.utils.TaskUtils.async;
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 public class BuyGui extends Gui {
@@ -43,13 +45,12 @@ public class BuyGui extends Gui {
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        Icon itemIcon = getIcon(is);
+        Icon itemIcon = new Icon(is);
 
         addItem(13, itemIcon);
 
         if(this.configGui.isFill()){
-            List<Integer> fillBlackList = this.configGui.getFillBlackList();
-
+            List<Integer> fillBlackList = new ArrayList<>(this.configGui.getFillBlackList());
             fillBlackList.add(13);
 
             fillGui(this.configGui.getBorderIcon(), fillBlackList);
@@ -59,113 +60,195 @@ public class BuyGui extends Gui {
         ConfigIcon cancelIcon = configGui.getIcon("cancel-icon");
 
         addItem(acceptIcon.getSlot(), getAcceptIcon(acceptIcon.getIcon()));
-        addItem(cancelIcon.getSlot(), getCanceIcon(cancelIcon.getIcon()));
+        addItem(cancelIcon.getSlot(), getCancelIcon(cancelIcon.getIcon()));
     }
 
     private void backToShop(String message){
         player.sendMessage(ChatUtils.format(player, message));
-        String search = SearchStorage.getSearch(player.getUniqueId());
-        if(search != null){
-            new MarketSearchGui(player, search).open();
-            return;
-        }
-        new MarketGui(player, CategoryService.getMain()).open();
+
+        back();
     }
 
-    private static Icon getIcon(ItemStack is){
-        return new Icon(is);
-    }
-
-    private Icon getCanceIcon(Icon icon){
-        icon.onClick(e -> {
-            e.setCancelled(true);
-
-            String search = SearchStorage.getSearch(player.getUniqueId());
-
-            if(search != null){
-                new MarketSearchGui(player, search).open();
-                return;
-            }
-
-            new MarketGui(player, CategoryService.getMain()).open();
-        });
+    private Icon getCancelIcon(Icon icon){
+        icon.onClick(e -> back());
         return icon;
+    }
+
+    private void back() {
+        String search = SearchStorage.getSearch(player.getUniqueId());
+
+        if (search != null) {
+            new MarketSearchGui(player, search).open();
+        } else {
+            new MarketGui(player, CategoryService.getMain()).open();
+        }
     }
 
     private Icon getAcceptIcon(Icon icon){
         ItemStack item = icon.getItem();
+        ItemMeta itemMeta = item.getItemMeta();
 
-        icon.setName(formatLine(item.getItemMeta().getDisplayName()));
-        icon.setLore(item.getItemMeta()
+        icon.setName(formatLine(itemMeta.getDisplayName()));
+        icon.setLore(itemMeta
                 .getLore()
                 .stream()
                 .map(this::formatLine)
                 .collect(Collectors.toList()));
 
         icon.onClick(e -> {
+
             e.setCancelled(true);
+
             Player p = (Player) e.getWhoClicked();
 
             if (CooldownService.isOnCooldown(p.getUniqueId())) {
                 p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
                 return;
             }
+
             CooldownService.updateCooldown(p.getUniqueId());
 
-            async(() -> {
-                MarketItemData mItemData = DataService.getMarketItemData(marketItemData.getId());
-
-                String result = null;
+            DataService.getMarketItemData(marketItemData.getId()).thenAccept(mItemData -> {
 
                 if (mItemData == null) {
-                    result = configGui.getMessage("item-sold-message");
-                } else if (ExpireUtils.isExpired(mItemData.getOfferDate())) {
-                    result = Settings.getExpireMessage();
-                } else if (mItemData.getOwnerUUID().equals(p.getUniqueId().toString())) {
-                    result = configGui.getMessage("player-is-owner-message");
-                } else if (PlayerUtils.isInventoryFull(p)) {
-                    result = configGui.getMessage("inventory-full-message");
-                } else if (!EconomyService.withDrawIfPossible(p, mItemData.getPrice())) {
-                    result = configGui.getMessage("not-enough-money-message");
+                    sync(() -> backToShop(configGui.getMessage("item-sold-message")));
+                    return;
                 }
 
-                String finalResult = result;
+                if (ExpireUtils.isExpired(mItemData.getOfferDate())) {
+                    sync(() -> backToShop(Settings.getExpireMessage()));
+                    return;
+                }
+
+                if (mItemData.getOwnerUUID().equals(p.getUniqueId().toString())) {
+                    sync(() -> backToShop(configGui.getMessage("player-is-owner-message")));
+                    return;
+                }
 
                 sync(() -> {
-                    if (finalResult != null) {
-                        backToShop(finalResult);
+                    if (PlayerUtils.isInventoryFull(p)) {
+                        backToShop(configGui.getMessage("inventory-full-message"));
                         return;
                     }
 
-                    if(mItemData == null){
-                        backToShop(configGui.getMessage("item-sold-message"));
+                    if (!EconomyService.withDrawIfPossible(p, mItemData.getPrice())) {
+                        backToShop(configGui.getMessage("not-enough-money-message"));
                         return;
                     }
 
-                    double taxValue = DataService.buyItem(mItemData);
-                    ItemStack iStack = mItemData.getItemStackDeserialize();
-                    p.getInventory().addItem(iStack);
+                    DataService.buyItem(mItemData).thenAccept(taxValue -> {
+                        sync(() -> {
+                            ItemStack iStack = mItemData.getItemStackDeserialize();
+                            p.getInventory().addItem(iStack);
 
-                    LogService.log("Player " + p.getName() + " buy item " + iStack.getType());
+                            LogService.log("Player " + p.getName() + " buy item " + iStack.getType());
 
-                    DiscordLogs.buyItem(p.getName(), mItemData);
+                            DiscordLogs.buyItem(p.getName(), mItemData);
 
-                    if (Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()) {
-                        String command = Settings.getTaxCommand()
-                                .replace("{PLAYER}", p.getName())
-                                .replace("{PRICE}", String.valueOf(taxValue));
+                            if (Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()) {
 
-                        p.getServer().dispatchCommand(
-                                p.getServer().getConsoleSender(), command
-                        );
-                    }
+                                String command = Settings.getTaxCommand()
+                                        .replace("{PLAYER}", p.getName())
+                                        .replace("{PRICE}", String.valueOf(taxValue));
+                                Server server = p.getServer();
 
-                    backToShop(configGui.getMessage("success-message")
-                            .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
-                    );
+                                server.dispatchCommand(
+                                        server.getConsoleSender(),
+                                        command
+                                );
+                            }
+
+                            backToShop(configGui.getMessage("success-message")
+                                    .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
+                            );
+
+                        });
+
+                    });
+
                 });
+
             });
+
         });
+
+        return icon;
+    }
+
+//    private Icon getAcceptIcon(Icon icon){
+//        ItemStack item = icon.getItem();
+//
+//        icon.setName(formatLine(item.getItemMeta().getDisplayName()));
+//        icon.setLore(item.getItemMeta()
+//                .getLore()
+//                .stream()
+//                .map(this::formatLine)
+//                .collect(Collectors.toList()));
+//
+//        icon.onClick(e -> {
+//            e.setCancelled(true);
+//            Player p = (Player) e.getWhoClicked();
+//
+//            if (CooldownService.isOnCooldown(p.getUniqueId())) {
+//                p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+//                return;
+//            }
+//            CooldownService.updateCooldown(p.getUniqueId());
+//
+//            async(() -> {
+//                MarketItemData mItemData = DataService.getMarketItemData(marketItemData.getId());
+//
+//                String result = null;
+//
+//                if (mItemData == null) {
+//                    result = configGui.getMessage("item-sold-message");
+//                } else if (ExpireUtils.isExpired(mItemData.getOfferDate())) {
+//                    result = Settings.getExpireMessage();
+//                } else if (mItemData.getOwnerUUID().equals(p.getUniqueId().toString())) {
+//                    result = configGui.getMessage("player-is-owner-message");
+//                } else if (PlayerUtils.isInventoryFull(p)) {
+//                    result = configGui.getMessage("inventory-full-message");
+//                } else if (!EconomyService.withDrawIfPossible(p, mItemData.getPrice())) {
+//                    result = configGui.getMessage("not-enough-money-message");
+//                }
+//
+//                String finalResult = result;
+//
+//                sync(() -> {
+//                    if (finalResult != null) {
+//                        backToShop(finalResult);
+//                        return;
+//                    }
+//
+//                    if(mItemData == null){
+//                        backToShop(configGui.getMessage("item-sold-message"));
+//                        return;
+//                    }
+//
+//                    double taxValue = DataService.buyItem(mItemData);
+//                    ItemStack iStack = mItemData.getItemStackDeserialize();
+//                    p.getInventory().addItem(iStack);
+//
+//                    LogService.log("Player " + p.getName() + " buy item " + iStack.getType());
+//
+//                    DiscordLogs.buyItem(p.getName(), mItemData);
+//
+//                    if (Settings.isTaxEnabled() && Settings.isTaxCommandEnabled()) {
+//                        String command = Settings.getTaxCommand()
+//                                .replace("{PLAYER}", p.getName())
+//                                .replace("{PRICE}", String.valueOf(taxValue));
+//
+//                        p.getServer().dispatchCommand(
+//                                p.getServer().getConsoleSender(), command
+//                        );
+//                    }
+//
+//                    backToShop(configGui.getMessage("success-message")
+//                            .replace("{COST}", DoubleFormatter.format(mItemData.getPrice()))
+//                    );
+//                });
+//            });
+//        });
 
 //        icon.onClick(e -> {
 //            e.setCancelled(true);
@@ -239,8 +322,8 @@ public class BuyGui extends Gui {
 //                });
 //            });
 //        });
-        return icon;
-    }
+//        return icon;
+//    }
     private String formatLine(String line){
         return ChatUtils.format(player, line.replace("{AMOUNT}", DoubleFormatter.format(marketItemData.getPrice())));
     }

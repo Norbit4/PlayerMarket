@@ -13,7 +13,6 @@ import pl.norbit.playermarket.gui.*;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.ConfigIcon;
-import pl.norbit.playermarket.model.local.LocalPlayerData;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.format.ChatUtils;
@@ -22,7 +21,6 @@ import pl.norbit.playermarket.utils.player.ItemsUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.norbit.playermarket.utils.TaskUtils.async;
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 public class ShulkerContentGui extends Gui {
@@ -92,28 +90,34 @@ public class ShulkerContentGui extends Gui {
 
     public Icon getBuyIcon(Icon icon) {
         icon.onClick(e -> {
-            e.setCancelled(true);
-
-            if(marketItemData == null){
+            if (marketItemData == null) {
                 return;
             }
 
-            async(() -> {
-                Player player = (Player) e.getWhoClicked();
-                MarketItemData mItemData = DataService.getMarketItemData(this.marketItemData.getId());
+            Player player = (Player) e.getWhoClicked();
 
-                if(mItemData == null){
+            DataService.getMarketItemData(this.marketItemData.getId()).thenAccept(mItemData -> {
+
+                if (mItemData == null) {
                     String message = configGui.getMessage("item-sold-message");
-                    player.sendMessage(ChatUtils.format(player, message));
 
-                    if(guiType == GuiType.MAIN){
+                    sync(() -> player.sendMessage(ChatUtils.format(player, message)));
+
+                    if (guiType == GuiType.MAIN) {
+
                         sync(() -> new MarketGui(player, CategoryService.getMain()).open());
-                    }else {
-                        LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
-                        sync(() -> new PlayerItemsGui(player, playerLocalData, 0).open());
+
+                    } else {
+
+                        DataService.getPlayerLocalData(player).thenAccept(playerLocalData -> {
+                            sync(() -> new PlayerItemsGui(player, playerLocalData, 0).open());
+                        });
+
                     }
+
                     return;
                 }
+
                 sync(() -> new BuyGui(player, mItemData, itemIcon).open());
             });
         });
@@ -127,20 +131,20 @@ public class ShulkerContentGui extends Gui {
 
             String search = SearchStorage.getSearch(player.getUniqueId());
 
-            if(search != null){
+            if (search != null) {
                 new MarketSearchGui(player, search).open();
                 return;
             }
 
-            if(guiType == GuiType.MAIN){
+            if (guiType == GuiType.MAIN) {
                 new MarketGui(player, CategoryService.getMain()).open();
-            }else {
-                async(() -> {
-                    Player player = (Player) e.getWhoClicked();
-                    LocalPlayerData playerLocalData = DataService.getPlayerLocalData(player);
+            } else {
+                Player p = (Player) e.getWhoClicked();
 
-                    sync(() -> new PlayerItemsGui(player, playerLocalData, 0).open());
+                DataService.getPlayerLocalData(p).thenAccept(playerLocalData -> {
+                    sync(() -> new PlayerItemsGui(p, playerLocalData, 0).open());
                 });
+
             }
         });
 

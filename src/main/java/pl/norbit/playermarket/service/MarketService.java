@@ -1,5 +1,9 @@
 package pl.norbit.playermarket.service;
 
+import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.gui.MarketGui;
+import pl.norbit.playermarket.gui.MarketSearchGui;
+import pl.norbit.playermarket.gui.PlayerItemsGui;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
@@ -14,19 +18,18 @@ import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
 public class MarketService {
 
     private static HashMap<UUID, List<LocalMarketItem>> marketItems = new HashMap<>();
+    private static List<LocalMarketItem> cachedAllItems = Collections.emptyList();
 
-    private MarketService() {
-        throw new IllegalStateException("Utility class");
-    }
+    private MarketService() {}
 
     public static List<LocalMarketItem> getIcons(Category category){
-        if (Objects.requireNonNull(category.getType()) == CategoryType.ALL) {
+        if (category.getType() == CategoryType.ALL) {
             return getAllIcons();
         }
         List<LocalMarketItem> localMarketItems = marketItems.get(category.getCategoryUUID());
 
         if(localMarketItems == null){
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         List<LocalMarketItem> reverse = new ArrayList<>(localMarketItems);
@@ -35,13 +38,31 @@ public class MarketService {
         return reverse;
     }
 
+    public static void notifyCategoryChanged(UUID categoryUUID) {
+        Map<UUID, Set<MarketGui>> viewers = MarketGui.getViewers();
+
+        Set<MarketGui> categoryGuis = viewers.get(categoryUUID);
+        if (categoryGuis != null) {
+            for (MarketGui gui : categoryGuis) {
+                gui.onItemAdded();
+            }
+        }
+
+        // update ALL-category
+        Set<MarketGui> allGuis = viewers.get(Settings.ALL_CATEGORY.getCategoryUUID());
+
+        if (allGuis != null) {
+            for (MarketGui gui : allGuis) {
+                gui.onItemAdded();
+            }
+        }
+
+        PlayerItemsGui.updateAll();
+        MarketSearchGui.updateAll();
+    }
+
     private static List<LocalMarketItem> getAllIcons(){
-        return marketItems.values()
-                .stream()
-                .flatMap(Collection::stream)
-                // Sort by date
-                .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
-                .collect(Collectors.toList());
+        return cachedAllItems;
     }
 
     public static List<LocalMarketItem> searchItemsByMaterial(String itemMatName){
@@ -56,26 +77,83 @@ public class MarketService {
 
     public static void start() {
         asyncTimer(() -> {
-            HashMap<UUID, List<LocalMarketItem>> newMarketItems = new HashMap<>();
+            DataService.getAll().thenAccept(items -> {
+                HashMap<UUID, List<LocalMarketItem>> newMarketItems = new HashMap<>();
 
-            DataService.getAll()
-                    .stream()
-                    .map(LocalMarketItem::new)
-                    // Filter out expired items
-                    .filter(item -> !ExpireUtils.isExpired(item.getOfferDate()))
-                    .forEach(item -> addToMarketItems(CategoryService.getCategoryUUID(item), item, newMarketItems));
+                items.stream()
+                        .map(LocalMarketItem::new)
+                        .filter(item -> !ExpireUtils.isExpired(item.getOfferDate()))
+                        .forEach(item ->
+                                addToMarketItems(
+                                        CategoryService.getCategoryUUID(item),
+                                        item,
+                                        newMarketItems
+                                )
+                        );
 
-            marketItems = newMarketItems;
-        }, 40L, 8L);
+                Set<UUID> changedCategories =
+                        getChangedCategories(marketItems, newMarketItems);
+
+                marketItems = newMarketItems;
+
+                cachedAllItems = newMarketItems.values()
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
+                        .collect(Collectors.toList());
+
+                for (UUID categoryUUID : changedCategories) {
+                    notifyCategoryChanged(categoryUUID);
+                }
+            });
+
+        }, 40L, 30L);
     }
 
-    private static void addToMarketItems(UUID categoryUUID, LocalMarketItem item, HashMap<UUID, List<LocalMarketItem>> marketItems){
-        if(marketItems.containsKey(categoryUUID)) {
-            marketItems.get(categoryUUID).add(item);
-        }else{
-            List<LocalMarketItem> itemsInCategory = new ArrayList<>();
-            itemsInCategory.add(item);
-            marketItems.put(categoryUUID, itemsInCategory);
+    private static Set<UUID> getChangedCategories(
+            Map<UUID, List<LocalMarketItem>> oldMap,
+            Map<UUID, List<LocalMarketItem>> newMap
+    ) {
+
+        Set<UUID> changed = new HashSet<>();
+
+        Set<UUID> allKeys = new HashSet<>();
+        allKeys.addAll(oldMap.keySet());
+        allKeys.addAll(newMap.keySet());
+
+        for (UUID key : allKeys) {
+            List<LocalMarketItem> oldList = oldMap.getOrDefault(key, Collections.emptyList());
+            List<LocalMarketItem> newList = newMap.getOrDefault(key, Collections.emptyList());
+
+            if (oldList.size() != newList.size()) {
+                changed.add(key);
+                continue;
+            }
+
+            for (int i = 0; i < oldList.size(); i++) {
+                if (!equalsItem(oldList.get(i), newList.get(i))) {
+                    changed.add(key);
+                    break;
+                }
+            }
         }
+
+        return changed;
+    }
+
+    private static boolean equalsItem(LocalMarketItem a, LocalMarketItem b) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+
+        return a.getId().equals(b.getId()) &&
+                a.getOfferDate() == b.getOfferDate();
+    }
+
+    private static void addToMarketItems(UUID categoryUUID, LocalMarketItem item,
+                                         HashMap<UUID, List<LocalMarketItem>> marketItems) {
+
+        marketItems
+                .computeIfAbsent(categoryUUID, k -> new ArrayList<>())
+                .add(item);
     }
 }

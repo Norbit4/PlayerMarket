@@ -65,20 +65,20 @@ public class LocalMarketItem {
 
             ClickType click = e.getClick();
 
-            async(()->{
-                MarketItemData mtItemData = DataService.getMarketItemData(id);
-
+            DataService.getMarketItemData(id).thenAccept(mtItemData -> {
                 if(mtItemData == null){
                     return;
                 }
+
                 ItemStack currentItem = e.getCurrentItem();
 
                 if(click == ClickType.RIGHT && ItemsUtils.isShulkerBox(itemStack)){
-                    sync(()-> new ShulkerContentGui(p, mtItemData, currentItem).open());
+                    sync(() -> new ShulkerContentGui(p, mtItemData, currentItem).open());
                     return;
                 }
 
-                sync(()-> new BuyGui(p, mtItemData, currentItem).open());
+                sync(() -> new BuyGui(p, mtItemData, currentItem).open());
+
             });
         });
         this.icon = icon;

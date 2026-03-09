@@ -10,19 +10,16 @@ import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
 import pl.norbit.playermarket.gui.template.TemplateUtils;
+import pl.norbit.playermarket.gui.utils.GuiPages;
 import pl.norbit.playermarket.model.PlayerData;
-import pl.norbit.playermarket.economy.EconomyService;
-import pl.norbit.playermarket.model.local.ConfigGui;
-import pl.norbit.playermarket.model.local.ConfigIcon;
-import pl.norbit.playermarket.model.local.LocalPlayerData;
-import pl.norbit.playermarket.model.local.LocalPlayerItem;
+import pl.norbit.playermarket.model.local.*;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
-import pl.norbit.playermarket.utils.pagination.GuiPages;
 import pl.norbit.playermarket.utils.player.PermUtils;
 
 import java.util.*;
@@ -35,16 +32,19 @@ public class PlayerItemsGui extends Gui {
 
     private final PaginationManager itemsPagination;
     private final PaginationManager borderPagination;
-    private LocalPlayerData localData;
 
     private final ConfigGui configGui;
+    private final GuiPages<LocalPlayerItem> guiPages;
+
+    private LocalPlayerData localData;
     private boolean updateProgress;
-    private final GuiPages guiPages;
 
     private static final Map<UUID, PlayerItemsGui> playersGui = new ConcurrentHashMap<>();
 
-    static {
-        asyncTimer(() -> playersGui.values().forEach(PlayerItemsGui::updateTask), 6L, 8L);
+    public static void updateAll(){
+        for (PlayerItemsGui value : playersGui.values()) {
+            value.updateTask();
+        }
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
@@ -52,45 +52,74 @@ public class PlayerItemsGui extends Gui {
 
         this.configGui = Settings.OFFERS_GUI;
         this.updateProgress = false;
+        this.localData = lPlayerData;
 
         GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
 
         this.itemsPagination = template.getMarketItemsPagination();
-        this.localData = lPlayerData;
 
-        if(this.configGui.isFill()){
-            this.borderPagination = new PaginationManager(this);
-        }else {
-            this.borderPagination = template.getBorderPagination();
-        }
+        this.borderPagination = this.configGui.isFill()
+                ? new PaginationManager(this)
+                : template.getBorderPagination();
 
-        GuiUtils.loadBorder(this.configGui, this.borderPagination, this.configGui.getFillBlackList(), this.getSize());
+        GuiUtils.loadBorder(
+                this.configGui,
+                this.borderPagination,
+                this.configGui.getFillBlackList(),
+                this.getSize()
+        );
 
         ConfigIcon left = configGui.getIcon("previous-page-icon");
         ConfigIcon right = configGui.getIcon("next-page-icon");
-
         ConfigIcon fill = configGui.getIcon("border-icon");
 
-        Icon fillIcon = null;
+        Icon fillIcon = configGui.isFill() ? fill.getIcon() : null;
 
-        if(this.configGui.isFill()){
-            fillIcon = fill.getIcon();
-        }
+        this.guiPages = new GuiPages<>(
+                this,
+                Settings.OFFERS_GUI.getTitle(),
+                itemsPagination,
+                left.getSlot(),
+                left.getIcon(),
+                right.getSlot(),
+                right.getIcon(),
+                fillIcon
+        );
 
         updateCategory(lPlayerData.getPlayerOffers(), page);
 
-        this.guiPages = new GuiPages(this, Settings.OFFERS_GUI.getTitle(), itemsPagination, left.getSlot(),
-                left.getIcon(), right.getSlot(), right.getIcon(), fillIcon);
+        this.guiPages.initUpdateTitle();
     }
 
-    public void updateTask(){
-        if(updateProgress) {
-            return;
-        }
+    private void updateTask(){
+        if(updateProgress) return;
+        if(isClosed()) return;
 
-        if(!isClosed()) {
-            updateCategory();
-        }
+        DataService.getPlayerLocalData(player).thenAccept(localPlayerData -> {
+
+            List<LocalPlayerItem> items = localPlayerData.getPlayerOffers()
+                    .stream()
+                    .filter(item -> !item.isRemoveProgress())
+                    .collect(Collectors.toList());
+
+            guiPages.updateItems(
+                    items,
+                    LocalPlayerItem::getIcon,
+                    new GuiPages.HashProvider<>() {
+
+                        public int hash(LocalPlayerItem item) {
+                            return Objects.hash(item.getId(), item.isRemoveProgress());
+                        }
+
+                        public boolean equals(LocalPlayerItem a, LocalPlayerItem b) {
+                            if (a == null || b == null) return false;
+
+                            return a.getId().equals(b.getId())
+                                    && a.isRemoveProgress() == b.isRemoveProgress();
+                        }
+                    }
+            );
+        });
     }
 
     @Override
@@ -100,19 +129,26 @@ public class PlayerItemsGui extends Gui {
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        this.itemsPagination.update();
-        this.guiPages.update();
-        this.borderPagination.update();
+
+        itemsPagination.update();
+        guiPages.update();
+        borderPagination.update();
 
         ConfigIcon profileIcon = configGui.getIcon("statistics-icon");
         ConfigIcon backIcon = configGui.getIcon("back-to-market-icon");
 
         addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
-        addItem(backIcon.getSlot(), GuiUtils.getOpenGuItem(backIcon.getIcon(),
-                new MarketGui(player, CategoryService.getMain())));
+
+        addItem(
+                backIcon.getSlot(),
+                GuiUtils.getOpenGuItem(
+                        backIcon.getIcon(),
+                        new MarketGui(player, CategoryService.getMain())
+                )
+        );
 
         setClosed(false);
-        playersGui.compute(player.getUniqueId(), (k, v) -> this);
+        playersGui.put(player.getUniqueId(), this);
     }
 
     private Icon getProfileIcon(Icon icon){
@@ -124,55 +160,70 @@ public class PlayerItemsGui extends Gui {
                 .stream()
                 .map(l -> formatLine(l, playerData))
                 .collect(Collectors.toList()));
+
         icon.hideFlags();
 
         icon.onClick(e -> {
-            e.setCancelled(true);
-
             Player p = (Player) e.getWhoClicked();
 
             if(CooldownService.isOnCooldown(p.getUniqueId())){
                 p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
                 return;
             }
+
             CooldownService.updateCooldown(p.getUniqueId());
 
             double earnedMoney = playerData.getEarnedMoney();
 
             if(earnedMoney == 0) {
-                player.sendMessage(ChatUtils.format(player, configGui.getMessage("nothing-to-get-message")));
+                player.sendMessage(ChatUtils.format(
+                        player,
+                        configGui.getMessage("nothing-to-get-message")
+                ));
                 return;
             }
 
             player.sendMessage(ChatUtils.format(
-                    player, configGui.getMessage("success-message")
-                            .replace("{MONEY}", DoubleFormatter.format(earnedMoney))));
+                    player,
+                    configGui.getMessage("success-message")
+                            .replace("{MONEY}", DoubleFormatter.format(earnedMoney))
+            ));
 
-            if(this.updateProgress) {
-                return;
-            }
-            this.updateProgress = true;
+            if(updateProgress) return;
 
-            async(() -> {
-                playerData.setEarnedMoney(0);
-                playerData.setSoldItems(0);
+            updateProgress = true;
 
-                DataService.updatePlayerData(playerData);
+            playerData.setEarnedMoney(0);
+            playerData.setSoldItems(0);
 
-                LocalPlayerData pLocalData = DataService.getPlayerLocalData(player);
+            DataService.updatePlayerData(playerData);
 
-                sync(() -> new PlayerItemsGui(player, pLocalData, this.itemsPagination.getCurrentPage()).open());
+            DataService.getPlayerLocalData(player).thenAccept(pLocalData -> {
+                sync(() -> {
 
-                EconomyService.deposit(player, earnedMoney);
+                    new PlayerItemsGui(
+                            player,
+                            pLocalData,
+                            itemsPagination.getCurrentPage()
+                    ).open();
+
+                    EconomyService.deposit(player, earnedMoney);
+                });
             });
         });
+
         return icon;
     }
 
     private String formatLine(String line, PlayerData playerData){
-        int amount = PermUtils.getAmount(player, Settings.OFFER_COMMAND_LIMIT_PERMISSION, Settings.OFFER_COMMAND_DEFAULT_LIMIT);
+        int amount = PermUtils.getAmount(
+                player,
+                Settings.OFFER_COMMAND_LIMIT_PERMISSION,
+                Settings.OFFER_COMMAND_DEFAULT_LIMIT
+        );
 
-        return ChatUtils.format(player,
+        return ChatUtils.format(
+                player,
                 line.replace("{OFFERS}", String.valueOf(playerData.getPlayerOffers().size()))
                         .replace("{OFFERS_LIMIT}", String.valueOf(amount))
                         .replace("{SOLD}", String.valueOf(playerData.getSoldItems()))
@@ -183,28 +234,15 @@ public class PlayerItemsGui extends Gui {
     }
 
     private void updateCategory(List<LocalPlayerItem> items, int page) {
-        this.itemsPagination.getItems().clear();
-        this.itemsPagination.goFirstPage();
+        itemsPagination.getItems().clear();
+        itemsPagination.goFirstPage();
 
-        items.forEach(item -> this.itemsPagination.addItem(item.getIcon()));
+        items.forEach(item -> itemsPagination.addItem(item.getIcon()));
 
-        if(page < this.itemsPagination.getLastPage()) {
-            this.itemsPagination.setPage(page);
+        if(page < itemsPagination.getLastPage()) {
+            itemsPagination.setPage(page);
         } else {
-            this.itemsPagination.goLastPage();
+            itemsPagination.goLastPage();
         }
-    }
-    private void updateCategory() {
-        LocalPlayerData localPlayerData = DataService.getPlayerLocalData(player);
-        this.localData = localPlayerData;
-
-        this.itemsPagination.getItems().clear();
-
-        localPlayerData.getPlayerOffers()
-                .stream()
-                .filter(item -> !item.isRemoveProgress())
-                .forEach(item -> this.itemsPagination.addItem(item.getIcon()));
-        this.itemsPagination.update();
-        this.guiPages.update();
     }
 }

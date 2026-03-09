@@ -86,22 +86,26 @@ public class LocalPlayerItem {
                 return;
             }
 
-            async(() -> {
-                ItemStack item = DataService.removeItemFromOffer(p, id);
+            DataService.removeItemFromOffer(p, id).thenAccept(item -> {
+                sync(() -> {
 
-                p.sendMessage(ChatUtils.format(Settings.OFFERS_GUI.getMessage("remove-offer-message")));
+                    p.sendMessage(ChatUtils.format(Settings.OFFERS_GUI.getMessage("remove-offer-message")));
 
-                if(item != null){
-                    p.getInventory().addItem(item);
-                    LogService.log("Player " + p.getName() + " remove offer item" + item.getType() + " x" + item.getAmount());
-                }else {
-                    LogService.log("Player " + p.getName() + " remove offer item failed (null)");
-                }
+                    if (item != null) {
+                        p.getInventory().addItem(item);
+                        LogService.log("Player " + p.getName() + " remove offer item " + item.getType() + " x" + item.getAmount());
+                    } else {
+                        LogService.log("Player " + p.getName() + " remove offer item failed (null)");
+                    }
 
-                LocalPlayerData pLocalData = DataService.getPlayerLocalData(p);
+                    DataService.getPlayerLocalData(p).thenAccept(localData -> {
+                        sync(() -> new PlayerItemsGui(p, localData, 0).open());
+                    });
 
-                sync(() -> new PlayerItemsGui(p, pLocalData, 0).open());
+                });
+
             });
+
         });
         this.icon = icon;
     }
