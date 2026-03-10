@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.GuiType;
 import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
@@ -59,9 +60,13 @@ public class LocalMarketItem {
         Icon icon = new Icon(addPrice());
 
         icon.onClick(e->{
-            e.setCancelled(true);
-
             Player p = (Player) e.getWhoClicked();
+
+            if (!CooldownService.tryClick(p.getUniqueId())) {
+                p.closeInventory();
+                p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+                return;
+            }
 
             ClickType click = e.getClick();
 

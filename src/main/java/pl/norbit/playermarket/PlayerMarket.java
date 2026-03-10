@@ -15,6 +15,7 @@ import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
+import pl.norbit.playermarket.listeners.OnPlayerQuit;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.PlaceholderService;
 
@@ -53,6 +54,7 @@ public final class PlayerMarket extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
 
         pluginManager.registerEvents(new OnPlayerJoin(), this);
+        pluginManager.registerEvents(new OnPlayerQuit(), this);
     }
 
     public void registerCommands() {

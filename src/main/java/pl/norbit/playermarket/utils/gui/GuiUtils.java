@@ -3,7 +3,11 @@ package pl.norbit.playermarket.utils.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
+import org.bukkit.entity.Player;
+import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.model.local.ConfigGui;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.List;
 
@@ -31,8 +35,14 @@ public class GuiUtils {
 
     public static Icon getOpenGuItem(Icon icon, Gui gui){
         icon.hideFlags();
+        Player p = gui.player;
+
         icon.onClick(e -> {
-            e.setCancelled(true);
+            if (!CooldownService.tryClick(p.getUniqueId())) {
+                p.closeInventory();
+                p.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+                return;
+            }
             gui.open();
         });
         return icon;

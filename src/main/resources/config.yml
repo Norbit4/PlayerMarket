@@ -118,7 +118,7 @@ tax:
   # tax command executed when player buy item, {PRICE} - tax money value
   command:
     enabled: false
-    execute: 'eco give Norbit4 {PRICE}' # example: add tax money to server owner
+    execute: 'eco give Norbit4 {PRICE}' # example: add tax money to a server owner
 
 blacklist:
   # if enabled, players will not be able to offer items from this list
@@ -128,6 +128,24 @@ blacklist:
   items:
     - 'DIAMOND_SWORD' # example of item id
     - 'test item' # example of item name
+
+offers-limit:
+  enabled: true
+  default-limit: 4
+  # usage:
+  # ex. 'playermarket.offers.limit.15' => 15 offers
+  permission: 'playermarket.offers.limit'
+  limit-message: '&cYou have reached maximum amount of active offers!'
+
+cooldown:
+  # Cooldown for commands and some GUI icons (in milliseconds, recommended: 400–500)
+  # This value helps protect the system from excessive spam.
+  # Significantly lowering this value is strongly discouraged.
+  time: 400
+  # Maximum number of clicks allowed per second in GUI (recommended: 5–7)
+  #  This value helps protect the GUI from spam clicking.
+  #  Significantly increasing this value is strongly discouraged.
+  clicks-per-second: 7
 
 # {DATE} - item offer date
 # {PRICE} - item price
@@ -384,15 +402,6 @@ search-gui:
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
 #---------------------------------------#
-
-offers-limit:
-  enabled: true
-  default-limit: 4
-  # usage:
-  # ex. 'playermarket.offers.limit.15' => 15 offers
-  permission: 'playermarket.offers.limit'
-  limit-message: '&cYou have reached maximum amount of active offers!'
-
 offers-gui:
   title: '&8&lYOUR OFFERS'
   size: 6 # in rows

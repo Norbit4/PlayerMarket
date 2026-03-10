@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.gui.anvil.ItemTypeSearchGui;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
 import pl.norbit.playermarket.gui.template.TemplateUtils;
@@ -160,11 +161,14 @@ public class MarketGui extends Gui {
         icon.hideFlags();
 
         icon.onClick(e -> {
+            if (!CooldownService.tryClick(player.getUniqueId())) {
+                player.closeInventory();
+                player.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+                return;
+            }
 
-            Player p = (Player) e.getWhoClicked();
-
-            DataService.getPlayerLocalData(p).thenAccept(data -> {
-                sync(() -> new PlayerItemsGui(p, data, 0).open());
+            DataService.getPlayerLocalData(player).thenAccept(data -> {
+                sync(() -> new PlayerItemsGui(player, data, 0).open());
             });
         });
 
@@ -172,15 +176,20 @@ public class MarketGui extends Gui {
     }
 
     private Icon getSearchIcon(Icon icon) {
-
         icon.hideFlags();
-        icon.onClick(e -> ItemTypeSearchGui.open(player));
+        icon.onClick(e -> {
+            if (!CooldownService.tryClick(player.getUniqueId())) {
+                player.closeInventory();
+                player.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+                return;
+            }
+            ItemTypeSearchGui.open(player);
+        });
 
         return icon;
     }
 
     private Icon createCategory(Category category) {
-
         Icon icon = new Icon(category.getIcon());
 
         boolean selected = category.getCategoryUUID().equals(this.category.getCategoryUUID());
@@ -193,7 +202,6 @@ public class MarketGui extends Gui {
         icon.hideFlags();
 
         if (selected) {
-
             icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream()
                     .map(ChatUtils::format)
                     .collect(Collectors.toList()));
@@ -208,8 +216,11 @@ public class MarketGui extends Gui {
                 .collect(Collectors.toList()));
 
         icon.onClick(e -> {
-
-            e.setCancelled(true);
+            if (!CooldownService.tryClick(player.getUniqueId())) {
+                player.closeInventory();
+                player.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
+                return;
+            }
 
             new MarketGui(player, category).open();
         });

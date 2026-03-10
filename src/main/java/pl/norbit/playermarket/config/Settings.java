@@ -102,6 +102,12 @@ public class Settings {
     @Getter
     private static String blacklistMessage;
 
+    @Getter
+    private static int cooldownTime;
+
+    @Getter
+    private static int clicksPerSecond;
+
     private Settings() {
         throw new IllegalStateException("Utility class");
     }
@@ -136,7 +142,7 @@ public class Settings {
 
         DEBUG = config.getBoolean("debug");
 
-        //offers limit
+        //offer limit
         OFFER_COMMAND_LIMIT_ENABLED = config.getBoolean("offers-limit.enabled");
         OFFER_COMMAND_DEFAULT_LIMIT = config.getInt("offers-limit.default-limit");
         OFFER_COMMAND_LIMIT_PERMISSION = config.getString("offers-limit.permission");
@@ -241,6 +247,10 @@ public class Settings {
         taxValue = config.getDouble("tax.value");
         taxCommandEnabled = config.getBoolean("tax.command.enabled");
         taxCommand = config.getString("tax.command.execute");
+
+        //cooldown
+        cooldownTime = config.getInt("cooldown.time");
+        clicksPerSecond = config.getInt("cooldown.clicks-per-seconds");
 
         //discord
         ConfigurationSection discordSection = config.getConfigurationSection("discord");
