@@ -26,6 +26,10 @@ repositories {
         url = 'https://repo.rosewooddev.io/repository/public/'
     }
     maven {
+        name = "matteodev"
+        url = "https://maven.devs.beer/"
+    }
+    maven {
         url "https://repo.codemc.io/repository/maven-snapshots/"
     }
 }
@@ -55,7 +59,7 @@ dependencies {
     implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.2.0'
 
     //itemsadder
-    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.2-beta-r3-b'
+    compileOnly("dev.lone:api-itemsadder:4.0.10")
 
     //yaml
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
