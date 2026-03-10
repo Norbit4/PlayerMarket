@@ -14,11 +14,11 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.logs.DiscordLogs;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
-import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.ConfigIcon;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
+import pl.norbit.playermarket.utils.economy.EconomyUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
@@ -128,7 +128,7 @@ public class BuyGui extends Gui {
                         return;
                     }
 
-                    if (!EconomyService.withDrawIfPossible(p, mItemData.getPrice())) {
+                    if (!EconomyUtils.withDrawIfPossible(p, mItemData.getPrice())) {
                         backToShop(configGui.getMessage("not-enough-money-message"));
                         return;
                     }

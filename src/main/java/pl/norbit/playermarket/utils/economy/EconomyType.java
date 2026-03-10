@@ -1,11 +1,12 @@
-package pl.norbit.playermarket.economy;
+package pl.norbit.playermarket.utils.economy;
 
 import lombok.Getter;
 
 @Getter
 public enum EconomyType {
-    VAULT("Vault"),
-    PLAYERPOINTS("PlayerPoints");
+    PLAYER_POINTS("PLAYERPOINTS"),
+    VAULT("VAULT"),
+    COINS_ENGINE("COINSENGINE");
 
     EconomyType(String name) {
         this.name = name;

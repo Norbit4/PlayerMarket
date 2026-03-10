@@ -13,11 +13,11 @@ import pl.norbit.playermarket.commands.OfferCommand;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
 import pl.norbit.playermarket.listeners.OnPlayerQuit;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.PlaceholderService;
+import pl.norbit.playermarket.utils.economy.EconomyUtils;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
 
@@ -36,7 +36,7 @@ public final class PlayerMarket extends JavaPlugin {
         new InventoryAPI(this).init();
         Settings.load(false);
 
-        EconomyService.load();
+        EconomyUtils.load();
 
         registerCommands();
         registerEvents();

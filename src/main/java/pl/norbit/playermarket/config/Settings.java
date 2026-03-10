@@ -6,11 +6,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.config.discord.DiscordConfig;
 import pl.norbit.playermarket.config.discord.DiscordEmbed;
-import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.config.category.CategoryUtils;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.ConfigGui;
+import pl.norbit.playermarket.utils.economy.EconomyUtils;
 
 import java.util.List;
 
@@ -136,8 +136,9 @@ public class Settings {
             USE_SSL = config.getString("database.use-ssl");
 
             String type = config.getString("economy.type");
+            String currency = config.getString("economy.currency");
 
-            EconomyService.setEconomyType(type);
+            EconomyUtils.setEconomyType(type, currency);
         }
 
         DEBUG = config.getBoolean("debug");
@@ -250,7 +251,7 @@ public class Settings {
 
         //cooldown
         cooldownTime = config.getInt("cooldown.time");
-        clicksPerSecond = config.getInt("cooldown.clicks-per-seconds");
+        clicksPerSecond = config.getInt("cooldown.clicks-per-second");
 
         //discord
         ConfigurationSection discordSection = config.getConfigurationSection("discord");

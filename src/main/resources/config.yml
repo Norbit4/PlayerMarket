@@ -90,7 +90,10 @@ market-command:
 #  Vault - https://www.spigotmc.org/resources/vault.34315/
 #  PlayerPoints - https://www.spigotmc.org/resources/playerpoints.80745/
 
-# types: [vault, playerpoints]
+# Economy configuration
+# type:
+#  - vault -> uses a Vault economy from server plugins
+#  - playerpoints -> uses PlayerPoints plugin
 economy:
   type: 'vault'
 

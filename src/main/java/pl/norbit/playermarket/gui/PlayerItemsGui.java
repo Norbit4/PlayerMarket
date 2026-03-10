@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.economy.EconomyService;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
 import pl.norbit.playermarket.gui.template.TemplateUtils;
 import pl.norbit.playermarket.gui.utils.GuiPages;
 import pl.norbit.playermarket.model.PlayerData;
 import pl.norbit.playermarket.model.local.*;
 import pl.norbit.playermarket.service.CategoryService;
+import pl.norbit.playermarket.utils.economy.EconomyUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
@@ -207,7 +207,7 @@ public class PlayerItemsGui extends Gui {
                             itemsPagination.getCurrentPage()
                     ).open();
 
-                    EconomyService.deposit(player, earnedMoney);
+                    EconomyUtils.deposit(player, earnedMoney);
                 });
             });
         });
