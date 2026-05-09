@@ -1,6 +1,7 @@
 package pl.norbit.playermarket.utils.economy;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 
 public class EconomyUtils {
     @Setter(AccessLevel.PRIVATE)
+    @Getter
     private static EconomyType economyType;
     @Setter(AccessLevel.PRIVATE)
     private static String currencyName;

@@ -12,6 +12,8 @@ import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.utils.BlackListUtils;
+import pl.norbit.playermarket.utils.economy.EconomyType;
+import pl.norbit.playermarket.utils.economy.EconomyUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.PermUtils;
 
@@ -38,13 +40,21 @@ public class OfferCommand implements CommandExecutor {
             return true;
         }
 
-
         double price;
-        try{
-            price =  Double.parseDouble(args[0]);
-        }catch (NumberFormatException e){
-            p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_PRICE));
-            return true;
+        if(EconomyUtils.getEconomyType() == EconomyType.PLAYER_POINTS){
+            try{
+                price =  Integer.parseInt(args[0]);
+            }catch (NumberFormatException e){
+                p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_PRICE));
+                return true;
+            }
+        }else {
+            try{
+                price =  Double.parseDouble(args[0]);
+            }catch (NumberFormatException e){
+                p.sendMessage(ChatUtils.format(Settings.OFFER_COMMAND_WRONG_PRICE));
+                return true;
+            }
         }
 
         //check price

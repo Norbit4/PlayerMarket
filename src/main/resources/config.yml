@@ -93,7 +93,7 @@ market-command:
 # Economy configuration
 # type:
 #  - vault -> uses a Vault economy from server plugins
-#  - playerpoints -> uses PlayerPoints plugin
+#  - player_points -> uses PlayerPoints plugin
 economy:
   type: 'vault'
 
