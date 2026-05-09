@@ -30,7 +30,7 @@ repositories {
         url = "https://maven.devs.beer/"
     }
     maven {
-        url "https://repo.codemc.io/repository/maven-snapshots/"
+        url "https://mvn.wesjd.net/"
     }
 }
 
@@ -65,7 +65,7 @@ dependencies {
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
     //anvilgui
-    implementation 'net.wesjd:anvilgui:1.10.11-SNAPSHOT'
+    implementation 'net.wesjd:anvilgui:1.10.13-SNAPSHOT'
 }
 
 def targetJavaVersion = 11
