@@ -32,6 +32,21 @@ repositories {
     maven {
         url "https://mvn.wesjd.net/"
     }
+    maven{
+        url = "https://repo.momirealms.net/releases/"
+    }
+    maven{
+        url = "https://repo.nexomc.com/releases"
+    }
+    maven{
+        url = "https://repo.oraxen.com/releases"
+    }
+    maven{
+        url = "https://nexus.phoenixdevt.fr/repository/maven-public/"
+    }
+    maven{
+        url = "https://mvn.lumine.io/repository/maven-public/"
+    }
 }
 
 dependencies {
@@ -68,11 +83,29 @@ dependencies {
     //itemsadder
     compileOnly("dev.lone:api-itemsadder:4.0.10")
 
+    //craft engine
+    compileOnly("net.momirealms:craft-engine-core:26.7.1")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.7.1")
+
+    //nexo
+    compileOnly("com.nexomc:nexo:1.24.0")
+
+    //oraxen
+    compileOnly("io.th0rgal:oraxen:1.163.0:dev")
+
     //yaml
     compileOnly group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
     //anvilgui
     implementation 'net.wesjd:anvilgui:1.10.13-SNAPSHOT'
+
+    //mmo items
+    compileOnly("io.lumine:MythicLib-dist:1.6.2-SNAPSHOT")
+    compileOnly("net.Indyuce:MMOItems-API:6.9.5-SNAPSHOT")
+
+    //mythic
+    compileOnly("io.lumine:MythicCrucible-API:5.13.0-SNAPSHOT")
+    compileOnly("io.lumine:Mythic-Dist:5.12.1")
 }
 
 def targetJavaVersion = 21

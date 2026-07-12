@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import pl.norbit.playermarket.PlayerMarket;
+import pl.norbit.playermarket.plugins.PluginHook;
+import pl.norbit.playermarket.plugins.PluginService;
 
 import java.util.logging.Logger;
 
@@ -22,34 +24,16 @@ public class EconomyUtils {
 
     private EconomyUtils() {}
 
-    private static boolean checkPlugin(String pluginName) {
-        Server server = instance.getServer();
-
-        PluginManager pM = server.getPluginManager();
-        Plugin plugin = pM.getPlugin(pluginName);
-
-        if(plugin != null && plugin.isEnabled()){
-            Logger logger = server.getLogger();
-            logger.info("Hooked to: " + pluginName);
-            return true;
-        }
-        return false;
-    }
-
     public static void load(){
         int count = 0;
 
-        if(checkPlugin("PlayerPoints")){
+        if(PluginService.isEnabled(PluginHook.PLAYER_POINTS)){
             PlayerPointsUtils.load();
             count++;
         }
 
-        if(checkPlugin("Vault")){
+        if(PluginService.isEnabled(PluginHook.VAULT)){
             VaultUtils.load();
-            count++;
-        }
-
-        if(checkPlugin("CoinsEngine")){
             count++;
         }
 

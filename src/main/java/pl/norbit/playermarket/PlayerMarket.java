@@ -16,6 +16,7 @@ import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
 import pl.norbit.playermarket.listeners.OnPlayerQuit;
+import pl.norbit.playermarket.plugins.PluginService;
 import pl.norbit.playermarket.service.JoinService;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.PlaceholderService;
@@ -38,6 +39,7 @@ public final class PlayerMarket extends JavaPlugin {
         new InventoryAPI(this).init();
         Settings.load(false);
 
+        PluginService.load(this);
         EconomyUtils.load();
 
         registerCommands();

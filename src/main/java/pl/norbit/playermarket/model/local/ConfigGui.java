@@ -2,15 +2,12 @@ package pl.norbit.playermarket.model.local;
 
 import lombok.Data;
 import mc.obliviate.inventory.Icon;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.norbit.playermarket.config.layout.GuiLayout;
 import pl.norbit.playermarket.exception.ConfigException;
 import pl.norbit.playermarket.exception.MaterialException;
 import pl.norbit.playermarket.utils.format.ChatUtils;
-import pl.norbit.playermarket.utils.item.CustomItem;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,12 +77,12 @@ public class ConfigGui {
 
             ConfigIcon configIcon = new ConfigIcon();
 
-            configIcon.setCustomItem(new CustomItem(matId));
+            configIcon.setConfigId(matId);
             configIcon.setName(ChatUtils.format(name));
             configIcon.setSlot(slot);
             configIcon.setLore(stringList.stream()
                     .map(ChatUtils::format)
-                    .collect(Collectors.toList()));
+                    .toList());
 
             icons.put(key, configIcon);
         }

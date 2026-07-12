@@ -24,7 +24,6 @@ import pl.norbit.playermarket.utils.player.PermUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static pl.norbit.playermarket.utils.TaskUtils.*;
 
@@ -100,7 +99,7 @@ public class PlayerItemsGui extends Gui {
             List<LocalPlayerItem> items = localPlayerData.getPlayerOffers()
                     .stream()
                     .filter(item -> !item.isRemoveProgress())
-                    .collect(Collectors.toList());
+                    .toList();
 
             guiPages.updateItems(
                     items,
@@ -159,7 +158,7 @@ public class PlayerItemsGui extends Gui {
                 .getLore()
                 .stream()
                 .map(l -> formatLine(l, playerData))
-                .collect(Collectors.toList()));
+                .toList());
 
         icon.hideFlags();
 
@@ -200,7 +199,6 @@ public class PlayerItemsGui extends Gui {
 
             DataService.getPlayerLocalData(player).thenAccept(pLocalData -> {
                 sync(() -> {
-
                     new PlayerItemsGui(
                             player,
                             pLocalData,
