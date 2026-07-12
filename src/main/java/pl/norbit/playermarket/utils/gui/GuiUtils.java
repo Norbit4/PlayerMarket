@@ -13,9 +13,7 @@ import java.util.List;
 
 public class GuiUtils {
 
-    private GuiUtils() {
-        throw new IllegalStateException("Utility class");
-    }
+    private GuiUtils() {}
 
     public static void loadBorder(ConfigGui configGui, PaginationManager borderPagination, List<Integer> blackList, int size) {
         if(!configGui.isFill()){

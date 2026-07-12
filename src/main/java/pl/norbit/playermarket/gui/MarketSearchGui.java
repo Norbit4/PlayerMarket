@@ -118,10 +118,10 @@ public class MarketSearchGui extends Gui {
 //            fillGui(this.configGui.getBorderIcon(), this.configGui.getFillBlackList());
 //        }
 
-        async(() -> {
-            updatePage(search);
-            setClosed(false);
-        });
+//        async(() -> {
+        updatePage(search);
+        setClosed(false);
+//        });
 
         playersGui.compute(player.getUniqueId(), (k, v) -> this);
 

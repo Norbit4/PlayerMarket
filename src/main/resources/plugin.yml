@@ -3,17 +3,17 @@ version: '${version}'
 main: pl.norbit.playermarket.PlayerMarket
 authors: [Norbit4]
 website: https://github.com/Norbit4
-api-version: 1.16
+api-version: 1.21
 softdepend:
   - PlayerPoints
   - Vault
   - PlaceholderAPI
   - ItemsAdder
-#libraries:
-#  - com.mysql:mysql-connector-j:8.3.0
-#  - commons-dbutils:commons-dbutils:1.7
-#  - com.h2database:h2:2.2.224
-#  - org.yaml:snakeyaml:2.2
+libraries:
+  - mysql:mysql-connector-java:8.0.33
+  - commons-dbutils:commons-dbutils:1.7
+  - com.h2database:h2:2.2.220
+  - org.yaml:snakeyaml:2.0
 commands:
     market:
         description: Open the market!

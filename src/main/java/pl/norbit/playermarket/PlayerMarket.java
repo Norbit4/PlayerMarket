@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import mc.obliviate.inventory.InventoryAPI;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.norbit.playermarket.cache.PlayerDataCache;
@@ -15,6 +16,7 @@ import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
 import pl.norbit.playermarket.listeners.OnPlayerQuit;
+import pl.norbit.playermarket.service.JoinService;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.PlaceholderService;
 import pl.norbit.playermarket.utils.economy.EconomyUtils;
@@ -43,11 +45,15 @@ public final class PlayerMarket extends JavaPlugin {
 
         PlaceholderService.registerPlaceholders();
 
+        JoinService.init();
+
         async(() -> {
             DataService.start();
             MarketService.start();
             PlayerDataCache.start();
         });
+
+        loadBStats();
     }
 
     public void registerEvents() {
@@ -61,6 +67,10 @@ public final class PlayerMarket extends JavaPlugin {
         getCommand("market").setExecutor(new MarketCommand());
         getCommand("offer").setExecutor(new OfferCommand());
         getCommand("playermarket").setExecutor(new MainCommand());
+    }
+
+    private void loadBStats(){
+        new Metrics(this, 32580);
     }
 
     @Override

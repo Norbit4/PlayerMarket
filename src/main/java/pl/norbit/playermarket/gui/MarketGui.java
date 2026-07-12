@@ -23,7 +23,6 @@ import pl.norbit.playermarket.utils.gui.GuiUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static pl.norbit.playermarket.utils.TaskUtils.*;
 
@@ -204,16 +203,16 @@ public class MarketGui extends Gui {
         if (selected) {
             icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream()
                     .map(ChatUtils::format)
-                    .collect(Collectors.toList()));
+                    .toList());
 
-            icon.enchant(Enchantment.DURABILITY);
+            icon.enchant(Enchantment.UNBREAKING);
 
             return icon;
         }
 
         icon.setLore(category.getLore().stream()
                 .map(line -> ChatUtils.format(player, line))
-                .collect(Collectors.toList()));
+                .toList());
 
         icon.onClick(e -> {
             if (!CooldownService.tryClick(player.getUniqueId())) {

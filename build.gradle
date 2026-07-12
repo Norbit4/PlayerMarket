@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
 group = 'pl.norbit'
-version = 'v1.8.1'
+version = '1.9.0'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -35,23 +35,30 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
+
+    implementation("org.bstats:bstats-bukkit:3.2.1")
 
     //playerpoints
     compileOnly 'org.black_ixx:playerpoints:3.2.6'
 
     //lombok
-    compileOnly 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    compileOnly("org.projectlombok:lombok:1.18.46")
+    annotationProcessor("org.projectlombok:lombok:1.18.46")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.46")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.46")
 
     //depend
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude group: "org.bukkit", module: "bukkit"
+    }
 
     //database
-    implementation 'mysql:mysql-connector-java:8.0.33'
-    implementation 'commons-dbutils:commons-dbutils:1.7'
-    implementation 'com.h2database:h2:2.2.220'
+    compileOnly 'mysql:mysql-connector-java:8.0.33'
+    compileOnly 'commons-dbutils:commons-dbutils:1.7'
+    compileOnly 'com.h2database:h2:2.2.220'
 
     //gui
     implementation 'com.github.hamza-cskn.obliviate-invs:core:4.2.0'
@@ -62,16 +69,27 @@ dependencies {
     compileOnly("dev.lone:api-itemsadder:4.0.10")
 
     //yaml
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
+    compileOnly group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 
     //anvilgui
     implementation 'net.wesjd:anvilgui:1.10.13-SNAPSHOT'
 }
 
-def targetJavaVersion = 11
+def targetJavaVersion = 21
 
-shadowJar {
+tasks.shadowJar {
     archiveClassifier.set("")
+
+    configurations = [project.configurations.runtimeClasspath]
+
+    // bStats
+    relocate("org.bstats", "${project.group}.libs.bstats")
+
+    // Obliviate Inventories
+    relocate("me.hamza", "${project.group}.libs.obliviate")
+
+    // AnvilGUI
+    relocate("net.wesjd.anvilgui", "${project.group}.libs.anvilgui")
 }
 
 java {

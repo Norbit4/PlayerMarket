@@ -32,6 +32,6 @@ public class CategoryService {
             return all;
         }
 
-        return Settings.CATEGORIES.get(0);
+        return Settings.CATEGORIES.getFirst();
     }
 }

@@ -11,7 +11,6 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static pl.norbit.playermarket.utils.TaskUtils.asyncTimer;
 
@@ -72,7 +71,7 @@ public class MarketService {
                 .filter(item -> item.getItemStack().getType().name().contains(itemMatName.toUpperCase()))
                 // Sort by date
                 .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static void start() {
@@ -100,7 +99,7 @@ public class MarketService {
                         .stream()
                         .flatMap(Collection::stream)
                         .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
-                        .collect(Collectors.toList());
+                        .toList();
 
                 for (UUID categoryUUID : changedCategories) {
                     notifyCategoryChanged(categoryUUID);

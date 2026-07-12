@@ -6,15 +6,14 @@ import org.bukkit.inventory.Inventory;
 import pl.norbit.playermarket.PlayerMarket;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PlayerUtils {
     private PlayerUtils() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Optional<Player> getPlayer(UUID playerUUID) {
-        return Optional.ofNullable(PlayerMarket.getInstance().getServer().getPlayer(playerUUID));
+    public static Player getPlayer(UUID playerUUID) {
+        return PlayerMarket.getInstance().getServer().getPlayer(playerUUID);
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
@@ -25,7 +24,7 @@ public class PlayerUtils {
         return PlayerMarket.getInstance().getServer().getOnlinePlayers()
                 .stream()
                 .map(Player::getName)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 

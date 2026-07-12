@@ -218,7 +218,7 @@ public class JDBCService {
 
                 if (list.isEmpty()) return null;
 
-                PlayerData playerData = list.get(0);
+                PlayerData playerData = list.getFirst();
 
                 List<MarketItemData> items =
                         runQuery("SELECT * FROM MarketItemData WHERE playerId = ?", marketDataHandler, playerData.getId());
