@@ -9,6 +9,11 @@ softdepend:
   - Vault
   - PlaceholderAPI
   - ItemsAdder
+  - Oraxen
+  - Nexo
+  - MMOItems
+  - MythicMobs
+  - CraftEngine
 libraries:
   - mysql:mysql-connector-java:8.0.33
   - commons-dbutils:commons-dbutils:1.7
