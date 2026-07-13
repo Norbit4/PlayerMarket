@@ -20,12 +20,6 @@ libraries:
   - com.h2database:h2:2.2.220
   - org.yaml:snakeyaml:2.0
 commands:
-    market:
-        description: Open the market!
-        usage: /market
-    offer:
-        description: Offer an item!
-        usage: /offer <cost>
     playermarket:
         description: Help command
         usage: /playermarket

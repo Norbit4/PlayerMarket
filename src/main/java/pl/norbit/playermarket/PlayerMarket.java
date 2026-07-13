@@ -1,5 +1,6 @@
 package pl.norbit.playermarket;
 
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,10 +17,11 @@ import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.listeners.OnPlayerJoin;
 import pl.norbit.playermarket.listeners.OnPlayerQuit;
+import pl.norbit.playermarket.placeholders.PlaceholderRegistry;
+import pl.norbit.playermarket.plugins.PluginHook;
 import pl.norbit.playermarket.plugins.PluginService;
 import pl.norbit.playermarket.service.JoinService;
 import pl.norbit.playermarket.service.MarketService;
-import pl.norbit.playermarket.service.PlaceholderService;
 import pl.norbit.playermarket.utils.economy.EconomyUtils;
 
 import static pl.norbit.playermarket.utils.TaskUtils.async;
@@ -45,9 +47,11 @@ public final class PlayerMarket extends JavaPlugin {
         registerCommands();
         registerEvents();
 
-        PlaceholderService.registerPlaceholders();
-
         JoinService.init();
+
+        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)){
+            new PlaceholderRegistry().register();
+        }
 
         async(() -> {
             DataService.start();
@@ -66,8 +70,14 @@ public final class PlayerMarket extends JavaPlugin {
     }
 
     public void registerCommands() {
-        getCommand("market").setExecutor(new MarketCommand());
-        getCommand("offer").setExecutor(new OfferCommand());
+        getLifecycleManager().registerEventHandler(
+                LifecycleEvents.COMMANDS,
+                event -> {
+                    MarketCommand.register(event.registrar());
+                    OfferCommand.register(event.registrar());
+                }
+        );
+
         getCommand("playermarket").setExecutor(new MainCommand());
     }
 
