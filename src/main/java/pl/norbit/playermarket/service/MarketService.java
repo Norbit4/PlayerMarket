@@ -48,7 +48,7 @@ public class MarketService {
         }
 
         // update ALL-category
-        Set<MarketGui> allGuis = viewers.get(Settings.ALL_CATEGORY.getCategoryUUID());
+        Set<MarketGui> allGuis = viewers.get(Settings.getAllCategory().getCategoryUUID());
 
         if (allGuis != null) {
             for (MarketGui gui : allGuis) {

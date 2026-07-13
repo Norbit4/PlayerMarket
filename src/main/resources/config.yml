@@ -66,6 +66,9 @@ main-command:
 
 # /offer <price> - offer an item
 offer-command:
+  # Requires a server restart after changing this value.
+  prefix: 'offer'
+  argument-name: 'price'
   use-permission:
     enabled: false
     permission: 'playermarket.command.offer'
@@ -77,6 +80,8 @@ offer-command:
 
 # /market - open market
 market-command:
+  # Requires a server restart after changing this value.
+  prefix: 'market'
   use-permission:
     enabled: false
     permission: 'playermarket.command.market'
@@ -124,6 +129,28 @@ tax:
     execute: 'eco give Norbit4 {PRICE}' # example: add tax money to a server owner
 
 blacklist:
+  # Item identifier.
+  # Supports vanilla Minecraft materials and custom items.
+  #
+  # Formats:
+  # - <material>               (Vanilla Minecraft)
+  # - nexo:<id>                (Nexo)
+  # - ia:<id>                  (ItemsAdder)
+  # - mmoitems:<category>:<id> (MMOItems)
+  # - oraxen:<id>              (Oraxen)
+  # - ce:<id>                  (CraftEngine)
+  # - mm:<id>                  (MythicMobs)
+  #
+  # Examples:
+  # - STONE
+  # - DIAMOND_SWORD
+  # - nexo:ruby
+  # - ia:magic_ingot
+  # - mmoitems:SWORD:LONG_SWORD
+  # - oraxen:amethyst_hammer
+  # - ce:topaz
+  # - mm:BanditTunic
+
   # if enabled, players will not be able to offer items from this list
   enabled: false
   message: '&cYou can not offer this item!'
@@ -199,7 +226,6 @@ player-offer-shulker-lore:
 #---------------------------------------#
 info-messages:
   cooldown: '&cSlow down! You need wait a moment!'
-  sell-item: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
   join: '&7You have &a{MONEY}$ &7to collect for &a{SOLD} &7sold items &a/market'
 
 #---------------------------------------#
@@ -226,13 +252,35 @@ discord:
 #---------------------------------------#
 #            [ MARKET - GUI ]           #
 #---------------------------------------#
+
+# Item identifier.
+# Supports vanilla Minecraft materials and custom items.
+#
+# Formats:
+# - <material>               (Vanilla Minecraft)
+# - nexo:<id>                (Nexo)
+# - ia:<id>                  (ItemsAdder)
+# - mmoitems:<category>:<id> (MMOItems)
+# - oraxen:<id>              (Oraxen)
+# - ce:<id>                  (CraftEngine)
+# - mm:<id>                  (MythicMobs)
+#
+# Examples:
+# - STONE
+# - DIAMOND_SWORD
+# - nexo:ruby
+# - ia:magic_ingot
+# - mmoitems:SWORD:LONG_SWORD
+# - oraxen:amethyst_hammer
+# - ce:topaz
+# - mm:BanditTunic
 market-gui:
   title: '&8&lMARKET &7&l» &8&l{CATEGORY} ({CURRENT}/{TOTAL})'
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   size: 6 # in rows
   border-icon:
     name: ' '
-    icon: 'GRAY_STAINED_GLASS_PANE' # for itemsadder use ia:<id>
+    icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   your-offers-icon:
     name: '&#93f182&lYOUR OFFERS'
@@ -502,6 +550,7 @@ buy-gui:
   not-enough-money-message: '&cYou do not have enough money!'
   player-is-owner-message: '&cYou can not buy your own item!'
   success-message: '&fYou have bought an item for &a{COST}$!'
+  sell-item-to-owner: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
   inventory-full-message: '&cYour inventory is full!'
   border-icon:
     name: ' '

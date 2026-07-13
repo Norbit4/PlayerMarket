@@ -13,7 +13,7 @@ public class LogService {
     }
 
     public static void log(String message){
-        if(!Settings.DEBUG){
+        if(!Settings.isDebug()){
             return;
         }
 
@@ -24,7 +24,7 @@ public class LogService {
     }
 
     public static void warn(String message){
-        if(!Settings.DEBUG){
+        if(!Settings.isDebug()){
             return;
         }
 

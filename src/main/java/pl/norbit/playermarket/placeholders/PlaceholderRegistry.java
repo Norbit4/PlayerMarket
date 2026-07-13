@@ -4,6 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.cache.PlayerDataCache;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.model.PlayerData;
@@ -24,7 +25,7 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0.0";
+        return PlayerMarket.getInstance().getPluginMeta().getVersion();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class PlaceholderRegistry extends PlaceholderExpansion {
 
             Player p = player.getPlayer();
 
-            int amount = PermUtils.getAmount(p, Settings.OFFER_COMMAND_LIMIT_PERMISSION, Settings.OFFER_COMMAND_DEFAULT_LIMIT);
+            int amount = PermUtils.getAmount(p, Settings.getOfferCommandLimitPermission(), Settings.getOfferCommandDefaultLimit());
 
             return String.valueOf(amount);
         }else if (params.contains("player_offers")) {

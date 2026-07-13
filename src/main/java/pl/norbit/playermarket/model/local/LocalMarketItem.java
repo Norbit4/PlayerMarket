@@ -10,11 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.gui.GuiType;
 import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.gui.BuyGui;
-import pl.norbit.playermarket.utils.TaskUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
@@ -24,7 +22,6 @@ import pl.norbit.playermarket.utils.time.TimeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.norbit.playermarket.utils.TaskUtils.async;
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 @Data
@@ -100,9 +97,9 @@ public class LocalMarketItem {
         List<String> loreToFormat;
 
         if(ItemsUtils.isShulkerBox(itemStack)){
-             loreToFormat = Settings.MARKET_OFFER_SHULKER_LORE;
+             loreToFormat = Settings.getMarketOfferShulkerLore();
         }else {
-            loreToFormat = Settings.MARKET_OFFER_ITEM_LORE;
+            loreToFormat = Settings.getMarketOfferItemLore();
         }
 
         for (String line : loreToFormat){

@@ -41,10 +41,10 @@ public class MarketGui extends Gui {
     private static final Map<UUID, Set<MarketGui>> viewers = new ConcurrentHashMap<>();
 
     public MarketGui(Player player, Category category) {
-        super(player, "market-main-gui", "", Settings.MARKET_GUI.getSize());
+        super(player, "market-main-gui", "", Settings.getMarketGui().getSize());
 
         this.category = category;
-        this.configGui = Settings.MARKET_GUI;
+        this.configGui = Settings.getMarketGui();
 
         GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
 
@@ -62,11 +62,11 @@ public class MarketGui extends Gui {
                 this.getSize()
         );
 
-        categoriesPagination.addItem(createCategory(Settings.ALL_CATEGORY));
-        Settings.CATEGORIES.stream()
+        categoriesPagination.addItem(createCategory(Settings.getAllCategory()));
+        Settings.getCategories().stream()
                 .map(this::createCategory)
                 .forEach(categoriesPagination::addItem);
-        categoriesPagination.addItem(createCategory(Settings.OTHER_CATEGORY));
+        categoriesPagination.addItem(createCategory(Settings.getOtherCategory()));
 
         ConfigIcon left = configGui.getIcon("previous-page-icon");
         ConfigIcon right = configGui.getIcon("next-page-icon");
@@ -75,7 +75,7 @@ public class MarketGui extends Gui {
         Icon fillIcon = configGui.isFill() ? fill.getIcon() : null;
 
         String title = ChatUtils.format(player,
-                Settings.MARKET_GUI.getTitle().replace("{CATEGORY}", category.getName())
+                Settings.getMarketGui().getTitle().replace("{CATEGORY}", category.getName())
         );
         int size = MarketService.getIcons(category).size();
 
@@ -195,13 +195,13 @@ public class MarketGui extends Gui {
 
         icon.setName(ChatUtils.format(
                 player,
-                Settings.CATEGORY_NAME_FORMAT.replace("{CATEGORY}", category.getName())
+                Settings.getCategoryNameFormat().replace("{CATEGORY}", category.getName())
         ));
 
         icon.hideFlags();
 
         if (selected) {
-            icon.setLore(Settings.CATEGORY_SELECTED_LORE.stream()
+            icon.setLore(Settings.getCategorySelectedLore().stream()
                     .map(ChatUtils::format)
                     .toList());
 

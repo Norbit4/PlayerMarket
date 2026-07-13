@@ -47,9 +47,9 @@ public class PlayerItemsGui extends Gui {
     }
 
     public PlayerItemsGui(@NotNull Player player, LocalPlayerData lPlayerData, int page) {
-        super(player, "player-items-gui", "", Settings.OFFERS_GUI.getSize());
+        super(player, "player-items-gui", "", Settings.getOffersGui().getSize());
 
-        this.configGui = Settings.OFFERS_GUI;
+        this.configGui = Settings.getOffersGui();
         this.updateProgress = false;
         this.localData = lPlayerData;
 
@@ -76,7 +76,7 @@ public class PlayerItemsGui extends Gui {
 
         this.guiPages = new GuiPages<>(
                 this,
-                Settings.OFFERS_GUI.getTitle(),
+                Settings.getOffersGui().getTitle(),
                 itemsPagination,
                 left.getSlot(),
                 left.getIcon(),
@@ -216,8 +216,8 @@ public class PlayerItemsGui extends Gui {
     private String formatLine(String line, PlayerData playerData){
         int amount = PermUtils.getAmount(
                 player,
-                Settings.OFFER_COMMAND_LIMIT_PERMISSION,
-                Settings.OFFER_COMMAND_DEFAULT_LIMIT
+                Settings.getOfferCommandLimitPermission(),
+                Settings.getOfferCommandDefaultLimit()
         );
 
         return ChatUtils.format(

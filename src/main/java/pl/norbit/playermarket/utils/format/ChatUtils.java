@@ -4,6 +4,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import pl.norbit.playermarket.config.Settings;
+import pl.norbit.playermarket.plugins.PluginHook;
+import pl.norbit.playermarket.plugins.PluginService;
 
 public class ChatUtils {
     private static final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
@@ -13,14 +15,14 @@ public class ChatUtils {
     }
 
     public static String format(Player p, String text) {
-        if(Settings.PLACEHOLDERAPI_IS_ENABLED) {
+        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(p, text);
         }
         return translateColorCodes(text);
     }
 
     public static String format(String text) {
-        if(Settings.PLACEHOLDERAPI_IS_ENABLED) {
+        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(null, text);
         }
         return translateColorCodes(text);

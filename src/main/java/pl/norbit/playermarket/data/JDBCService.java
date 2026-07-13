@@ -31,9 +31,7 @@ public class JDBCService {
     private static final BeanListHandler<PlayerData> playerDataHandler =
             new BeanListHandler<>(PlayerData.class);
 
-    private JDBCService() {
-        throw new IllegalStateException("Utility class");
-    }
+    private JDBCService() {}
 
     private static final ResultSetHandler<List<MarketItemData>> marketDataHandler =
             new BeanListHandler<>(MarketItemData.class) {
@@ -147,7 +145,7 @@ public class JDBCService {
         File dataFolder = PlayerMarket.getInstance().getDataFolder();
         String absolutePath = dataFolder.getAbsolutePath();
 
-        boolean isLocal = !Settings.TYPE.equals("mysql");
+        boolean isLocal = !Settings.getType().equals("mysql");
 
         if (isLocal) {
 
@@ -162,9 +160,9 @@ public class JDBCService {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             return DriverManager.getConnection(
-                    Settings.HOST + "/" + Settings.DATABASE + "?autoReconnect=true&useSSL=false",
-                    Settings.USER,
-                    Settings.PASSWORD
+                    Settings.getHost() + "/" + Settings.getDatabase() + "?autoReconnect=true&useSSL=false",
+                    Settings.getUser(),
+                    Settings.getPassword()
             );
         }
     }

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = '1.9.0'
+version = '2.0.0'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -18,13 +18,16 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    //placeholderapi
     maven {
         url = 'https://repo.extendedclip.com/releases/'
     }
     maven { url 'https://jitpack.io' }
+    //playerpoints
     maven {
         url = 'https://repo.rosewooddev.io/repository/public/'
     }
+    //itemsadder
     maven {
         name = "matteodev"
         url = "https://maven.devs.beer/"
@@ -32,18 +35,23 @@ repositories {
     maven {
         url "https://mvn.wesjd.net/"
     }
+    //craft engine
     maven{
         url = "https://repo.momirealms.net/releases/"
     }
+    //nexo
     maven{
         url = "https://repo.nexomc.com/releases"
     }
+    //oraxen
     maven{
         url = "https://repo.oraxen.com/releases"
     }
+    //mmo items
     maven{
         url = "https://nexus.phoenixdevt.fr/repository/maven-public/"
     }
+    //mythic
     maven{
         url = "https://mvn.lumine.io/repository/maven-public/"
     }
@@ -52,6 +60,7 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
 
+    //bstats
     implementation("org.bstats:bstats-bukkit:3.2.1")
 
     //playerpoints
@@ -64,8 +73,10 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.46")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.46")
 
-    //depend
+    //placeholderapi
     compileOnly 'me.clip:placeholderapi:2.11.6'
+
+    //vault
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude group: "org.bukkit", module: "bukkit"
     }

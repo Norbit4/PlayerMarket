@@ -5,6 +5,7 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class ConfigIcon {
 
         if(itemStack == null){
             return new Icon(Material.BARRIER)
-                    .setName("&cError")
-                    .setLore("&cItem not found");
+                    .setName(ChatUtils.format("&cError"))
+                    .setLore(ChatUtils.format("&cItem not found"));
         }
 
         Icon icon = new Icon(itemStack);

@@ -59,7 +59,7 @@ public final class JoinService {
                 return;
             }
 
-            String joinMessage = Settings.JOIN_MESSAGE
+            String joinMessage = Settings.getJoinMessage()
                     .replace("{MONEY}", DoubleFormatter.format(playerData.getEarnedMoney()))
                     .replace("{SOLD}", String.valueOf(playerData.getSoldItems()));
 

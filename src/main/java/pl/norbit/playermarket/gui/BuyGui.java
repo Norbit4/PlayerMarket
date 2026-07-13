@@ -26,7 +26,7 @@ import pl.norbit.playermarket.utils.player.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
@@ -36,11 +36,11 @@ public class BuyGui extends Gui {
     private final ConfigGui configGui;
 
     public BuyGui(@NotNull Player player, MarketItemData marketItemData, ItemStack icon) {
-        super(player, "market-buy-gui", ChatUtils.format(player, Settings.BUY_GUI.getTitle()), Settings.BUY_GUI.getSize());
+        super(player, "market-buy-gui", ChatUtils.format(player, Settings.getBuyGui().getTitle()), Settings.getBuyGui().getSize());
 
         this.marketItemData = marketItemData;
         this.is = icon;
-        this.configGui = Settings.BUY_GUI;
+        this.configGui = Settings.getBuyGui();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class BuyGui extends Gui {
                 .getLore()
                 .stream()
                 .map(this::formatLine)
-                .collect(Collectors.toList()));
+                .toList());
 
         icon.onClick(e -> {
             Player p = (Player) e.getWhoClicked();
@@ -153,6 +153,16 @@ public class BuyGui extends Gui {
                                         server.getConsoleSender(),
                                         command
                                 );
+                            }
+
+                            Player owner = PlayerUtils.getPlayer(UUID.fromString(mItemData.getOwnerUUID()));
+
+                            if(owner != null){
+                                String message = configGui.getMessage("sell-item-to-owner")
+                                        .replace("{PLAYER}", p.getName())
+                                        .replace("{PRICE}",DoubleFormatter.format(marketItemData.getPrice()));
+
+                                owner.sendMessage(ChatUtils.format(message));
                             }
 
                             backToShop(configGui.getMessage("success-message")

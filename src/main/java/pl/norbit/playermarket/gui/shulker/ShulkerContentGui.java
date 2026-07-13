@@ -31,7 +31,7 @@ public class ShulkerContentGui extends Gui {
     private MarketItemData marketItemData;
 
     public ShulkerContentGui(@NotNull Player player, MarketItemData marketItemData, ItemStack icon) {
-        super(player, "shulker-gui", ChatUtils.format(Settings.SHULKER_GUI.getTitle()), 5);
+        super(player, "shulker-gui", ChatUtils.format(Settings.getShulkerGui().getTitle()), 5);
 
         this.items = new PaginationManager(this);
         this.items.registerPageSlotsBetween(0, 26);
@@ -39,7 +39,7 @@ public class ShulkerContentGui extends Gui {
         this.marketItemData = marketItemData;
         this.itemIcon = icon;
 
-        configGui = Settings.SHULKER_GUI;
+        configGui = Settings.getShulkerGui();
         this.guiType = GuiType.MAIN;
 
         List<ItemStack> shulkerBoxInv = ItemsUtils.getShulkerBoxInv(marketItemData.getItemStackDeserialize());
@@ -47,14 +47,14 @@ public class ShulkerContentGui extends Gui {
         shulkerBoxInv.forEach(is -> items.addItem(new Icon(is)));
     }
     public ShulkerContentGui(@NotNull Player player, ItemStack icon) {
-        super(player, "shulker-gui", ChatUtils.format(Settings.SHULKER_GUI.getTitle()), 5);
+        super(player, "shulker-gui", ChatUtils.format(Settings.getShulkerGui().getTitle()), 5);
 
         this.items = new PaginationManager(this);
         this.items.registerPageSlotsBetween(0, 26);
 
         this.itemIcon = icon;
 
-        configGui = Settings.SHULKER_GUI;
+        configGui = Settings.getShulkerGui();
         this.guiType = GuiType.PLAYER_ITEMS;
 
         List<ItemStack> shulkerBoxInv = ItemsUtils.getShulkerBoxInv(icon);

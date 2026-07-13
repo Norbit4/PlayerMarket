@@ -15,45 +15,114 @@ import pl.norbit.playermarket.utils.economy.EconomyUtils;
 import java.util.List;
 
 public class Settings {
-
-    /*
-         [ database ]
-    */
-
-    public static boolean DEBUG;
-
-    public static String TYPE, DIALECT, DATABASE, HOST, USER, PASSWORD, USE_SSL;
-
-    public static List<Category> CATEGORIES;
-    public static Category OTHER_CATEGORY, ALL_CATEGORY;
-
-    public static ConfigGui MARKET_GUI, OFFERS_GUI, BUY_GUI, SEARCH_GUI, SHULKER_GUI;
-
-    public static String CATEGORY_NAME_FORMAT;
-    public static List<String> CATEGORY_SELECTED_LORE, MARKET_OFFER_ITEM_LORE, MARKET_OFFER_SHULKER_LORE,
-            PLAYER_OFFER_ITEM_LORE, PLAYER_OFFER_SHULKER_LORE;
-
-    public static String SELL_ITEM_MESSAGE, JOIN_MESSAGE;
-    public static boolean OFFER_COMMAND_PERMISSION_ENABLED;
-    public static String  OFFER_COMMAND_PERMISSION, OFFER_COMMAND_USAGE,OFFER_COMMAND_NO_PERMISSION,
-            OFFER_COMMAND_WRONG_PRICE, OFFER_COMMAND_SUCCESS, OFFER_COMMAND_WRONG_ITEM;
-
-    public static boolean MARKET_COMMAND_PERMISSION_ENABLED;
-    public static String  MARKET_COMMAND_PERMISSION, MARKET_COMMAND_NO_PERMISSION;
-    public static String MAIN_COMMAND_RELOAD_PERMISSION, MAIN_COMMAND_HELP_PERMISSION, MAIN_COMMAND_NO_PERMISSION, MAIN_COMMAND_RELOAD_MESSAGE;
-    public static List<String> MAIN_COMMAND_HELP_MESSAGE, MAIN_COMMAND_HELP_RELOAD_MESSAGE;
-
-    public static String OFFER_COMMAND_LIMIT_PERMISSION, OFFER_COMMAND_LIMIT_MESSAGE;
-    public static int OFFER_COMMAND_DEFAULT_LIMIT;
-    public static boolean OFFER_COMMAND_LIMIT_ENABLED;
-
-    public static boolean PLACEHOLDERAPI_IS_ENABLED;
-
     @Getter
-    private static String cooldownMessage;
+    private static boolean debug;
+
+    //database
+    @Getter
+    private static String type;
+    @Getter
+    private static String database;
+    @Getter
+    private static String host;
+    @Getter
+    private static String user;
+    @Getter
+    private static String password;
+    @Getter
+    private static String useSSL;
+
+    //category
+    @Getter
+    private static List<Category> categories;
+    @Getter
+    private static Category otherCategory;
+    @Getter
+    private static Category allCategory;
+
+    //gui
+    @Getter
+    private static ConfigGui marketGui;
+    @Getter
+    private static ConfigGui offersGui;
+    @Getter
+    private static ConfigGui buyGui;
+    @Getter
+    private static ConfigGui searchGui;
+    @Getter
+    private static ConfigGui shulkerGui;
+    @Getter
+    private static String categoryNameFormat;
+    @Getter
+    private static List<String> categorySelectedLore;
+    @Getter
+    private static List<String> marketOfferItemLore;
+    @Getter
+    private static List<String> marketOfferShulkerLore;
+    @Getter
+    private static List<String> playerOfferItemLore;
+    @Getter
+    private static List<String> playerOfferShulkerLore;
+
+    //sell messages
+    @Getter
+    private static String joinMessage;
+
+    //offer command
+    @Getter
+    private static boolean offerCommandPermissionEnabled;
+    @Getter
+    private static String offerCommandWrongItem;
+    @Getter
+    private static String offerCommandPermission;
+    @Getter
+    private static String offerCommandUsage;
+    @Getter
+    private static String offerCommandNoPermission;
+    @Getter
+    private static String offerCommandWrongPrice;
+    @Getter
+    private static String offerCommandSuccess;
+    @Getter
+    private static String offerCommandPrefix;
+    @Getter
+    private static String offerCommandArgumentName;
+    //offer command - limit
+    @Getter
+    private static String offerCommandLimitPermission;
+    @Getter
+    private static String offerCommandLimitMessage;
+    @Getter
+    private static int offerCommandDefaultLimit;
+    @Getter
+    private static boolean offerCommandLimitEnabled;
+
+    //market command
+    @Getter
+    private static String marketCommandPrefix;
+    @Getter
+    private static boolean marketCommandPermissionEnabled;
+    @Getter
+    private static String marketCommandPermission;
+    @Getter
+    private static String marketCommandNoPermission;
+
+    //main command
+    @Getter
+    private static String mainCommandReloadPermission;
+    @Getter
+    private static String mainCommandHelpPermission;
+    @Getter
+    private static String mainCommandNoPermission;
+    @Getter
+    private static String mainCommandReloadMessage;
+    @Getter
+    private static List<String> mainCommandHelpMessage;
+    @Getter
+    private static List<String> mainCommandReloadInfo;
+
     @Getter
     private static String anvilTitle;
-
     @Getter
     private static String anvilEmpty;
 
@@ -80,37 +149,37 @@ public class Settings {
     @Getter
     private static String playerNotFound;
 
+    //tax
     @Getter
     private static boolean taxEnabled;
     @Getter
     private static double taxValue;
-
     @Getter
     private static String taxCommand;
-
     @Getter
     private static boolean taxCommandEnabled;
 
+    //discord
     @Getter
     private static DiscordConfig discordConfig;
 
+    //blacklist
     @Getter
     private static boolean blacklistEnabled;
-
     @Getter
     private static List<String> blacklistItems;
     @Getter
     private static String blacklistMessage;
 
+    //cooldown
+    @Getter
+    private static String cooldownMessage;
     @Getter
     private static int cooldownTime;
-
     @Getter
     private static int clicksPerSecond;
 
-    private Settings() {
-        throw new IllegalStateException("Utility class");
-    }
+    private Settings() {}
 
     public static void load(boolean reload){
         PlayerMarket instance = PlayerMarket.getInstance();
@@ -127,13 +196,12 @@ public class Settings {
 
         //database
         if(!reload) {
-            TYPE = config.getString("database.type");
-            DIALECT = config.getString("database.dialect");
-            DATABASE = config.getString("database.database");
-            HOST = config.getString("database.host");
-            USER = config.getString("database.user");
-            PASSWORD = config.getString("database.password");
-            USE_SSL = config.getString("database.use-ssl");
+            type = config.getString("database.type");
+            database = config.getString("database.database");
+            host = config.getString("database.host");
+            user = config.getString("database.user");
+            password = config.getString("database.password");
+            useSSL = config.getString("database.use-ssl");
 
             String type = config.getString("economy.type");
             String currency = config.getString("economy.currency");
@@ -141,13 +209,13 @@ public class Settings {
             EconomyUtils.setEconomyType(type, currency);
         }
 
-        DEBUG = config.getBoolean("debug");
+        debug = config.getBoolean("debug");
 
         //offer limit
-        OFFER_COMMAND_LIMIT_ENABLED = config.getBoolean("offers-limit.enabled");
-        OFFER_COMMAND_DEFAULT_LIMIT = config.getInt("offers-limit.default-limit");
-        OFFER_COMMAND_LIMIT_PERMISSION = config.getString("offers-limit.permission");
-        OFFER_COMMAND_LIMIT_MESSAGE = config.getString("offers-limit.limit-message");
+        offerCommandLimitEnabled = config.getBoolean("offers-limit.enabled");
+        offerCommandDefaultLimit = config.getInt("offers-limit.default-limit");
+        offerCommandLimitPermission = config.getString("offers-limit.permission");
+        offerCommandLimitMessage = config.getString("offers-limit.limit-message");
 
         ConfigurationSection configurationSection = config.getConfigurationSection("categories");
 
@@ -155,69 +223,75 @@ public class Settings {
             return;
         }
 
-        CATEGORIES = CategoryUtils.getCategories(configurationSection);
+        //category
+        categories = CategoryUtils.getCategories(configurationSection);
 
-        OTHER_CATEGORY = CategoryUtils.getDefaultCategory(config.getConfigurationSection("other-category"), CategoryType.OTHER);
-        ALL_CATEGORY = CategoryUtils.getDefaultCategory(config.getConfigurationSection("all-category"), CategoryType.ALL);
+        otherCategory = CategoryUtils.getDefaultCategory(config.getConfigurationSection("other-category"), CategoryType.OTHER);
+        allCategory = CategoryUtils.getDefaultCategory(config.getConfigurationSection("all-category"), CategoryType.ALL);
 
-        MARKET_GUI = new ConfigGui(config,"market-gui",
+        //gui
+        marketGui = new ConfigGui(config,"market-gui",
                 new String[0],
                 new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon", "border-icon"});
 
-        BUY_GUI = new ConfigGui(config,"buy-gui",
+        buyGui = new ConfigGui(config,"buy-gui",
                 new String[]{"item-sold-message", "not-enough-money-message", "success-message",
-                        "player-is-owner-message", "inventory-full-message"},
+                        "player-is-owner-message", "inventory-full-message", "sell-item-to-owner"},
                 new String[]{"accept-icon", "cancel-icon", "border-icon"});
 
-        OFFERS_GUI = new ConfigGui(config,"offers-gui",
+        offersGui = new ConfigGui(config,"offers-gui",
                 new String[]{"remove-offer-message", "nothing-to-get-message", "success-message", "inventory-full-message"},
                 new String[]{"statistics-icon", "back-to-market-icon", "previous-page-icon", "next-page-icon", "border-icon"});
 
 
-        SEARCH_GUI = new ConfigGui(config,"search-gui",
+        searchGui = new ConfigGui(config,"search-gui",
                 new String[0],
                 new String[]{"previous-page-icon", "next-page-icon", "back-to-market-icon", "border-icon"});
 
-        SHULKER_GUI = new ConfigGui(config,"shulker-gui",
+        shulkerGui = new ConfigGui(config,"shulker-gui",
                 new String[]{"item-sold-message"},
                 new String[]{"back-icon", "buy-icon", "border-icon"});
 
-        CATEGORY_NAME_FORMAT = config.getString("category-name-format");
+        categoryNameFormat = config.getString("category-name-format");
 
-        CATEGORY_SELECTED_LORE = config.getStringList("category-selected-lore");
-        MARKET_OFFER_ITEM_LORE = config.getStringList("market-offer-item-lore");
-        MARKET_OFFER_SHULKER_LORE = config.getStringList("market-offer-shulker-lore");
+        categorySelectedLore = config.getStringList("category-selected-lore");
+        marketOfferItemLore = config.getStringList("market-offer-item-lore");
+        marketOfferShulkerLore = config.getStringList("market-offer-shulker-lore");
 
-        PLAYER_OFFER_ITEM_LORE = config.getStringList("player-offer-item-lore");
-        PLAYER_OFFER_SHULKER_LORE = config.getStringList("player-offer-shulker-lore");
+        playerOfferItemLore = config.getStringList("player-offer-item-lore");
+        playerOfferShulkerLore = config.getStringList("player-offer-shulker-lore");
 
-        SELL_ITEM_MESSAGE = config.getString("info-messages.sell-item");
-        JOIN_MESSAGE = config.getString("info-messages.join");
+        joinMessage = config.getString("info-messages.join");
         cooldownMessage = config.getString("info-messages.cooldown");
 
         //offer command
-        OFFER_COMMAND_PERMISSION_ENABLED = config.getBoolean("offer-command.use-permission.enabled");
-        OFFER_COMMAND_PERMISSION = config.getString("offer-command.use-permission.permission");
-        OFFER_COMMAND_NO_PERMISSION = config.getString("offer-command.use-permission.message");
-        OFFER_COMMAND_USAGE = config.getString("offer-command.usage");
-        OFFER_COMMAND_WRONG_PRICE = config.getString("offer-command.wrong-price");
-        OFFER_COMMAND_SUCCESS = config.getString("offer-command.success");
-        OFFER_COMMAND_WRONG_ITEM = config.getString("offer-command.wrong-item");
+        offerCommandPermissionEnabled = config.getBoolean("offer-command.use-permission.enabled");
+        offerCommandPermission = config.getString("offer-command.use-permission.permission");
+        offerCommandNoPermission = config.getString("offer-command.use-permission.message");
+        offerCommandUsage = config.getString("offer-command.usage");
+        offerCommandWrongPrice = config.getString("offer-command.wrong-price");
+        offerCommandSuccess = config.getString("offer-command.success");
+        offerCommandWrongItem = config.getString("offer-command.wrong-item");
+
+        offerCommandPrefix = config.getString("offer-command.prefix");
+        offerCommandArgumentName = config.getString("offer-command.argument-name");
 
         //market command
-        MARKET_COMMAND_PERMISSION = config.getString("market-command.use-permission.permission");
-        MARKET_COMMAND_PERMISSION_ENABLED = config.getBoolean("market-command.use-permission.enabled");
-        MARKET_COMMAND_NO_PERMISSION = config.getString("market-command.use-permission.message");
+        marketCommandPermission = config.getString("market-command.use-permission.permission");
+        marketCommandPermissionEnabled = config.getBoolean("market-command.use-permission.enabled");
+        marketCommandNoPermission = config.getString("market-command.use-permission.message");
+
+        marketCommandPrefix = config.getString("market-command.prefix");
 
         //main command
-        MAIN_COMMAND_NO_PERMISSION = config.getString("main-command.no-permission");
+        mainCommandNoPermission = config.getString("main-command.no-permission");
 
-        MAIN_COMMAND_HELP_PERMISSION = config.getString("main-command.help.permission");
-        MAIN_COMMAND_HELP_MESSAGE = config.getStringList("main-command.help.info");
+        mainCommandHelpPermission = config.getString("main-command.help.permission");
+        mainCommandHelpMessage = config.getStringList("main-command.help.info");
 
-        MAIN_COMMAND_RELOAD_PERMISSION = config.getString("main-command.reload.permission");
-        MAIN_COMMAND_RELOAD_MESSAGE = config.getString("main-command.reload.success");
-        MAIN_COMMAND_HELP_RELOAD_MESSAGE = config.getStringList("main-command.reload.info");
+        mainCommandReloadPermission = config.getString("main-command.reload.permission");
+        mainCommandReloadMessage = config.getString("main-command.reload.success");
+        mainCommandReloadInfo = config.getStringList("main-command.reload.info");
 
         //blacklist
         blacklistEnabled = config.getBoolean("blacklist.enabled");

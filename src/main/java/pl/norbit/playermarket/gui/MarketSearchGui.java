@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static pl.norbit.playermarket.utils.TaskUtils.*;
-
 public class MarketSearchGui extends Gui {
     private final PaginationManager marketItemsPagination;
     private final PaginationManager borderPagination;
@@ -42,9 +40,9 @@ public class MarketSearchGui extends Gui {
     }
 
     public MarketSearchGui(Player player, String search) {
-        super(player, "market-search-gui", "", Settings.SEARCH_GUI.getSize());
+        super(player, "market-search-gui", "", Settings.getSearchGui().getSize());
 
-        this.configGui = Settings.SEARCH_GUI;
+        this.configGui = Settings.getSearchGui();
         this.search = search;
 
         GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
