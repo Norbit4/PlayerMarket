@@ -15,6 +15,7 @@ public class ConfigIcon {
     private String name;
     private String configId;
     private List<String> lore;
+    boolean enabled;
     private int slot;
 
     public Icon getIcon(){

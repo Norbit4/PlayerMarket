@@ -293,6 +293,7 @@ market-gui:
     name: '&#93f182&lSEARCH'
     icon: 'NAME_TAG'
     slot: 51
+    enabled: true
     lore:
       - ''
       - '&7Type item name...'

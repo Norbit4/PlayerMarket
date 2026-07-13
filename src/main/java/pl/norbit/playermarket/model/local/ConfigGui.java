@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Data
 public class ConfigGui {
@@ -80,6 +79,7 @@ public class ConfigGui {
             configIcon.setConfigId(matId);
             configIcon.setName(ChatUtils.format(name));
             configIcon.setSlot(slot);
+            configIcon.setEnabled(configurationSection.getBoolean("enabled"));
             configIcon.setLore(stringList.stream()
                     .map(ChatUtils::format)
                     .toList());

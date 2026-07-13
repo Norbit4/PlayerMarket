@@ -143,7 +143,10 @@ public class MarketGui extends Gui {
         ConfigIcon searchIcon = configGui.getIcon("search-icon");
 
         addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
-        addItem(searchIcon.getSlot(), getSearchIcon(searchIcon.getIcon()));
+
+        if(searchIcon.isEnabled()){
+            addItem(searchIcon.getSlot(), getSearchIcon(searchIcon.getIcon()));
+        }
 
         guiPages.update();
 
