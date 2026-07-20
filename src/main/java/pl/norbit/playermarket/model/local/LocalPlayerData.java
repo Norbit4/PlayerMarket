@@ -5,7 +5,6 @@ import lombok.Data;
 import pl.norbit.playermarket.model.PlayerData;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -20,7 +19,6 @@ public class LocalPlayerData {
         playerOffers = playerData.getPlayerOffers()
                 .stream()
                 .map(iData -> new LocalPlayerItem(iData.getId(), iData.getItemStackDeserialize(), iData.getPrice(), iData.getOfferDate()))
-                .collect(Collectors.toList());
-
+                .toList();
     }
 }

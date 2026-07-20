@@ -237,7 +237,7 @@ public class Settings {
         buyGui = new ConfigGui(config,"buy-gui",
                 new String[]{"item-sold-message", "not-enough-money-message", "success-message",
                         "player-is-owner-message", "inventory-full-message", "sell-item-to-owner"},
-                new String[]{"accept-icon", "cancel-icon", "border-icon"});
+                new String[]{"accept-icon", "cancel-icon", "border-icon", "buy-icon"});
 
         offersGui = new ConfigGui(config,"offers-gui",
                 new String[]{"remove-offer-message", "nothing-to-get-message", "success-message", "inventory-full-message"},

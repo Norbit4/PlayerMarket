@@ -12,6 +12,7 @@ import pl.norbit.playermarket.gui.template.TemplateUtils;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.ConfigIcon;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
+import pl.norbit.playermarket.model.local.MarketItemType;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
@@ -90,7 +91,7 @@ public class MarketSearchGui extends Gui {
 
         List<LocalMarketItem> icons = MarketService.searchItemsByMaterial(search);
         if(icons != null){
-            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem()));
+            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem(MarketItemType.MAIN)));
         }
 
         this.marketItemsPagination.update();
@@ -103,23 +104,13 @@ public class MarketSearchGui extends Gui {
         this.marketItemsPagination.update();
         this.borderPagination.update();
 
-//        if(!this.configGui.isFill()){
-//            this.borderPagination.update();
-//        }
-
         ConfigIcon backIcon = configGui.getIcon("back-to-market-icon");
 
         addItem(backIcon.getSlot(), GuiUtils.getOpenGuItem(backIcon.getIcon(),
                 new MarketGui(player, CategoryService.getMain())));
 
-//        if(this.configGui.isFill()){
-//            fillGui(this.configGui.getBorderIcon(), this.configGui.getFillBlackList());
-//        }
-
-//        async(() -> {
         updatePage(search);
         setClosed(false);
-//        });
 
         playersGui.compute(player.getUniqueId(), (k, v) -> this);
 

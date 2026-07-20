@@ -16,6 +16,8 @@ import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.ConfigIcon;
+import pl.norbit.playermarket.model.local.LocalMarketItem;
+import pl.norbit.playermarket.model.local.MarketItemType;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.economy.EconomyUtils;
@@ -32,26 +34,28 @@ import static pl.norbit.playermarket.utils.TaskUtils.sync;
 
 public class BuyGui extends Gui {
     private final MarketItemData marketItemData;
-    private final ItemStack is;
+    private final LocalMarketItem localMarketItem;
     private final ConfigGui configGui;
 
-    public BuyGui(@NotNull Player player, MarketItemData marketItemData, ItemStack icon) {
+    public BuyGui(@NotNull Player player, MarketItemData marketItemData, LocalMarketItem localMarketItem) {
         super(player, "market-buy-gui", ChatUtils.format(player, Settings.getBuyGui().getTitle()), Settings.getBuyGui().getSize());
 
         this.marketItemData = marketItemData;
-        this.is = icon;
+        this.localMarketItem = localMarketItem;
         this.configGui = Settings.getBuyGui();
     }
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        Icon itemIcon = new Icon(is);
+        ConfigIcon icon = configGui.getIcon("buy-icon");
 
-        addItem(13, itemIcon);
+        Icon itemIcon = localMarketItem.getMarketItem(MarketItemType.BUY);
+
+        addItem(icon.getSlot(), itemIcon);
 
         if(this.configGui.isFill()){
             List<Integer> fillBlackList = new ArrayList<>(this.configGui.getFillBlackList());
-            fillBlackList.add(13);
+            fillBlackList.add(icon.getSlot());
 
             fillGui(this.configGui.getBorderIcon(), fillBlackList);
         }
@@ -174,9 +178,7 @@ public class BuyGui extends Gui {
                     });
 
                 });
-
             });
-
         });
 
         return icon;

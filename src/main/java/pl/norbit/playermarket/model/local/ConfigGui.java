@@ -6,7 +6,6 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import pl.norbit.playermarket.config.layout.GuiLayout;
 import pl.norbit.playermarket.exception.ConfigException;
-import pl.norbit.playermarket.exception.MaterialException;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,15 +55,7 @@ public class ConfigGui {
 
             String matId = configurationSection.getString("icon");
 
-            if(matId == null){
-                throw new MaterialException("Material is null!");
-            }
-
             String name = configurationSection.getString("name");
-
-            if(name == null){
-                throw new ConfigException("Name is null!");
-            }
 
             List<String> stringList = configurationSection.getStringList("lore");
 
@@ -77,9 +68,13 @@ public class ConfigGui {
             ConfigIcon configIcon = new ConfigIcon();
 
             configIcon.setConfigId(matId);
-            configIcon.setName(ChatUtils.format(name));
+
+            if(name != null){
+                configIcon.setName(ChatUtils.format(name));
+            }
             configIcon.setSlot(slot);
             configIcon.setEnabled(configurationSection.getBoolean("enabled"));
+
             configIcon.setLore(stringList.stream()
                     .map(ChatUtils::format)
                     .toList());

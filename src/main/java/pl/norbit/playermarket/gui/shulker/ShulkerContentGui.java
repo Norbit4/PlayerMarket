@@ -13,6 +13,8 @@ import pl.norbit.playermarket.gui.*;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.ConfigIcon;
+import pl.norbit.playermarket.model.local.LocalMarketItem;
+import pl.norbit.playermarket.model.local.MarketItemType;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.SearchStorage;
 import pl.norbit.playermarket.utils.format.ChatUtils;
@@ -29,18 +31,20 @@ public class ShulkerContentGui extends Gui {
     private final GuiType guiType;
     private final ItemStack itemIcon;
     private MarketItemData marketItemData;
+    private LocalMarketItem localMarketItem;
 
-    public ShulkerContentGui(@NotNull Player player, MarketItemData marketItemData, ItemStack icon) {
+    public ShulkerContentGui(@NotNull Player player, MarketItemData marketItemData, LocalMarketItem localMarketItem) {
         super(player, "shulker-gui", ChatUtils.format(Settings.getShulkerGui().getTitle()), 5);
 
         this.items = new PaginationManager(this);
         this.items.registerPageSlotsBetween(0, 26);
 
         this.marketItemData = marketItemData;
-        this.itemIcon = icon;
+        this.itemIcon = localMarketItem.getMarketItem(MarketItemType.MAIN).getItem();
 
         configGui = Settings.getShulkerGui();
         this.guiType = GuiType.MAIN;
+        this.localMarketItem = localMarketItem;
 
         List<ItemStack> shulkerBoxInv = ItemsUtils.getShulkerBoxInv(marketItemData.getItemStackDeserialize());
 
@@ -118,7 +122,7 @@ public class ShulkerContentGui extends Gui {
                     return;
                 }
 
-                sync(() -> new BuyGui(player, mItemData, itemIcon).open());
+                sync(() -> new BuyGui(player, mItemData, localMarketItem).open());
             });
         });
 

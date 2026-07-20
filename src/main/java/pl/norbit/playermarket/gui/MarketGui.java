@@ -4,10 +4,12 @@ import lombok.Getter;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.gui.anvil.ItemTypeSearchGui;
@@ -18,6 +20,7 @@ import pl.norbit.playermarket.model.local.*;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.service.MarketService;
 import pl.norbit.playermarket.service.SearchStorage;
+import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
 
@@ -101,7 +104,7 @@ public class MarketGui extends Gui {
 
         guiPages.updateItems(
                 items,
-                LocalMarketItem::getMarketItem,
+                item -> item.getMarketItem(MarketItemType.MAIN),
                 new GuiPages.HashProvider<>() {
                     public int hash(LocalMarketItem item) {
                         return Objects.hash(item.getId(), item.getOfferDate());
@@ -124,7 +127,6 @@ public class MarketGui extends Gui {
         Set<MarketGui> set = viewers.get(category.getCategoryUUID());
 
         if (set != null) {
-
             set.remove(this);
 
             if (set.isEmpty()) {
@@ -192,7 +194,17 @@ public class MarketGui extends Gui {
     }
 
     private Icon createCategory(Category category) {
-        Icon icon = new Icon(category.getIcon());
+        ItemStack itemStack = CustomItemsUtils.getItemStack(category.getIcon());
+
+        if(itemStack == null){
+
+            Icon icon = new Icon(Material.BARRIER);
+
+            icon.setName(ChatUtils.format("&cInvalid item"));
+
+            return icon;
+        }
+        Icon icon = new Icon(itemStack);
 
         boolean selected = category.getCategoryUUID().equals(this.category.getCategoryUUID());
 

@@ -6,7 +6,6 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
@@ -15,11 +14,11 @@ import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.gui.BuyGui;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
+import pl.norbit.playermarket.utils.gui.LoreBuilder;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
@@ -35,7 +34,6 @@ public class LocalMarketItem {
     private long offerDate;
 
     private ItemStack itemStack;
-    private Icon icon;
     private MarketItemData marketItemData;
 
     public LocalMarketItem(MarketItemData marketItemData){
@@ -45,16 +43,10 @@ public class LocalMarketItem {
         this.ownerName = marketItemData.getOwnerName();
         this.price = marketItemData.getPrice();
         this.offerDate = marketItemData.getOfferDate();
-
-        updateMarketItem();
     }
 
-    public Icon getMarketItem() {
-        return this.icon;
-    }
-
-    public void updateMarketItem(){
-        Icon icon = new Icon(addPrice());
+    public Icon getMarketItem(MarketItemType marketItemType) {
+        Icon icon = new Icon(getStack(marketItemType));
 
         icon.onClick(e->{
             Player p = (Player) e.getWhoClicked();
@@ -72,53 +64,35 @@ public class LocalMarketItem {
                     return;
                 }
 
-                ItemStack currentItem = e.getCurrentItem();
-
                 if(click == ClickType.RIGHT && ItemsUtils.isShulkerBox(itemStack)){
-                    sync(() -> new ShulkerContentGui(p, mtItemData, currentItem).open());
+                    sync(() -> new ShulkerContentGui(p, mtItemData, this).open());
                     return;
                 }
 
-                sync(() -> new BuyGui(p, mtItemData, currentItem).open());
+                sync(() -> new BuyGui(p, mtItemData, this).open());
 
             });
         });
-        this.icon = icon;
+
+        return icon;
     }
 
-    private ItemStack addPrice(){
-        ItemMeta iMeta = itemStack.getItemMeta();
-        List<String> lore = iMeta.getLore();
+    private ItemStack getStack(MarketItemType marketItemType) {
+        List<String> lore;
 
-        if(lore == null){
-            lore = new ArrayList<>();
+        if (marketItemType == MarketItemType.BUY) {
+            lore = Settings.getBuyGui().getIcon("buy-icon").getLore();
+        } else if (ItemsUtils.isShulkerBox(itemStack)) {
+            lore = Settings.getMarketOfferShulkerLore();
+        } else {
+            lore = Settings.getMarketOfferItemLore();
         }
 
-        List<String> loreToFormat;
-
-        if(ItemsUtils.isShulkerBox(itemStack)){
-             loreToFormat = Settings.getMarketOfferShulkerLore();
-        }else {
-            loreToFormat = Settings.getMarketOfferItemLore();
-        }
-
-        for (String line : loreToFormat){
-            lore.add(formatLine(line));
-        }
-
-        iMeta.setLore(lore);
-        itemStack.setItemMeta(iMeta);
-
-        return itemStack;
+        return new LoreBuilder(itemStack)
+                .replace("{PRICE}", DoubleFormatter.format(price))
+                .replace("{SELLER}", ownerName)
+                .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
+                .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
+                .append(lore);
     }
-    private String formatLine(String line){
-        return ChatUtils.format(
-                line
-                        .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
-                        .replace("{PRICE}", DoubleFormatter.format(price))
-                        .replace("{SELLER}", ownerName)
-                        .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
-        );
-    }
-
 }

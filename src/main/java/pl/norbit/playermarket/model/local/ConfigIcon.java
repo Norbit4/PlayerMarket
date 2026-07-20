@@ -19,6 +19,12 @@ public class ConfigIcon {
     private int slot;
 
     public Icon getIcon(){
+        if (configId == null) {
+            return new Icon(Material.BARRIER)
+                    .setName(ChatUtils.format("&cError"))
+                    .setLore(ChatUtils.format("&cItem not found"));
+        }
+
         ItemStack itemStack = CustomItemsUtils.getItemStack(configId);
 
         if(itemStack == null){
@@ -29,7 +35,10 @@ public class ConfigIcon {
 
         Icon icon = new Icon(itemStack);
 
-        icon.setName(name);
+        if(name != null){
+            icon.setName(name);
+        }
+
         icon.setLore(lore);
 
         return icon;

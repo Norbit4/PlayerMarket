@@ -34,7 +34,6 @@ public class ItemTypeSearchGui {
 
                     return List.of(AnvilGUI.ResponseAction.close());
                 })
-                .preventClose()
                 .text(" ")
                 .title(ChatUtils.format(Settings.getAnvilTitle()))
                 .plugin(PlayerMarket.getInstance())

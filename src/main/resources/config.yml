@@ -379,7 +379,7 @@ search-gui:
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   border-icon:
     name: ' '
-    icon: 'GRAY_STAINED_GLASS_PANE' # for itemsadder use ia:<id>
+    icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   back-to-market-icon:
     name: '&#93f182&lBACK TO MARKET'
@@ -553,6 +553,14 @@ buy-gui:
   success-message: '&fYou have bought an item for &a{COST}$!'
   sell-item-to-owner: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
   inventory-full-message: '&cYour inventory is full!'
+  buy-icon:
+    slot: 13
+    lore:
+      - '&8{DATE}'
+      - ''
+      - '&fPrice: &a{PRICE}$'
+      - '&fSeller: &a{SELLER}'
+      - '&fExpire: &a{EXPIRE}'
   border-icon:
     name: ' '
     icon: 'GRAY_STAINED_GLASS_PANE'

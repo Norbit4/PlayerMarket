@@ -7,7 +7,6 @@ import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
@@ -16,12 +15,12 @@ import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
 import pl.norbit.playermarket.logs.LogService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
+import pl.norbit.playermarket.utils.gui.LoreBuilder;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 import pl.norbit.playermarket.utils.player.PlayerUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static pl.norbit.playermarket.utils.TaskUtils.sync;
@@ -49,11 +48,11 @@ public class LocalPlayerItem {
         this.offerDate = offerDate;
         this.removeProgress = false;
 
-        updateMarketItem();
+        generateIcon();
     }
 
-    public void updateMarketItem(){
-        Icon icon = new Icon(addPrice());
+    private void generateIcon(){
+        Icon icon = new Icon(getStack());
 
         icon.onClick(e->{
             e.setCancelled(true);
@@ -107,36 +106,15 @@ public class LocalPlayerItem {
         this.icon = icon;
     }
 
-    private ItemStack addPrice(){
-        ItemMeta iMeta = itemStack.getItemMeta();
-        List<String> lore = iMeta.getLore();
+    private ItemStack getStack() {
+        List<String> lore = ItemsUtils.isShulkerBox(itemStack)
+                ? Settings.getPlayerOfferShulkerLore()
+                : Settings.getPlayerOfferItemLore();
 
-        if(lore == null){
-            lore = new ArrayList<>();
-        }
-
-        List<String> loreToFormat;
-
-        if(ItemsUtils.isShulkerBox(itemStack)){
-            loreToFormat = Settings.getPlayerOfferShulkerLore();
-        }else {
-            loreToFormat = Settings.getPlayerOfferItemLore();
-        }
-
-        for (String line : loreToFormat){
-            lore.add(formatLine(line));
-        }
-
-        iMeta.setLore(lore);
-        itemStack.setItemMeta(iMeta);
-
-        return itemStack;
-    }
-    private String formatLine(String line){
-        return ChatUtils.format(
-                line.replace("{PRICE}", DoubleFormatter.format(price))
-                        .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
-                        .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
-        );
+        return new LoreBuilder(itemStack)
+                .replace("{PRICE}", DoubleFormatter.format(price))
+                .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
+                .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
+                .append(lore);
     }
 }
