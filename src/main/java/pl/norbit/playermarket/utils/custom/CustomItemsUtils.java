@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.plugins.PluginService;
 
+import java.util.List;
+
 public class CustomItemsUtils {
     private record CustomItem(String id, ItemType type){}
 
@@ -60,6 +62,15 @@ public class CustomItemsUtils {
             case CRAFT_ENGINE -> updateStack(CraftEngineUtils.getItem(id), amount);
             case MYTHIC_MOBS -> updateStack(MythicUtils.getItem(id), amount);
         };
+    }
+
+    public static boolean contains(List<String> configIds, ItemStack itemStack) {
+        for (String configId : configIds) {
+            if (isEqual(configId, itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isEqual(String configId, ItemStack itemStack){

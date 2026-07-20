@@ -10,10 +10,9 @@ import java.util.stream.Collectors;
 
 public class YAMLService {
     private YAMLService() {
-        throw new IllegalStateException("Utility class");
     }
 
-    public static List<Material> getItemsFromCategory(String file) {
+    public static List<String> getItemsFromCategory(String file) {
         String categoryPath = CategoryConfig.getCategoryPath();
 
         if(!file.endsWith(".yml")){
@@ -24,12 +23,14 @@ public class YAMLService {
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(filePath));
 
-        List<String> items = config.getStringList("items");
+        return config.getStringList("items");
 
-        return items.stream()
-                .map(Material::getMaterial)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+//        List<String> items = config.getStringList("items");
+
+//        return items.stream()
+//                .map(Material::getMaterial)
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toList());
     }
 
 }

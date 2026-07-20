@@ -3,6 +3,7 @@ package pl.norbit.playermarket.service;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.model.local.Category;
+import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
 
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class CategoryService {
 
     public static UUID getCategoryUUID(LocalMarketItem item){
         Category category = Settings.getCategories().stream()
-                .filter(c -> c.getMaterials().contains(item.getItemStack().getType()))
+                .filter(c -> CustomItemsUtils.contains(c.getMaterials(), item.getItemStack()))
                 .findFirst()
                 .orElse(null);
 

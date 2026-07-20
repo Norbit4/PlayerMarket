@@ -11,9 +11,7 @@ import java.util.List;
 
 public class CategoryUtils {
 
-    private CategoryUtils() {
-        throw new IllegalStateException("Utility class");
-    }
+    private CategoryUtils() {}
 
     public static List<Category> getCategories(ConfigurationSection section){
 
@@ -29,7 +27,7 @@ public class CategoryUtils {
                 return;
             }
 
-            List<Material> itemsFromCategory = YAMLService.getItemsFromCategory(category.getFile());
+            List<String> itemsFromCategory = YAMLService.getItemsFromCategory(category.getFile());
 
             category.setMaterials(itemsFromCategory);
 
@@ -46,24 +44,24 @@ public class CategoryUtils {
 
         Category category = new Category(type);
 
-        String mat = categorySection.getString("icon");
+        String iconId = categorySection.getString("icon");
 
-        if(mat == null){
+        if(iconId == null){
             return null;
         }
 
-        Material material = Material.getMaterial(mat.toUpperCase());
-
-        if(material == null){
-            throw new MaterialException("Invalid material: " + mat);
-        }
+//        Material material = Material.getMaterial(mat.toUpperCase());
+//
+//        if(material == null){
+//            throw new MaterialException("Invalid material: " + mat);
+//        }
 
         category.setName(categorySection.getString("name"));
         category.setFile(categorySection.getString("file"));
         category.setLore(categorySection.getStringList("lore"));
         category.setEnabled(categorySection.getBoolean("enabled"));
 
-        category.setIcon(material);
+        category.setIcon(iconId);
 
         return category;
     }

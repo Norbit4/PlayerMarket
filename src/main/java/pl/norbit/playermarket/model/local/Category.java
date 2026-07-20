@@ -13,13 +13,13 @@ public class Category {
 
     private String name;
     private List<String> lore;
-    private Material icon;
+    private String icon;
 
     private boolean enabled;
     private CategoryType type;
 
     private String file;
-    private List<Material> materials;
+    private List<String> materials;
 
     public Category(CategoryType type){
         this.categoryUUID = UUID.randomUUID();
