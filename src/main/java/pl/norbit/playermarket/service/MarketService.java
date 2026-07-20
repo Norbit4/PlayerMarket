@@ -1,5 +1,7 @@
 package pl.norbit.playermarket.service;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.gui.MarketGui;
 import pl.norbit.playermarket.gui.MarketSearchGui;
@@ -8,6 +10,7 @@ import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 
 import java.util.*;
@@ -65,13 +68,23 @@ public class MarketService {
     }
 
     public static List<LocalMarketItem> searchItemsByMaterial(String itemMatName){
+        String search = itemMatName.toLowerCase(Locale.ROOT);
+
         return marketItems.values()
                 .stream()
                 .flatMap(Collection::stream)
-                .filter(item -> item.getItemStack().getType().name().contains(itemMatName.toUpperCase()))
+                .filter(item -> getName(item.getItemStack()).contains(search))
                 // Sort by date
                 .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
                 .toList();
+    }
+
+    public static String getName(ItemStack itemStack) {
+        return PlainTextComponentSerializer.plainText()
+                .serialize(itemStack.displayName())
+                .replace("[", "")
+                .replace("]", "")
+                .toLowerCase(Locale.ROOT);
     }
 
     public static void start() {
