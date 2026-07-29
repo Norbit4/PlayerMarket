@@ -57,7 +57,7 @@ public class OfferCommand {
             return 0;
         }
 
-        if (EconomyUtils.getEconomyType() == EconomyType.PLAYER_POINTS && price != (int) price) {
+        if (EconomyUtils.getPluginHook() == EconomyType.PLAYER_POINTS && price != (int) price) {
             p.sendMessage(ChatUtils.format(Settings.getOfferCommandWrongPrice()));
             return 0;
         }

@@ -206,7 +206,7 @@ public class Settings {
             String type = config.getString("economy.type");
             String currency = config.getString("economy.currency");
 
-            EconomyUtils.setEconomyType(type, currency);
+            EconomyUtils.setPluginHook(type, currency);
         }
 
         debug = config.getBoolean("debug");

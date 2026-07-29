@@ -97,10 +97,10 @@ market-command:
 
 # Economy configuration
 # type:
-#  - vault -> uses a Vault economy from server plugins
-#  - player_points -> uses PlayerPoints plugin
+#  - Vault -> uses a Vault economy from server plugins
+#  - PlayerPoints -> uses PlayerPoints plugin
 economy:
-  type: 'vault'
+  type: 'Vault'
 
 expire:
   # expire time in minutes
