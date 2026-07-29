@@ -8,8 +8,8 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.logs.LogService;
+import pl.norbit.playermarket.plugins.PluginHook;
 import pl.norbit.playermarket.utils.BlackListUtils;
-import pl.norbit.playermarket.utils.economy.EconomyType;
 import pl.norbit.playermarket.utils.economy.EconomyUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.PermUtils;
@@ -57,7 +57,7 @@ public class OfferCommand {
             return 0;
         }
 
-        if (EconomyUtils.getPluginHook() == EconomyType.PLAYER_POINTS && price != (int) price) {
+        if (EconomyUtils.getPluginHook() == PluginHook.PLAYER_POINTS && price != (int) price) {
             p.sendMessage(ChatUtils.format(Settings.getOfferCommandWrongPrice()));
             return 0;
         }

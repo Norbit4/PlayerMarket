@@ -202,12 +202,11 @@ public class Settings {
             user = config.getString("database.user");
             password = config.getString("database.password");
             useSSL = config.getString("database.use-ssl");
-
-            String type = config.getString("economy.type");
-            String currency = config.getString("economy.currency");
-
-            EconomyUtils.setPluginHook(type, currency);
         }
+
+        String type = config.getString("economy.type");
+        String currency = config.getString("economy.currency");
+        EconomyUtils.setPluginHook(type, currency);
 
         debug = config.getBoolean("debug");
 

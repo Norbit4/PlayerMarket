@@ -8,14 +8,14 @@ import pl.norbit.playermarket.PlayerMarket;
 import pl.norbit.playermarket.plugins.PluginHook;
 import pl.norbit.playermarket.plugins.PluginService;
 
+import java.util.logging.Logger;
+
 public class EconomyUtils {
     @Setter(AccessLevel.PRIVATE)
     @Getter
     private static PluginHook pluginHook;
     @Setter(AccessLevel.PRIVATE)
     private static String currencyName;
-    @Setter(AccessLevel.PRIVATE)
-    private static PlayerMarket instance;
 
     private EconomyUtils() {}
 
@@ -33,7 +33,13 @@ public class EconomyUtils {
         }
 
         if(count == 0){
-            instance.getLogger().severe("No economy plugin found!");
+            Logger logger = PlayerMarket.getInstance().getLogger();
+
+            logger.severe("ERROR!");
+            logger.severe(" ");
+            logger.severe("No economy plugin found!");
+            logger.severe(" ");
+            logger.severe("ERROR!");
         }
     }
     public static void setPluginHook(String type, String currency) {
@@ -46,8 +52,14 @@ public class EconomyUtils {
 
         if(economyType.equalsIgnoreCase("PLAYER_POINTS") || economyType.equalsIgnoreCase("PLAYERPOINTS")){
             pluginHook = PluginHook.PLAYER_POINTS;
+            PlayerMarket.getInstance().getLogger().info(
+                    "Economy type set to PLAYER_POINTS."
+            );
         }else {
             pluginHook = PluginHook.VAULT;
+            PlayerMarket.getInstance().getLogger().info(
+                    "Economy type set to VAULT."
+            );
         }
     }
 
