@@ -10,7 +10,6 @@ import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.data.DataService;
-import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 
 import java.util.*;

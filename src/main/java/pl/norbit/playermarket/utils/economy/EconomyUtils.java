@@ -42,7 +42,7 @@ public class EconomyUtils {
             logger.severe("ERROR!");
         }
     }
-    public static void setPluginHook(String type, String currency) {
+    public static void setEconomyType(String type, String currency) {
         if(type == null){
             throw new IllegalArgumentException("Invalid economy type");
         }
