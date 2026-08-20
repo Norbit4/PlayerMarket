@@ -1,23 +1,29 @@
 package pl.norbit.playermarket.utils.format;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.plugins.PluginHook;
 import pl.norbit.playermarket.plugins.PluginService;
 
 public class ChatUtils {
     private static final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
 
-    private ChatUtils() {
-        throw new IllegalStateException("Utility class");
-    }
+    private ChatUtils() {}
 
     public static String format(Player p, String text) {
         if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(p, text);
         }
+
+        if (text.contains("<") && text.contains(">")) {
+            Component component = MiniMessage.miniMessage().deserialize(text);
+            return LegacyComponentSerializer.legacySection().serialize(component);
+        }
+
         return translateColorCodes(text);
     }
 
@@ -25,34 +31,46 @@ public class ChatUtils {
         if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(null, text);
         }
+        if (text.contains("<") && text.contains(">")) {
+            Component component = MiniMessage.miniMessage().deserialize(text);
+            return LegacyComponentSerializer.legacySection().serialize(component);
+        }
+
         return translateColorCodes(text);
     }
 
-    /**
-     * @param text The string of text to apply color/effects to
-     * @return Returns a string of text with color/effects applied
-     */
-    private static String translateColorCodes(String text){
+    private static String translateColorCodes(String text) {
         String[] texts = text.split(String.format(WITH_DELIMITER, "&"));
 
         StringBuilder finalText = new StringBuilder();
 
-        for (int i = 0; i < texts.length; i++){
-            if (texts[i].equalsIgnoreCase("&")){
-                //get the next string
-                i++;
-                if (texts[i].charAt(0) == '#'){
-                    finalText
-                            .append(net.md_5.bungee.api.ChatColor.of(texts[i].substring(0, 7)))
-                            .append(texts[i].substring(7));
-                }else{
+        for (int i = 0; i < texts.length; i++) {
+            if (texts[i].equalsIgnoreCase("&")) {
+                if (++i >= texts.length) {
+                    finalText.append("&");
+                    break;
+                }
+
+                if (texts[i].charAt(0) == '#') {
+                    if (texts[i].length() >= 7) {
+                        String hex = texts[i].substring(0, 7);
+
+                        try {
+                            finalText.append(net.md_5.bungee.api.ChatColor.of(hex))
+                                    .append(texts[i].substring(7));
+                        } catch (IllegalArgumentException ex) {
+                            finalText.append("&").append(texts[i]);
+                        }
+                    } else {
+                        finalText.append("&").append(texts[i]);
+                    }
+                } else {
                     finalText.append(ChatColor.translateAlternateColorCodes('&', "&" + texts[i]));
                 }
-            }else{
+            } else {
                 finalText.append(texts[i]);
             }
         }
-
         return finalText.toString();
     }
 
