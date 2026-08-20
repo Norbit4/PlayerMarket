@@ -6,6 +6,7 @@ website: https://github.com/Norbit4
 api-version: '1.21'
 authors:
   - Norbit
+folia-supported: true
 
 dependencies:
   server:

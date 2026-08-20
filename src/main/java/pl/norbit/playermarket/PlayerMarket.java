@@ -1,9 +1,7 @@
 package pl.norbit.playermarket;
 
-import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.plugin.loader.library.impl.MavenLibraryResolver;
-import io.papermc.paper.plugin.loader.PluginClasspathBuilder;
-import io.papermc.paper.plugin.loader.PluginLoader;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,13 +9,10 @@ import mc.obliviate.inventory.InventoryAPI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.incendo.cloud.annotations.AnnotationParser;
-import org.incendo.cloud.execution.ExecutionCoordinator;
-import org.incendo.cloud.paper.PaperCommandManager;
 import pl.norbit.playermarket.cache.PlayerDataCache;
 import pl.norbit.playermarket.commands.MainCommand;
-import pl.norbit.playermarket.commands.OfferCommand;
 import pl.norbit.playermarket.commands.MarketCommand;
+import pl.norbit.playermarket.commands.OfferCommand;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.config.category.CategoryConfig;
 import pl.norbit.playermarket.data.DataService;
@@ -75,17 +70,15 @@ public final class PlayerMarket extends JavaPlugin {
     }
 
     public void registerCommands() {
-        PaperCommandManager<CommandSourceStack> commandManager = PaperCommandManager.builder()
-                    .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
-                    .buildOnEnable(this);
-
-        AnnotationParser<CommandSourceStack> annotationParser = new AnnotationParser<>
-                (commandManager, CommandSourceStack.class);
-
-        new MarketCommand(commandManager).register();
-        new OfferCommand(commandManager).register();
-
-        annotationParser.parse(new MainCommand());
+        getLifecycleManager().registerEventHandler(
+                LifecycleEvents.COMMANDS,
+                e -> {
+                    Commands registrar = e.registrar();
+                    new MarketCommand().register(registrar);
+                    new MainCommand().register(registrar);
+                    new OfferCommand().register(registrar);
+                }
+        );
     }
 
     private void loadBStats(){
