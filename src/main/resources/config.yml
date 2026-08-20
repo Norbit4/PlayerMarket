@@ -78,7 +78,6 @@ offer-command:
   # Requires a server restart after changing this value.
   prefix: 'offer'
   argument-name: 'price'
-  # Requires a server restart after changing this value.
   use-permission:
     enabled: false
     permission: 'playermarket.command.offer'
@@ -91,7 +90,6 @@ offer-command:
 market-command:
   # Requires a server restart after changing this value.
   prefix: 'market'
-  # Requires a server restart after changing this value.
   use-permission:
     enabled: false
     permission: 'playermarket.command.market'
