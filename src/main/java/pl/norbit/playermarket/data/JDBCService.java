@@ -19,6 +19,7 @@ import java.util.concurrent.*;
 
 public class JDBCService {
 
+    private static final int MAX_ATTEMPTS = 4;
     private static Connection connection;
     private static QueryRunner runner;
 
@@ -28,8 +29,7 @@ public class JDBCService {
     @Getter(AccessLevel.PROTECTED)
     private static boolean ready = false;
 
-    private static final BeanListHandler<PlayerData> playerDataHandler =
-            new BeanListHandler<>(PlayerData.class);
+    private static final BeanListHandler<PlayerData> playerDataHandler = new BeanListHandler<>(PlayerData.class);
 
     private JDBCService() {}
 
@@ -60,33 +60,79 @@ public class JDBCService {
             if (connection == null || connection.isClosed() || !connection.isValid(2)) {
                 connection = getConnection();
             }
+            ready = true;
         } catch (Exception e) {
-            try {
-                connection = getConnection();
-            } catch (Exception ex) {
-                throw new SQLQueryException("Cannot reconnect to database", ex);
-            }
+            connection = null;
+            ready = false;
+            throw new SQLQueryException("Cannot reconnect to database", e);
         }
+    }
+
+    private static synchronized void reconnect() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException ignored) {
+        }
+
+        connection = null;
+        ready = false;
+
+        ensureConnection();
     }
 
     private static void runUpdate(String query, Object... params) throws SQLException {
-        try {
-            ensureConnection();
-            runner.update(connection, query, params);
-        } catch (SQLException e) {
-            ensureConnection();
-            runner.update(connection, query, params);
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            try {
+                ensureConnection();
+                runner.update(connection, query, params);
+                return;
+
+            } catch (SQLException e) {
+                try {
+                    reconnect();
+                } catch (Exception reconnectException) {
+                    if (attempt == MAX_ATTEMPTS) {
+                        throw e;
+                    }
+                }
+
+                try {
+                    Thread.sleep(attempt * 1500L);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    throw new SQLException("Database retry interrupted", e);
+                }
+            }
         }
+        throw new SQLException("Database query failed after retries");
     }
 
     private static <T> T runQuery(String query, ResultSetHandler<T> handler, Object... params) throws SQLException {
-        try {
-            ensureConnection();
-            return runner.query(connection, query, handler, params);
-        } catch (SQLException e) {
-            ensureConnection();
-            return runner.query(connection, query, handler, params);
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            try {
+                ensureConnection();
+                return runner.query(connection, query, handler, params);
+
+            } catch (SQLException e) {
+                try {
+                    reconnect();
+                } catch (Exception reconnectException) {
+                    if (attempt == MAX_ATTEMPTS) {
+                        throw e;
+                    }
+                }
+
+                try {
+                    Thread.sleep(attempt * 1500L);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    throw new SQLException("Database retry interrupted", e);
+                }
+            }
         }
+        throw new SQLException("Database query failed after retries");
     }
 
     protected static void init() {
@@ -101,10 +147,12 @@ public class JDBCService {
     }
 
     protected static void close() {
-        executor.shutdown();
         try {
-            if (connection != null) connection.close();
-        } catch (SQLException ignored) {}
+            executor.shutdown();
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (Exception ignored) {}
     }
 
     private static void createTable() {
@@ -267,7 +315,7 @@ public class JDBCService {
 
                 if (list.isEmpty()) return null;
 
-                return list.get(0);
+                return list.getFirst();
 
             } catch (SQLException e) {
                 throw new SQLQueryException("Error loading market item", e);
