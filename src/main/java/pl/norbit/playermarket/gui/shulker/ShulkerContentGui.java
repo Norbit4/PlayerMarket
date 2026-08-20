@@ -98,31 +98,24 @@ public class ShulkerContentGui extends Gui {
                 return;
             }
 
-            Player player = (Player) e.getWhoClicked();
+            Player p = (Player) e.getWhoClicked();
 
             DataService.getMarketItemData(this.marketItemData.getId()).thenAccept(mItemData -> {
+                    if (mItemData == null) {
+                        String message = configGui.getMessage("item-sold-message");
 
-                if (mItemData == null) {
-                    String message = configGui.getMessage("item-sold-message");
+                        sync(() -> p.sendMessage(ChatUtils.format(p, message)));
 
-                    sync(() -> player.sendMessage(ChatUtils.format(player, message)));
-
-                    if (guiType == GuiType.MAIN) {
-
-                        sync(() -> new MarketGui(player, CategoryService.getMain()).open());
-
-                    } else {
-
-                        DataService.getPlayerLocalData(player).thenAccept(playerLocalData -> {
-                            sync(() -> new PlayerItemsGui(player, playerLocalData, 0).open());
-                        });
-
+                        if (guiType == GuiType.MAIN) {
+                            sync(() -> new MarketGui(p, CategoryService.getMain()).open());
+                        } else {
+                            DataService.getPlayerLocalData(p).thenAccept(playerLocalData -> {
+                                sync(() -> new PlayerItemsGui(p, playerLocalData, 0).open());
+                            });
+                        }
+                    }else {
+                        sync(() -> new BuyGui(p, mItemData, localMarketItem).open());
                     }
-
-                    return;
-                }
-
-                sync(() -> new BuyGui(player, mItemData, localMarketItem).open());
             });
         });
 

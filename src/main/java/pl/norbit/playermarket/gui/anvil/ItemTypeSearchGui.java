@@ -12,9 +12,7 @@ import java.util.List;
 
 public class ItemTypeSearchGui {
 
-    private ItemTypeSearchGui() {
-        throw new IllegalStateException("Utility class");
-    }
+    private ItemTypeSearchGui() {}
 
     public static void open(Player p){
         new AnvilGUI.Builder()
