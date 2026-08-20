@@ -1,0 +1,38 @@
+name: PlayerMarket
+version: '${version}'
+main: pl.norbit.playermarket.PlayerMarket
+loader: pl.norbit.playermarket.PlayerMarketLoader
+website: https://github.com/Norbit4
+api-version: '1.21'
+authors:
+  - Norbit
+
+dependencies:
+  server:
+    PlayerPoints:
+      load: BEFORE
+      required: false
+    Vault:
+      load: BEFORE
+      required: false
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+    ItemsAdder:
+      load: BEFORE
+      required: false
+    Oraxen:
+      load: BEFORE
+      required: false
+    Nexo:
+      load: BEFORE
+      required: false
+    MMOItems:
+      load: BEFORE
+      required: false
+    MythicMobs:
+      load: BEFORE
+      required: false
+    CraftEngine:
+      load: BEFORE
+      required: false

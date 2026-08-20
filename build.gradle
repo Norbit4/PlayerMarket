@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'pl.norbit'
-version = '2.1.1'
+version = '2.2.0'
 
 compileJava {options.encoding = "UTF-8"}
 
@@ -59,6 +59,8 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
+    implementation 'org.incendo:cloud-paper:2.0.0-beta.10'
+    implementation("org.incendo:cloud-annotations:2.1.0")
 
     //bstats
     implementation("org.bstats:bstats-bukkit:3.2.1")
@@ -155,7 +157,7 @@ processResources {
     def props = [version: version]
     inputs.properties props
     filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
+    filesMatching('paper-plugin.yml') {
         expand props
     }
 }

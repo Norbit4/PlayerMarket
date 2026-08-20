@@ -78,8 +78,6 @@ public class Settings {
     @Getter
     private static String offerCommandUsage;
     @Getter
-    private static String offerCommandNoPermission;
-    @Getter
     private static String offerCommandWrongPrice;
     @Getter
     private static String offerCommandSuccess;
@@ -104,16 +102,8 @@ public class Settings {
     private static boolean marketCommandPermissionEnabled;
     @Getter
     private static String marketCommandPermission;
-    @Getter
-    private static String marketCommandNoPermission;
 
     //main command
-    @Getter
-    private static String mainCommandReloadPermission;
-    @Getter
-    private static String mainCommandHelpPermission;
-    @Getter
-    private static String mainCommandNoPermission;
     @Getter
     private static String mainCommandReloadMessage;
     @Getter
@@ -266,7 +256,6 @@ public class Settings {
         //offer command
         offerCommandPermissionEnabled = config.getBoolean("offer-command.use-permission.enabled");
         offerCommandPermission = config.getString("offer-command.use-permission.permission");
-        offerCommandNoPermission = config.getString("offer-command.use-permission.message");
         offerCommandUsage = config.getString("offer-command.usage");
         offerCommandWrongPrice = config.getString("offer-command.wrong-price");
         offerCommandSuccess = config.getString("offer-command.success");
@@ -278,17 +267,12 @@ public class Settings {
         //market command
         marketCommandPermission = config.getString("market-command.use-permission.permission");
         marketCommandPermissionEnabled = config.getBoolean("market-command.use-permission.enabled");
-        marketCommandNoPermission = config.getString("market-command.use-permission.message");
 
         marketCommandPrefix = config.getString("market-command.prefix");
 
         //main command
-        mainCommandNoPermission = config.getString("main-command.no-permission");
-
-        mainCommandHelpPermission = config.getString("main-command.help.permission");
         mainCommandHelpMessage = config.getStringList("main-command.help.info");
 
-        mainCommandReloadPermission = config.getString("main-command.reload.permission");
         mainCommandReloadMessage = config.getString("main-command.reload.success");
         mainCommandReloadInfo = config.getStringList("main-command.reload.info");
 
