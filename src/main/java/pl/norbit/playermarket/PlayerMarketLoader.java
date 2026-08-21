@@ -7,17 +7,15 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 
+import java.lang.reflect.Field;
+
 public class PlayerMarketLoader implements PluginLoader {
     @Override
     public void classloader(PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
 
-        resolver.addRepository(new RemoteRepository.Builder(
-                        "central",
-                        "default",
-                        MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR
-                ).build()
-        );
+        addMavenRepository(resolver);
+
         resolver.addDependency(new Dependency(
                         new DefaultArtifact("mysql:mysql-connector-java:8.0.33"),
                         null)
@@ -35,5 +33,26 @@ public class PlayerMarketLoader implements PluginLoader {
                         null)
         );
         classpathBuilder.addLibrary(resolver);
+    }
+
+    private void addMavenRepository(MavenLibraryResolver resolver) {
+        try {
+            MavenLibraryResolver.class.getField("MAVEN_CENTRAL_DEFAULT_MIRROR");
+
+            resolver.addRepository(new RemoteRepository.Builder(
+                            "central",
+                            "default",
+                            MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR
+                    ).build()
+            );
+        } catch (Exception ignored) {
+            resolver.addRepository(
+                    new RemoteRepository.Builder(
+                            "central",
+                            "default",
+                            "https://repo.maven.apache.org/maven2/"
+                    ).build()
+            );
+        }
     }
 }
