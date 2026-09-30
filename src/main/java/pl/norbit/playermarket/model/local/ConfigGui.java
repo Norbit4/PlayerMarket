@@ -40,9 +40,17 @@ public class ConfigGui {
 
         if(layoutSection != null) {
             GuiLayout guiLayout = new GuiLayout();
-            guiLayout.setBorderLayout(layoutSection.getIntegerList("border"));
-            guiLayout.setCategoryLayout(layoutSection.getIntegerList("categories"));
-            guiLayout.setItemsLayout(layoutSection.getIntegerList("items"));
+            guiLayout.setBorderLayout(
+                    parseIntegerList(layoutSection.getStringList("border"))
+            );
+
+            guiLayout.setCategoryLayout(
+                    parseIntegerList(layoutSection.getStringList("categories"))
+            );
+
+            guiLayout.setItemsLayout(
+                    parseIntegerList(layoutSection.getStringList("items"))
+            );
             this.layout = guiLayout;
         }
 
@@ -105,6 +113,41 @@ public class ConfigGui {
         blackList.addAll(layout.getItemsLayout());
 
         return blackList;
+    }
+
+    private List<Integer> parseIntegerList(List<String> values) {
+        if(values == null || values.isEmpty()){
+            return List.of();
+        }
+
+        List<Integer> result = new ArrayList<>();
+
+        for (String value : values) {
+            value = value.trim();
+
+            if (value.contains("-")) {
+                String[] parts = value.split("-", 2);
+
+                if (parts.length != 2) {
+                    continue;
+                }
+
+                int start = Integer.parseInt(parts[0].trim());
+                int end = Integer.parseInt(parts[1].trim());
+
+                if (start > end) {
+                    continue;
+                }
+
+                for (int i = start; i <= end; i++) {
+                    result.add(i);
+                }
+            } else {
+                result.add(Integer.parseInt(value));
+            }
+        }
+
+        return result;
     }
 
     public int getSlot(String key){
