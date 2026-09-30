@@ -12,11 +12,7 @@ repositories {
     mavenCentral()
     maven {
         name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
+        url =  "https://repo.papermc.io/repository/maven-public/"
     }
     //placeholderapi
     maven {
@@ -26,11 +22,6 @@ repositories {
     //playerpoints
     maven {
         url = 'https://repo.rosewooddev.io/repository/public/'
-    }
-    //itemsadder
-    maven {
-        name = "matteodev"
-        url = "https://maven.devs.beer/"
     }
     maven {
         url "https://mvn.wesjd.net/"
@@ -58,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 
     //bstats
     implementation("org.bstats:bstats-bukkit:3.2.1")
@@ -92,7 +83,7 @@ dependencies {
     implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.2.0'
 
     //itemsadder
-    compileOnly("dev.lone:api-itemsadder:4.0.10")
+    compileOnly("beer.devs:itemsadder-api:4.0.18-beta-9")
 
     //craft engine
     compileOnly("net.momirealms:craft-engine-core:26.7.1")
@@ -119,7 +110,7 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.12.1")
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 
 tasks.shadowJar {
     archiveClassifier.set("")
