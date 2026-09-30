@@ -55,22 +55,22 @@ database:
 main-command:
   # permission: playermarket.command.main.clear
   clear:
-    success: '&7Data for &e{PLAYER} &7has been cleared!'
-    player-not-found: '&cPlayer not found!'
+    success: '<gray>Data for <yellow>{PLAYER} <gray>has been cleared!'
+    player-not-found: '<red>Player not found!'
   # permission: playermarket.command.main.help
   help:
     info:
-      - '&8--------------- &a&lPLAYERMARKET &8---------------'
+      - '<dark_gray>--------------- <green><bold>PLAYERMARKET <dark_gray>---------------'
       - ''
-      - '&7&l» &8&l/&amarket &7- &fOpen the market!'
-      - '&7&l» &8&l/&aoffer [cost] &7- &fOffer an item!'
+      - '<gray><bold>» <dark_gray><bold>/<green>market <gray>- <white>Open the market!'
+      - '<gray><bold>» <dark_gray><bold>/<green>offer [cost] <gray>- <white>Offer an item!'
   # permission: playermarket.command.main.reload
   reload:
-    success: '&aPlugin has been reloaded!'
+    success: '<green>Plugin has been reloaded!'
     # display in help when player has permission
     info:
-      - '&7&l» &8&l/&aplayermarket reload &7- &fReload files!'
-      - '&7&l» &8&l/&aplayermarket clear [player] &7- &fClear player data!'
+      - '<gray><bold>» <dark_gray><bold>/<green>playermarket reload <gray>- <white>Reload files!'
+      - '<gray><bold>» <dark_gray><bold>/<green>playermarket clear [player] <gray>- <white>Clear player data!'
       - ''
 
 # /offer <price> - offer an item
@@ -81,10 +81,10 @@ offer-command:
   use-permission:
     enabled: false
     permission: 'playermarket.command.offer'
-  usage: '&cUsage: /offer [price]'
-  wrong-price: '&cThe price variable is invalid!'
-  wrong-item: '&cYou can not offer this item!'
-  success: '&aYou have successfully offered this item!'
+  usage: '<red>Usage: /offer [price]'
+  wrong-price: '<red>The price variable is invalid!'
+  wrong-item: '<red>You can not offer this item!'
+  success: '<green>You have successfully offered this item!'
 
 # /market - open market
 market-command:
@@ -113,9 +113,9 @@ expire:
   # expire time in minutes
   # 0 - never expire
   time: 10080 # 7 days
-  status: '&cExpired!'
-  never: '&dNever'
-  message: '&cThis offer has expired!'
+  status: '<red>Expired!'
+  never: '<light_purple>Never'
+  message: '<red>This offer has expired!'
   prefix:
     days: 'd'
     hours: 'h'
@@ -160,7 +160,7 @@ blacklist:
 
   # if enabled, players will not be able to offer items from this list
   enabled: false
-  message: '&cYou can not offer this item!'
+  message: '<red>You can not offer this item!'
   # items in blacklist, you can use item ids or names
   items:
     - 'DIAMOND_SWORD' # example of item id
@@ -172,7 +172,7 @@ offers-limit:
   # usage:
   # ex. 'playermarket.offers.limit.15' => 15 offers
   permission: 'playermarket.offers.limit'
-  limit-message: '&cYou have reached maximum amount of active offers!'
+  limit-message: '<red>You have reached maximum amount of active offers!'
 
 cooldown:
   # Cooldown for commands and some GUI icons (in milliseconds, recommended: 400–500)
@@ -189,51 +189,51 @@ cooldown:
 # {SELLER} - item seller
 # {EXPIRE} - item expire time
 market-offer-item-lore:
-  - '&8{DATE}'
+  - '<dark_gray>{DATE}'
   - ''
-  - '&fPrice: &a{PRICE}$'
-  - '&fSeller: &a{SELLER}'
-  - '&fExpire: &a{EXPIRE}'
+  - '<white>Price: <green>{PRICE}$'
+  - '<white>Seller: <green>{SELLER}'
+  - '<white>Expire: <green>{EXPIRE}'
   - ''
-  - '&#dcee9aClick to buy!'
+  - '<#dcee9a>Click to buy!'
 
 # Icon for not empty shulker box
 market-offer-shulker-lore:
-  - '&8{DATE}'
+  - '<dark_gray>{DATE}'
   - ''
-  - '&fPrice: &a{PRICE}$'
-  - '&fSeller: &a{SELLER}'
-  - '&fExpire: &a{EXPIRE}'
+  - '<white>Price: <green>{PRICE}$'
+  - '<white>Seller: <green>{SELLER}'
+  - '<white>Expire: <green>{EXPIRE}'
   - ''
-  - '&#dcee9a[LPM] Click to buy!'
-  - '&#dcee9a[PPM] Click to preview!'
+  - '<#dcee9a>[LPM] Click to buy!'
+  - '<#dcee9a>[PPM] Click to preview!'
 
 # {DATE} - item offer date
 # {PRICE} - item price
 # {EXPIRE} - item expire time
 player-offer-item-lore:
-  - '&8{DATE}'
+  - '<dark_gray>{DATE}'
   - ''
-  - '&fPrice: &a{PRICE}$'
-  - '&fExpire: &a{EXPIRE}'
+  - '<white>Price: <green>{PRICE}$'
+  - '<white>Expire: <green>{EXPIRE}'
   - ''
-  - '&#dcee9aClick to delete!'
+  - '<#dcee9a>Click to delete!'
 
 player-offer-shulker-lore:
-  - '&8{DATE}'
+  - '<dark_gray>{DATE}'
   - ''
-  - '&fPrice: &a{PRICE}$'
-  - '&fExpire: &a{EXPIRE}'
+  - '<white>Price: <green>{PRICE}$'
+  - '<white>Expire: <green>{EXPIRE}'
   - ''
-  - '&#dcee9a[LPM] Click to delete!'
-  - '&#dcee9a[PPM] Click to preview!'
+  - '<#dcee9a>[LPM] Click to delete!'
+  - '<#dcee9a>[PPM] Click to preview!'
 
 #---------------------------------------#
 #               [ INFO ]                #
 #---------------------------------------#
 info-messages:
-  cooldown: '&cSlow down! You need wait a moment!'
-  join: '&7You have &a{MONEY}$ &7to collect for &a{SOLD} &7sold items &a/market'
+  cooldown: '<red>Slow down! You need wait a moment!'
+  join: '<gray>You have <green>{MONEY}$ <gray>to collect for <green>{SOLD} <gray>sold items <green>/market'
 
 #---------------------------------------#
 #             [ DISCORD ]               #
@@ -282,7 +282,7 @@ discord:
 # - ce:topaz
 # - mm:BanditTunic
 market-gui:
-  title: '&8&lMARKET &7&l» &8&l{CATEGORY} ({CURRENT}/{TOTAL})'
+  title: '<dark_gray><bold>MARKET <gray><bold>» <dark_gray><bold>{CATEGORY} ({CURRENT}/{TOTAL})'
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   size: 6 # in rows
   border-icon:
@@ -290,36 +290,36 @@ market-gui:
     icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   your-offers-icon:
-    name: '&#93f182&lYOUR OFFERS'
+    name: '<#93f182><bold>YOUR OFFERS'
     icon: 'CHEST'
     slot: 49
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   search-icon:
-    name: '&#93f182&lSEARCH'
+    name: '<#93f182><bold>SEARCH'
     icon: 'NAME_TAG'
     slot: 51
     enabled: true
     lore:
       - ''
-      - '&7Type item name...'
+      - '<gray>Type item name...'
       - ''
-      - '&#dcee9aClick to search!'
+      - '<#dcee9a>Click to search!'
   previous-page-icon:
-    name: '&f&lPREVIOUS PAGE'
+    name: '<white><bold>PREVIOUS PAGE'
     icon: 'ARROW'
     slot: 46
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   next-page-icon:
-    name: '&f&lNEXT PAGE'
+    name: '<white><bold>NEXT PAGE'
     icon: 'ARROW'
     slot: 52
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   layout:
     border:
       - 1
@@ -332,56 +332,32 @@ market-gui:
       - 25
       - 34
       - 43
-      - 38
-      - 39
-      - 40
-      - 41
-      - 42
+      - 38-42
     items:
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 11
-      - 12
-      - 13
-      - 14
-      - 15
-      - 20
-      - 21
-      - 22
-      - 23
-      - 24
-      - 29
-      - 30
-      - 31
-      - 32
-      - 33
+      - 2-6
+      - 11-15
+      - 20-24
+      - 29-33
     categories:
       - 0
-      - 8
-      - 9
-      - 17
-      - 18
-      - 26
-      - 27
-      - 35
-      - 36
+      - 8-9
+      - 17-18
+      - 26-27
+      - 35-36
       - 44
 
 #---------------------------------------#
 #       [ ANVIL- INPUT - SEARCH ]       #
 #---------------------------------------#
 anvil-input:
-  title: '&8&lTYPE ITEM'
+  title: '<dark_gray><bold>TYPE ITEM'
   empty: 'Empty!'
 
 #---------------------------------------#
 #            [ SEARCH - GUI ]           #
 #---------------------------------------#
 search-gui:
-  title: '&8&lSEARCH &7&l» &8&l{SEARCH} ({CURRENT}/{TOTAL})'
+  title: '<dark_gray><bold>SEARCH <gray><bold>» <dark_gray><bold>{SEARCH} ({CURRENT}/{TOTAL})'
   size: 6 # in rows
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   border-icon:
@@ -389,92 +365,49 @@ search-gui:
     icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   back-to-market-icon:
-    name: '&#93f182&lBACK TO MARKET'
+    name: '<#93f182><bold>BACK TO MARKET'
     icon: 'BARRIER'
     slot: 49
     lore:
       - ''
-      - '&#dcee9aClick to go back!'
+      - '<#dcee9a>Click to go back!'
   previous-page-icon:
-    name: '&f&lPREVIOUS PAGE'
+    name: '<white><bold>PREVIOUS PAGE'
     icon: 'ARROW'
     slot: 45
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   next-page-icon:
-    name: '&f&lNEXT PAGE'
+    name: '<white><bold>NEXT PAGE'
     icon: 'ARROW'
     slot: 53
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   layout:
     border:
-      - 36
-      - 37
-      - 38
-      - 39
-      - 40
-      - 41
-      - 42
-      - 43
-      - 44
+      - 36-44
     items:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-      - 15
-      - 16
-      - 17
-      - 18
-      - 19
-      - 20
-      - 21
-      - 22
-      - 23
-      - 24
-      - 25
-      - 26
-      - 27
-      - 28
-      - 29
-      - 30
-      - 31
-      - 32
-      - 33
-      - 34
-      - 35
+      - 0-35
 
 #---------------------------------------#
 #            [ OFFERS - GUI ]           #
 #---------------------------------------#
 offers-gui:
-  title: '&8&lYOUR OFFERS'
+  title: '<dark_gray><bold>YOUR OFFERS'
   size: 6 # in rows
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
-  remove-offer-message: '&cYour offer has been removed!'
-  nothing-to-get-message: '&cYou have nothing to claim!'
-  inventory-full-message: '&cYour inventory is full!'
-  success-message: '&aYou have successfully received &2{MONEY}$ &afor your sold offers!'
+  remove-offer-message: '<red>Your offer has been removed!'
+  nothing-to-get-message: '<red>You have nothing to claim!'
+  inventory-full-message: '<red>Your inventory is full!'
+  success-message: '<green>You have successfully received <dark_green>{MONEY}$ <green>for your sold offers!'
   border-icon:
     name: ' '
     icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   statistics-icon:
-    name: '&#93f182&lYOUR ACCOUNT'
+    name: '<#93f182><bold>YOUR ACCOUNT'
     icon: 'CHEST'
     slot: 4
     lore:
@@ -484,108 +417,82 @@ offers-gui:
       # {ALL_SOLD} - all time player sold items
       # {ALL_MONEY_EARNED} - all time player money earned
       - ''
-      - '&b◆ &fOffers: &b{OFFERS}&8/&b{OFFERS_LIMIT}'
-      - '&d◆ &fSold offers: &d{SOLD}'
-      - '&a$ &fMoney to claim: &a{MONEY_EARNED}$'
+      - '<aqua>◆ <white>Offers: <aqua>{OFFERS}<dark_gray>/<aqua>{OFFERS_LIMIT}'
+      - '<light_purple>◆ <white>Sold offers: <light_purple>{SOLD}'
+      - '<green>$ <white>Money to claim: <green>{MONEY_EARNED}$'
       - ''
-      - '&d◆ &fAll time sold offers: &d{ALL_SOLD}'
-      - '&a$ &fAll time money earned: &a{ALL_MONEY_EARNED}$'
+      - '<light_purple>◆ <white>All time sold offers: <light_purple>{ALL_SOLD}'
+      - '<green>$ <white>All time money earned: <green>{ALL_MONEY_EARNED}$'
       - ''
-      - '&#dcee9aClick to claim!'
+      - '<#dcee9a>Click to claim!'
   back-to-market-icon:
-    name: '&#93f182&lBACK TO MARKET'
+    name: '<#93f182><bold>BACK TO MARKET'
     icon: 'BARRIER'
     slot: 49
     lore:
       - ''
-      - '&#dcee9aClick to go back!'
+      - '<#dcee9a>Click to go back!'
   previous-page-icon:
-    name: '&f&lPREVIOUS PAGE'
+    name: '<white><bold>PREVIOUS PAGE'
     icon: 'ARROW'
     slot: 46
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   next-page-icon:
-    name: '&f&lNEXT PAGE'
+    name: '<white><bold>NEXT PAGE'
     icon: 'ARROW'
     slot: 52
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   layout:
     border:
-      - 36
-      - 37
-      - 38
-      - 39
-      - 40
-      - 41
-      - 42
-      - 43
-      - 44
+      - 36-44
     items:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-      - 15
-      - 16
-      - 19
-      - 20
-      - 21
-      - 22
-      - 23
-      - 24
-      - 25
-      - 28
-      - 29
-      - 30
-      - 31
-      - 32
-      - 33
-      - 34
+      - 10-16
+      - 19-25
+      - 28-34
 
 #---------------------------------------#
 #            [ BUY - GUI ]              #
 #---------------------------------------#
 buy-gui:
-  title: '&8&lBUY AN ITEM'
+  title: '<dark_gray><bold>BUY AN ITEM'
   size: 4 # in rows
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
-  item-sold-message: '&cThis offer is already sold!'
-  not-enough-money-message: '&cYou do not have enough money!'
-  player-is-owner-message: '&cYou can not buy your own item!'
-  success-message: '&fYou have bought an item for &a{COST}$!'
-  sell-item-to-owner: '&7Player &a{PLAYER} &7bought your item for &a{PRICE}$!'
-  inventory-full-message: '&cYour inventory is full!'
+  item-sold-message: '<red>This offer is already sold!'
+  not-enough-money-message: '<red>You do not have enough money!'
+  player-is-owner-message: '<red>You can not buy your own item!'
+  success-message: '<white>You have bought an item for <green>{COST}$!'
+  sell-item-to-owner: '<gray>Player <green>{PLAYER} <gray>bought your item for <green>{PRICE}$!'
+  inventory-full-message: '<red>Your inventory is full!'
   buy-icon:
     slot: 13
     lore:
-      - '&8{DATE}'
+      - '<dark_gray>{DATE}'
       - ''
-      - '&fPrice: &a{PRICE}$'
-      - '&fSeller: &a{SELLER}'
-      - '&fExpire: &a{EXPIRE}'
+      - '<white>Price: <green>{PRICE}$'
+      - '<white>Seller: <green>{SELLER}'
+      - '<white>Expire: <green>{EXPIRE}'
   border-icon:
     name: ' '
     icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   accept-icon:
-    name: '&f&lBuy for &a&l{AMOUNT}$!'
+    name: '<white><bold>Buy for <green><bold>{AMOUNT}$!'
     icon: 'GREEN_WOOL'
     slot: 20
     lore:
       - ''
-      - '&#dcee9aClick to buy!'
+      - '<#dcee9a>Click to buy!'
   cancel-icon:
-    name: '&c&lBack'
+    name: '<red><bold>Back'
     icon: 'RED_WOOL'
     slot: 24
     lore:
       - ''
-      - '&#dcee9aClick to go back!'
+      - '<#dcee9a>Click to go back!'
 
 #---------------------------------------#
 #         [ SHULKERBOX - GUI ]          #
@@ -593,35 +500,35 @@ buy-gui:
 # shulker box gui, opens when player click shulker box for preview
 
 shulker-gui:
-  title: '&8&lITEM PREVIEW'
+  title: '<dark_gray><bold>ITEM PREVIEW'
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
-  item-sold-message: '&cThis offer is already sold!'
+  item-sold-message: '<red>This offer is already sold!'
   border-icon:
     name: ' '
     icon: 'GRAY_STAINED_GLASS_PANE'
     lore: []
   back-icon:
-    name: '&#93f182&lBACK'
+    name: '<#93f182><bold>BACK'
     icon: 'BARRIER'
     slot: 40
     lore:
       - ''
-      - '&#dcee9aClick to go back!'
+      - '<#dcee9a>Click to go back!'
   buy-icon:
-    name: '&#93f182&lBUY'
+    name: '<#93f182><bold>BUY'
     icon: 'GREEN_WOOL'
     slot: 36
     lore:
       - ''
-      - '&#dcee9aClick to buy!'
+      - '<#dcee9a>Click to buy!'
 
 #---------------------------------------#
 #            [ CATEGORIES ]             #
 #---------------------------------------#
-category-name-format: '&#93f182&l{CATEGORY}'
+category-name-format: '<#93f182><bold>{CATEGORY}'
 category-selected-lore:
   - ''
-  - '&a&lSelected!'
+  - '<green><bold>Selected!'
 
 # all items without category will go to this category
 other-category:
@@ -631,7 +538,7 @@ other-category:
   icon: "ENDER_PEARL"
   lore:
     - ''
-    - '&#dcee9aClick to browse!'
+    - '<#dcee9a>Click to browse!'
 
 # main page category, all items will be displayed here
 all-category:
@@ -640,7 +547,7 @@ all-category:
   icon: "NETHER_STAR"
   lore:
     - ''
-    - '&#dcee9aClick to browse!'
+    - '<#dcee9a>Click to browse!'
     -
 
 # categories, you can add more categories
@@ -652,53 +559,53 @@ categories:
     file: 'blocks'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   2:
     name: 'ARMOR'
     icon: 'DIAMOND_CHESTPLATE'
     file: 'armor'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   3:
     name: 'COMBAT'
     icon: 'GOLDEN_SWORD'
     file: 'combat'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   4:
     name: 'MINERALS'
     icon: 'AMETHYST_SHARD'
     file: 'minerals'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   5:
     name: 'NATURE'
     icon: 'BAMBOO'
     file: 'nature'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   6:
     name: 'REDSTONE'
     icon: 'REDSTONE'
     file: 'redstone'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   7:
     name: 'TOOLS'
     icon: 'IRON_PICKAXE'
     file: 'tools'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
   8:
     name: 'FOOD'
     icon: 'ENCHANTED_GOLDEN_APPLE'
     file: 'food'
     lore:
       - ''
-      - '&#dcee9aClick to browse!'
+      - '<#dcee9a>Click to browse!'
