@@ -90,9 +90,7 @@ public class MarketSearchGui extends Gui {
         this.marketItemsPagination.getItems().clear();
 
         List<LocalMarketItem> icons = MarketService.searchItemsByMaterial(search);
-        if(icons != null){
-            icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem(MarketItemType.MAIN)));
-        }
+        icons.forEach(item -> this.marketItemsPagination.addItem(item.getMarketItem(MarketItemType.MAIN)));
 
         this.marketItemsPagination.update();
         this.guiPages.update();
