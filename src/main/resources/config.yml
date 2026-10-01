@@ -160,6 +160,9 @@ blacklist:
 
   # if enabled, players will not be able to offer items from this list
   enabled: false
+  # If enabled, the list acts as a whitelist instead.
+  # Only items from the list can be offered.
+  whitelist-mode: false
   message: '<red>You can not offer this item!'
   # items in blacklist, you can use item ids or names
   items:

@@ -6,11 +6,10 @@ import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
 
 public class BlackListUtils {
-
     private BlackListUtils() {}
 
     public static boolean isBlackListed(ItemStack itemStack) {
-        if(!Settings.isBlacklistEnabled()){
+        if (!Settings.isBlacklistEnabled()) {
             return false;
         }
 
@@ -19,29 +18,30 @@ public class BlackListUtils {
         }
 
         String itemType = itemStack.getType().name();
+        boolean matchesList = false;
 
         for (String blacklistItem : Settings.getBlacklistItems()) {
-            if(CustomItemsUtils.isEqual(blacklistItem, itemStack)){
-                return true;
+            if (CustomItemsUtils.isEqual(blacklistItem, itemStack)) {
+                matchesList = true;
+                break;
             }
-
             if (blacklistItem.equalsIgnoreCase(itemType)) {
-                return true;
+                matchesList = true;
+                break;
             }
+            if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
+                String displayName = itemStack.getItemMeta().getDisplayName();
 
-            String displayName = itemStack.getItemMeta().getDisplayName();
+                if (!displayName.isBlank()) {
+                    String strippedName = ChatColor.stripColor(displayName);
 
-            if(displayName.isBlank()){
-                continue;
-            }
-
-            String strippedName = ChatColor.stripColor(displayName);
-
-            if (blacklistItem.equalsIgnoreCase(strippedName)) {
-                return true;
+                    if (blacklistItem.equalsIgnoreCase(strippedName)) {
+                        matchesList = true;
+                        break;
+                    }
+                }
             }
         }
-
-        return false;
+        return Settings.isWhitelistMode() != matchesList;
     }
 }

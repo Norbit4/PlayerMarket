@@ -171,6 +171,8 @@ public class Settings {
     @Getter
     private static boolean blacklistEnabled;
     @Getter
+    private static boolean whitelistMode;
+    @Getter
     private static List<String> blacklistItems;
     @Getter
     private static String blacklistMessage;
@@ -292,6 +294,7 @@ public class Settings {
 
         //blacklist
         blacklistEnabled = config.getBoolean("blacklist.enabled");
+        whitelistMode = config.getBoolean("blacklist.whitelist-mode");
         blacklistItems = config.getStringList("blacklist.items");
         blacklistMessage = config.getString("blacklist.message");
 
