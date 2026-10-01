@@ -1,5 +1,6 @@
 package pl.norbit.playermarket.service;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.config.Settings;
@@ -20,6 +21,7 @@ public class MarketService {
 
     private static HashMap<UUID, List<LocalMarketItem>> marketItems = new HashMap<>();
     private static List<LocalMarketItem> cachedAllItems = Collections.emptyList();
+    private static ScheduledTask updateTask;
 
     private MarketService() {}
 
@@ -39,17 +41,20 @@ public class MarketService {
         return reverse;
     }
 
-    public static void notifyCategoryChanged(UUID categoryUUID) {
-        Map<UUID, Set<MarketGui>> viewers = MarketGui.getViewers();
+    public static void updateCategory(UUID categoryUUID){
+        notifyCategoryChanged(categoryUUID);
+        updateGlobalGuis();
+    }
 
-        Set<MarketGui> categoryGuis = viewers.get(categoryUUID);
-        if (categoryGuis != null) {
-            for (MarketGui gui : categoryGuis) {
-                gui.onItemAdded();
-            }
+    public static void updateCategories(Set<UUID> changedCategories){
+        for (UUID categoryUUID : changedCategories) {
+            notifyCategoryChanged(categoryUUID);
         }
+        updateGlobalGuis();
+    }
 
-        // update ALL-category
+    private static void updateGlobalGuis(){
+        Map<UUID, Set<MarketGui>> viewers = MarketGui.getViewers();
         Set<MarketGui> allGuis = viewers.get(Settings.getAllCategory().getCategoryUUID());
 
         if (allGuis != null) {
@@ -60,6 +65,17 @@ public class MarketService {
 
         PlayerItemsGui.updateAll();
         MarketSearchGui.updateAll();
+    }
+
+    private static void notifyCategoryChanged(UUID categoryUUID) {
+        Map<UUID, Set<MarketGui>> viewers = MarketGui.getViewers();
+
+        Set<MarketGui> categoryGuis = viewers.get(categoryUUID);
+        if (categoryGuis != null) {
+            for (MarketGui gui : categoryGuis) {
+                gui.onItemAdded();
+            }
+        }
     }
 
     private static List<LocalMarketItem> getAllIcons(){
@@ -87,7 +103,7 @@ public class MarketService {
     }
 
     public static void start() {
-        asyncTimer(() -> {
+        updateTask =  asyncTimer(() -> {
             DataService.getAll().thenAccept(items -> {
                 HashMap<UUID, List<LocalMarketItem>> newMarketItems = new HashMap<>();
 
@@ -102,8 +118,11 @@ public class MarketService {
                                 )
                         );
 
-                Set<UUID> changedCategories =
-                        getChangedCategories(marketItems, newMarketItems);
+                Set<UUID> changedCategories = getChangedCategories(marketItems, newMarketItems);
+
+                if(changedCategories.isEmpty()){
+                    return;
+                }
 
                 marketItems = newMarketItems;
 
@@ -113,12 +132,17 @@ public class MarketService {
                         .sorted(Comparator.comparingLong(LocalMarketItem::getOfferDate).reversed())
                         .toList();
 
-                for (UUID categoryUUID : changedCategories) {
-                    notifyCategoryChanged(categoryUUID);
-                }
+                updateCategories(changedCategories);
             });
 
         }, 40L, 30L);
+    }
+
+    public static void stop() {
+        if (updateTask != null) {
+            updateTask.cancel();
+            updateTask = null;
+        }
     }
 
     private static Set<UUID> getChangedCategories(
