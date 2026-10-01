@@ -1,4 +1,4 @@
-package pl.norbit.playermarket.service;
+package pl.norbit.playermarket.data;
 
 import pl.norbit.playermarket.model.local.RecentSearch;
 
@@ -8,9 +8,7 @@ public class SearchStorage {
     private static final Map<UUID, String> search = new HashMap<>();
     private static final RecentSearch recentSearch = new RecentSearch(5);
 
-    private SearchStorage() {
-        throw new IllegalStateException("Utility class");
-    }
+    private SearchStorage() {}
 
     public static void updateSearch(UUID playerUUID, String search) {
         SearchStorage.search.put(playerUUID, search);

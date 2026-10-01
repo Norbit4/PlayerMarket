@@ -215,10 +215,10 @@ public class GuiPages<T> {
                 1
         );
 
-        String title = ChatUtils.format(
+        String title = ChatUtils.formatLegacy(
                 guiTitle
-                        .replace("{CURRENT}", String.valueOf(current))
-                        .replace("{TOTAL}", String.valueOf(totalPages))
+                        .replace("{current}", String.valueOf(current))
+                        .replace("{total}", String.valueOf(totalPages))
         );
 
         if (force) {

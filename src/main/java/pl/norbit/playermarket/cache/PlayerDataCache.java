@@ -29,11 +29,6 @@ public class PlayerDataCache {
         }, 20L, 20 * 60 * 3L);
     }
 
-    public static void loadCache(OfflinePlayer p){
-       DataService.getPlayerLocalData(p)
-               .thenAccept(localPlayerData -> localDataCache.put(p.getUniqueId(), localPlayerData));
-    }
-
     public static void loadCache(PlayerData playerData){
         localDataCache.put(UUID.fromString(playerData.getPlayerUUID()), new LocalPlayerData(playerData));
     }

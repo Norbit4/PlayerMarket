@@ -78,13 +78,13 @@ public class ConfigGui {
             configIcon.setConfigId(matId);
 
             if(name != null){
-                configIcon.setName(ChatUtils.format(name));
+                configIcon.setName(ChatUtils.formatLegacy(name));
             }
             configIcon.setSlot(slot);
             configIcon.setEnabled(configurationSection.getBoolean("enabled"));
 
             configIcon.setLore(stringList.stream()
-                    .map(ChatUtils::format)
+                    .map(ChatUtils::formatLegacy)
                     .toList());
 
             icons.put(key, configIcon);
@@ -117,7 +117,7 @@ public class ConfigGui {
 
     private List<Integer> parseIntegerList(List<String> values) {
         if(values == null || values.isEmpty()){
-            return List.of();
+            return new ArrayList<>();
         }
 
         List<Integer> result = new ArrayList<>();

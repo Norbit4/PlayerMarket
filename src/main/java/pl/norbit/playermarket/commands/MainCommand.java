@@ -11,7 +11,6 @@ import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.PlayerUtils;
 
-
 public class MainCommand {
 
     public void register(Commands registrar) {
@@ -90,7 +89,7 @@ public class MainCommand {
         DataService.clearPlayerData(offlinePlayer);
 
         String message = Settings.getClearSuccess()
-                .replace("{PLAYER}", name);
+                .replace("{player}", name);
 
         sender.sendMessage(ChatUtils.format(message));
         return 1;

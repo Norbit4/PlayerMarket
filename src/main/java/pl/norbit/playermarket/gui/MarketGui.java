@@ -12,14 +12,14 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
-import pl.norbit.playermarket.gui.anvil.ItemTypeSearchGui;
 import pl.norbit.playermarket.gui.template.GuiTemplate;
 import pl.norbit.playermarket.gui.template.TemplateUtils;
 import pl.norbit.playermarket.gui.utils.GuiPages;
 import pl.norbit.playermarket.model.local.*;
 import pl.norbit.playermarket.data.DataService;
+import pl.norbit.playermarket.service.DialogService;
 import pl.norbit.playermarket.service.MarketService;
-import pl.norbit.playermarket.service.SearchStorage;
+import pl.norbit.playermarket.data.SearchStorage;
 import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
@@ -77,9 +77,7 @@ public class MarketGui extends Gui {
 
         Icon fillIcon = configGui.isFill() ? fill.getIcon() : null;
 
-        String title = ChatUtils.format(player,
-                Settings.getMarketGui().getTitle().replace("{CATEGORY}", category.getName())
-        );
+        String title = Settings.getMarketGui().getTitle().replace("{category}", category.getName());
         int size = MarketService.getIcons(category).size();
 
         this.guiPages = new GuiPages<>(
@@ -187,7 +185,7 @@ public class MarketGui extends Gui {
                 player.sendMessage(ChatUtils.format(Settings.getCooldownMessage()));
                 return;
             }
-            ItemTypeSearchGui.open(player);
+            DialogService.openSearch(player);
         });
 
         return icon;
@@ -200,7 +198,7 @@ public class MarketGui extends Gui {
 
             Icon icon = new Icon(Material.BARRIER);
 
-            icon.setName(ChatUtils.format("&cInvalid item"));
+            icon.setName(ChatUtils.formatLegacy("&cInvalid item"));
 
             return icon;
         }
@@ -208,16 +206,16 @@ public class MarketGui extends Gui {
 
         boolean selected = category.getCategoryUUID().equals(this.category.getCategoryUUID());
 
-        icon.setName(ChatUtils.format(
+        icon.setName(ChatUtils.formatLegacy(
                 player,
-                Settings.getCategoryNameFormat().replace("{CATEGORY}", category.getName())
+                Settings.getCategoryNameFormat().replace("{category}", category.getName())
         ));
 
         icon.hideFlags();
 
         if (selected) {
             icon.setLore(Settings.getCategorySelectedLore().stream()
-                    .map(ChatUtils::format)
+                    .map(ChatUtils::formatLegacy)
                     .toList());
 
             icon.enchant(Enchantment.UNBREAKING);
@@ -226,7 +224,7 @@ public class MarketGui extends Gui {
         }
 
         icon.setLore(category.getLore().stream()
-                .map(line -> ChatUtils.format(player, line))
+                .map(line -> ChatUtils.formatLegacy(player, line))
                 .toList());
 
         icon.onClick(e -> {

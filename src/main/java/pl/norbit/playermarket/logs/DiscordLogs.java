@@ -54,10 +54,10 @@ public class DiscordLogs {
         String finalPlayerName = playerName;
         TaskUtils.async(() ->{
             String messages = dcEmbed.getMessage()
-                    .replace("{PLAYER}", finalPlayerName)
-                    .replace("{SELLER}", ownerName)
-                    .replace("{ITEM}", item.getItemName())
-                    .replace("{PRICE}", DoubleFormatter.format(price));
+                    .replace("{player}", finalPlayerName)
+                    .replace("{seller}", ownerName)
+                    .replace("{item", item.getItemName())
+                    .replace("{cost}", DoubleFormatter.format(price));
 
             try {
                 DiscordWebhook.send(dcConfig, messages, color);

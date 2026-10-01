@@ -11,20 +11,39 @@ import pl.norbit.playermarket.plugins.PluginService;
 public class ChatUtils {
     private ChatUtils() {}
 
-    public static String format(Player p, String text) {
+    public static String setPlaceholders(Player p, String text) {
         if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(p, text);
         }
+        return text;
+    }
 
+    public static Component format(Player p, String text) {
+        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
+            text = PlaceholderAPI.setPlaceholders(p, text);
+        }
+        return MiniMessage.miniMessage().deserialize(text);
+    }
+
+    public static Component format(String text) {
+        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
+            text = PlaceholderAPI.setPlaceholders(null, text);
+        }
+        return MiniMessage.miniMessage().deserialize(text);
+    }
+
+    public static String formatLegacy(Player p, String text) {
+        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
+            text = PlaceholderAPI.setPlaceholders(p, text);
+        }
         Component component = MiniMessage.miniMessage().deserialize(text);
         return LegacyComponentSerializer.legacySection().serialize(component);
     }
 
-    public static String format(String text) {
+    public static String formatLegacy(String text) {
         if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(null, text);
         }
-
         Component component = MiniMessage.miniMessage().deserialize(text);
         return LegacyComponentSerializer.legacySection().serialize(component);
     }

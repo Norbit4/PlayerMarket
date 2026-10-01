@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class ExpireUtils {
-    private ExpireUtils() {
-        throw new IllegalStateException("Utility class");
-    }
+    private ExpireUtils() {}
 
     public static boolean isExpired(long itemCreateTime) {
         return isExpired(itemCreateTime, Settings.getExpireTime());
@@ -26,10 +24,10 @@ public class ExpireUtils {
     public static String getRemainingTime(long itemCreateTime) {
         String remainingTime = getRemainingTime(itemCreateTime, Settings.getExpireTime());
 
-        return remainingTime.replace("{DAYS}", Settings.getDays())
-                .replace("{HOURS}", Settings.getHours())
-                .replace("{MINUTES}", Settings.getMinutes())
-                .replace("{SECONDS}", Settings.getSeconds());
+        return remainingTime.replace("{days}", Settings.getDays())
+                .replace("{hours}", Settings.getHours())
+                .replace("{minutes}", Settings.getMinutes())
+                .replace("{seconds}", Settings.getSeconds());
     }
 
     private static String getRemainingTime(long itemCreateTime, int expirationMinutes) {
@@ -60,17 +58,17 @@ public class ExpireUtils {
         StringBuilder result = new StringBuilder();
 
         if (days > 0) {
-            result.append(days).append("{DAYS} ");
+            result.append(days).append("{days} ");
         }
         if (hours > 0) {
-            result.append(hours).append("{HOURS} ");
+            result.append(hours).append("{hours} ");
         }
         if (minutes > 0) {
-            result.append(minutes).append("{MINUTES} ");
+            result.append(minutes).append("{minutes} ");
         }
 
         if (hours == 0 && seconds > 0) {
-            result.append(seconds).append("{SECONDS}");
+            result.append(seconds).append("{seconds}");
         }
         return result.toString().trim();
     }

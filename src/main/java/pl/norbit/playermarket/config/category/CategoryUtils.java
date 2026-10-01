@@ -50,12 +50,6 @@ public class CategoryUtils {
             return null;
         }
 
-//        Material material = Material.getMaterial(mat.toUpperCase());
-//
-//        if(material == null){
-//            throw new MaterialException("Invalid material: " + mat);
-//        }
-
         category.setName(categorySection.getString("name"));
         category.setFile(categorySection.getString("file"));
         category.setLore(categorySection.getStringList("lore"));

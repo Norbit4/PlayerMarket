@@ -18,19 +18,28 @@ public class ConfigIcon {
     boolean enabled;
     private int slot;
 
+    public ItemStack getItem() {
+        ItemStack itemStack = CustomItemsUtils.getItemStack(configId);
+
+        if(itemStack == null){
+            return new ItemStack(Material.BARRIER);
+        }
+        return itemStack;
+    }
+
     public Icon getIcon(){
         if (configId == null) {
             return new Icon(Material.BARRIER)
-                    .setName(ChatUtils.format("&cError"))
-                    .setLore(ChatUtils.format("&cItem not found"));
+                    .setName(ChatUtils.formatLegacy("&cError"))
+                    .setLore(ChatUtils.formatLegacy("&cItem not found"));
         }
 
         ItemStack itemStack = CustomItemsUtils.getItemStack(configId);
 
         if(itemStack == null){
             return new Icon(Material.BARRIER)
-                    .setName(ChatUtils.format("&cError"))
-                    .setLore(ChatUtils.format("&cItem not found"));
+                    .setName(ChatUtils.formatLegacy("&cError"))
+                    .setLore(ChatUtils.formatLegacy("&cItem not found"));
         }
 
         Icon icon = new Icon(itemStack);

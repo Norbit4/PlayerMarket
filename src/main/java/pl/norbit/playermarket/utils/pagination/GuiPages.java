@@ -64,9 +64,9 @@ public class GuiPages {
             lastPage = 1;
         }
 
-        String title = ChatUtils.format(guiTitle
-                .replace("{CURRENT}", String.valueOf(currentPage))
-                .replace("{TOTAL}", String.valueOf(lastPage)));
+        String title = ChatUtils.formatLegacy(guiTitle
+                .replace("{current}", String.valueOf(currentPage))
+                .replace("{total}", String.valueOf(lastPage)));
 
         if(force){
             this.gui.sendTitleUpdate(title);

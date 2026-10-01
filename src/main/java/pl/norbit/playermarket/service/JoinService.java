@@ -60,8 +60,8 @@ public final class JoinService {
             }
 
             String joinMessage = Settings.getJoinMessage()
-                    .replace("{MONEY}", DoubleFormatter.format(playerData.getEarnedMoney()))
-                    .replace("{SOLD}", String.valueOf(playerData.getSoldItems()));
+                    .replace("{money}", DoubleFormatter.format(playerData.getEarnedMoney()))
+                    .replace("{sold}", String.valueOf(playerData.getSoldItems()));
 
             p.sendMessage(ChatUtils.format(p, joinMessage));
         });

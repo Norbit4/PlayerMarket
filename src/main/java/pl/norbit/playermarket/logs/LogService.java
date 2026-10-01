@@ -6,7 +6,7 @@ import pl.norbit.playermarket.config.Settings;
 
 public class LogService {
 
-    private static final String TEMPLATE = "[MARKET] {MESSAGE}";
+    private static final String TEMPLATE = "[MARKET] {message}";
 
     private LogService() {
         throw new IllegalStateException("Utility class");
@@ -18,7 +18,7 @@ public class LogService {
         }
 
         Server server = PlayerMarket.getInstance().getServer();
-        String messageFormatted = TEMPLATE.replace("{MESSAGE}", message);
+        String messageFormatted = TEMPLATE.replace("{message}", message);
 
         server.getLogger().info(messageFormatted);
     }
@@ -29,7 +29,7 @@ public class LogService {
         }
 
         Server server = PlayerMarket.getInstance().getServer();
-        String messageFormatted = TEMPLATE.replace("{MESSAGE}", message);
+        String messageFormatted = TEMPLATE.replace("{message}", message);
 
         server.getLogger().warning(messageFormatted);
     }

@@ -112,9 +112,9 @@ public class LocalPlayerItem {
                 : Settings.getPlayerOfferItemLore();
 
         return new LoreBuilder(itemStack)
-                .replace("{PRICE}", DoubleFormatter.format(price))
-                .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
-                .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
+                .replace("{cost}", DoubleFormatter.format(price))
+                .replace("{expire}", ExpireUtils.getRemainingTime(offerDate))
+                .replace("{date}", TimeUtils.getFormattedDate(offerDate))
                 .append(lore);
     }
 }

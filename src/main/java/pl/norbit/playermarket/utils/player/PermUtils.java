@@ -50,7 +50,7 @@ public class PermUtils {
                 .stream()
                 .map(PermissionAttachmentInfo::getPermission).
                 filter(permS -> permS.contains(perm))
-                .collect(Collectors.toList());
+                .toList();
 
     }
 }

@@ -2,7 +2,6 @@ package pl.norbit.playermarket.utils.gui;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.*;
 
@@ -21,7 +20,6 @@ public class LoreBuilder {
     }
 
     public ItemStack append(List<String> template) {
-
         ItemMeta meta = item.getItemMeta();
 
         if (meta == null) {
@@ -29,7 +27,7 @@ public class LoreBuilder {
         }
 
         List<String> lore = meta.hasLore()
-                ? new ArrayList<>(meta.getLore())
+                ? new ArrayList<>(Objects.requireNonNull(meta.getLore()))
                 : new ArrayList<>();
 
         for (String line : template) {
@@ -38,7 +36,7 @@ public class LoreBuilder {
                 line = line.replace(entry.getKey(), entry.getValue());
             }
 
-            lore.add(ChatUtils.format(line));
+            lore.add(line);
         }
 
         meta.setLore(lore);
