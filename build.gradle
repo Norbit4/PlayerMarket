@@ -46,6 +46,8 @@ repositories {
     maven{
         url = "https://mvn.lumine.io/repository/maven-public/"
     }
+
+    maven { url = 'https://repo.nightexpressdev.com/releases' }
 }
 
 dependencies {
@@ -94,6 +96,8 @@ dependencies {
 
     //oraxen
     compileOnly("io.th0rgal:oraxen:1.163.0:dev")
+
+    compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
 
     //yaml
     compileOnly group: 'org.yaml', name: 'snakeyaml', version: '2.0'

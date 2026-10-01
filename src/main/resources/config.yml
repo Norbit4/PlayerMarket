@@ -106,8 +106,12 @@ market-command:
 # type:
 #  - Vault -> uses a Vault economy from server plugins
 #  - PlayerPoints -> uses PlayerPoints plugin
+#  - ExcellentEconomy -> uses ExcellentEconomy plugin
 economy:
   type: 'Vault'
+  # Currency is only used with ExcellentEconomy.
+  # For Vault and PlayerPoints this value is ignored.
+  currency: ''
 
 expire:
   # expire time in minutes

@@ -13,7 +13,8 @@ public enum PluginHook {
     CRAFT_ENGINE("CraftEngine"),
     PLACEHOLDER_API("PlaceholderAPI"),
     PLAYER_POINTS("PlayerPoints"),
-    MYTHIC_MOBS("MythicMobs");
+    MYTHIC_MOBS("MythicMobs"),
+    EXCELLENT_ECONOMY("ExcellentEconomy");
 
     private final String pluginName;
 

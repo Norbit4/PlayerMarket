@@ -32,6 +32,10 @@ public class EconomyUtils {
             count++;
         }
 
+        if(PluginService.isEnabled(PluginHook.EXCELLENT_ECONOMY)){
+            count++;
+        }
+
         if(count == 0){
             Logger logger = PlayerMarket.getInstance().getLogger();
 
@@ -50,16 +54,17 @@ public class EconomyUtils {
 
         String economyType = type.toUpperCase();
 
-        if(economyType.equalsIgnoreCase("PLAYER_POINTS") || economyType.equalsIgnoreCase("PLAYERPOINTS")){
+        if(economyType.equalsIgnoreCase("PLAYER_POINTS") || economyType.equalsIgnoreCase("PLAYERPOINTS")) {
             pluginHook = PluginHook.PLAYER_POINTS;
-            PlayerMarket.getInstance().getLogger().info(
-                    "Economy type set to PLAYER_POINTS."
-            );
+            PlayerMarket.getInstance().getLogger().info("Economy type set to PLAYER_POINTS.");
+
+        }else if (economyType.equalsIgnoreCase("EXCELLENT_ECONOMY") || economyType.equalsIgnoreCase("EXCELLENTECONOMY")){
+                pluginHook = PluginHook.EXCELLENT_ECONOMY;
+                PlayerMarket.getInstance().getLogger().info("Economy type set to EXCELLENT_ECONOMY.");
+
         }else {
             pluginHook = PluginHook.VAULT;
-            PlayerMarket.getInstance().getLogger().info(
-                    "Economy type set to VAULT."
-            );
+            PlayerMarket.getInstance().getLogger().info("Economy type set to VAULT.");
         }
     }
 
@@ -68,6 +73,8 @@ public class EconomyUtils {
             return PlayerPointsUtils.withDrawIfPossible(p, (int) amount);
         } else if (pluginHook == PluginHook.VAULT && PluginService.isEnabled(PluginHook.VAULT)) {
             return VaultUtils.withDrawIfPossible(p, amount);
+        } else if (pluginHook == PluginHook.EXCELLENT_ECONOMY && PluginService.isEnabled(PluginHook.EXCELLENT_ECONOMY)) {
+            return ExcellentEconomyUtils.withDrawIfPossible(p, currencyName, amount);
         }
         PlayerMarket.getInstance().getLogger().warning(
                 "Cannot withdraw money. Economy type: " + pluginHook +
@@ -80,11 +87,11 @@ public class EconomyUtils {
             PlayerPointsUtils.addPoints(p, (int) amount);
         } else if (pluginHook == PluginHook.VAULT && PluginService.isEnabled(PluginHook.VAULT)) {
             VaultUtils.deposit(p, amount);
+        } else if (pluginHook == PluginHook.EXCELLENT_ECONOMY && PluginService.isEnabled(PluginHook.EXCELLENT_ECONOMY)) {
+            ExcellentEconomyUtils.addBalance(p, currencyName, amount);
         } else {
-            PlayerMarket.getInstance().getLogger().warning(
-                    "Cannot deposit money. Economy type: " + pluginHook +
-                            ", required plugin is not enabled."
-            );
+            PlayerMarket.getInstance().getLogger().warning("Cannot deposit money. Economy type: " + pluginHook +
+                            ", required plugin is not enabled.");
         }
     }
 }
