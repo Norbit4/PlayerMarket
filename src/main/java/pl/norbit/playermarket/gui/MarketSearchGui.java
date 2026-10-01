@@ -15,7 +15,7 @@ import pl.norbit.playermarket.model.local.LocalMarketItem;
 import pl.norbit.playermarket.model.local.MarketItemType;
 import pl.norbit.playermarket.service.CategoryService;
 import pl.norbit.playermarket.service.MarketService;
-import pl.norbit.playermarket.service.SearchStorage;
+import pl.norbit.playermarket.data.SearchStorage;
 import pl.norbit.playermarket.utils.gui.GuiUtils;
 import pl.norbit.playermarket.utils.pagination.GuiPages;
 
@@ -61,7 +61,7 @@ public class MarketSearchGui extends Gui {
         ConfigIcon right = configGui.getIcon("next-page-icon");
 
         String title = configGui.getTitle()
-                .replace("{SEARCH}", search.toUpperCase());
+                .replace("{search}", search.toUpperCase());
 
         ConfigIcon fill = configGui.getIcon("border-icon");
 

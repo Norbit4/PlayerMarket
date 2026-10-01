@@ -55,7 +55,7 @@ database:
 main-command:
   # permission: playermarket.command.main.clear
   clear:
-    success: '<gray>Data for <yellow>{PLAYER} <gray>has been cleared!'
+    success: '<gray>Data for <yellow>{player} <gray>has been cleared!'
     player-not-found: '<red>Player not found!'
   # permission: playermarket.command.main.help
   help:
@@ -130,10 +130,10 @@ tax:
   # tax value must be between 0 and 1
   # 0.15 = 15%
   value: 0.15
-  # tax command executed when player buy item, {PRICE} - tax money value
+  # tax command executed when player buy item, {cost} - tax money value
   command:
     enabled: false
-    execute: 'eco give Norbit4 {PRICE}' # example: add tax money to a server owner
+    execute: 'eco give Norbit4 {cost}' # example: add tax money to a server owner
 
 blacklist:
   # Item identifier.
@@ -184,56 +184,56 @@ cooldown:
   #  Significantly increasing this value is strongly discouraged.
   clicks-per-second: 7
 
-# {DATE} - item offer date
-# {PRICE} - item price
-# {SELLER} - item seller
-# {EXPIRE} - item expire time
+# {date} - item offer date
+# {cost} - item price
+# {seller} - item seller
+# {expire} - item expire time
 market-offer-item-lore:
-  - '<dark_gray>{DATE}'
+  - '<italic><dark_gray>{date}'
   - ''
-  - '<white>Price: <green>{PRICE}$'
-  - '<white>Seller: <green>{SELLER}'
-  - '<white>Expire: <green>{EXPIRE}'
+  - '<!italic><white><sprite:"minecraft:gui":"icon/trial_available"> Cost: <#ADFF85>{cost}$'
+  - '<!italic><white><head:{seller}> Seller: <#F5FF85>{seller}'
+  - '<!italic><white><sprite:"minecraft:items":"item/clock_14"> Expire: <#F599FF>{expire}'
   - ''
-  - '<#dcee9a>Click to buy!'
+  - '<!italic><#dcee9a>Click to buy!'
 
 # Icon for not empty shulker box
 market-offer-shulker-lore:
-  - '<dark_gray>{DATE}'
+  - '<italic><dark_gray>{date}'
   - ''
-  - '<white>Price: <green>{PRICE}$'
-  - '<white>Seller: <green>{SELLER}'
-  - '<white>Expire: <green>{EXPIRE}'
+  - '<!italic><white><sprite:"minecraft:gui":"icon/trial_available"> Cost: <#ADFF85>{cost}$'
+  - '<!italic><white><head:{seller}> Seller: <#F5FF85>{seller}'
+  - '<!italic><white><sprite:"minecraft:items":"item/clock_14"> Expire: <#F599FF>{expire}'
   - ''
-  - '<#dcee9a>[LPM] Click to buy!'
-  - '<#dcee9a>[PPM] Click to preview!'
+  - '<!italic><#dcee9a>[LPM] Click to buy!'
+  - '<!italic><#dcee9a>[PPM] Click to preview!'
 
-# {DATE} - item offer date
-# {PRICE} - item price
-# {EXPIRE} - item expire time
+# {date} - item offer date
+# {cost} - item price
+# {expire} - item expire time
 player-offer-item-lore:
-  - '<dark_gray>{DATE}'
+  - '<italic><dark_gray>{date}'
   - ''
-  - '<white>Price: <green>{PRICE}$'
-  - '<white>Expire: <green>{EXPIRE}'
+  - '<!italic><white><sprite:"minecraft:gui":"icon/trial_available"> Cost: <#ADFF85>{cost}$'
+  - '<!italic><white><sprite:"minecraft:items":"item/clock_14"> Expire: <#F599FF>{expire}'
   - ''
-  - '<#dcee9a>Click to delete!'
+  - '<!italic><#dcee9a>Click to delete!'
 
 player-offer-shulker-lore:
-  - '<dark_gray>{DATE}'
+  - '<italic><dark_gray>{date}'
   - ''
-  - '<white>Price: <green>{PRICE}$'
-  - '<white>Expire: <green>{EXPIRE}'
+  - '<!italic><white><sprite:"minecraft:gui":"icon/trial_available"> Cost: <#ADFF85>{cost}$'
+  - '<!italic><white><sprite:"minecraft:items":"item/clock_14"> Expire: <#F599FF>{expire}'
   - ''
-  - '<#dcee9a>[LPM] Click to delete!'
-  - '<#dcee9a>[PPM] Click to preview!'
+  - '<!italic><#dcee9a>[LPM] Click to delete!'
+  - '<!italic><#dcee9a>[PPM] Click to preview!'
 
 #---------------------------------------#
 #               [ INFO ]                #
 #---------------------------------------#
 info-messages:
   cooldown: '<red>Slow down! You need wait a moment!'
-  join: '<gray>You have <green>{MONEY}$ <gray>to collect for <green>{SOLD} <gray>sold items <green>/market'
+  join: '<gray>You have <green>{money}$ <gray>to collect for <green>{sold} <gray>sold items <green>/market'
 
 #---------------------------------------#
 #             [ DISCORD ]               #
@@ -243,18 +243,18 @@ discord:
   enabled: false
   webhook-url: ''
   messages:
-    # {PLAYER} - player name
-    # {ITEM} - item material
-    # {PRICE} - item price
-    # {SELLER} - item seller
+    # {player} - player name
+    # {item} - item material
+    # {cost} - item price
+    # {seller} - item seller
     buy:
       enabled: true
       color: 65280 # GREEN
-      message: 'Player **{PLAYER}** bought **{ITEM}** for **{PRICE}$** from **{SELLER}**'
+      message: 'Player **{player}** bought **{item}** for **{cost}$** from **{seller}**'
     offer:
       enabled: true
       color: 16776960 # YELLOW
-      message: 'Player **{SELLER}** offered **{ITEM}** for **{PRICE}$**'
+      message: 'Player **{seller}** offered **{item}** for **{cost}$**'
 
 #---------------------------------------#
 #            [ MARKET - GUI ]           #
@@ -282,7 +282,7 @@ discord:
 # - ce:topaz
 # - mm:BanditTunic
 market-gui:
-  title: '<dark_gray><bold>MARKET <gray><bold>» <dark_gray><bold>{CATEGORY} ({CURRENT}/{TOTAL})'
+  title: '<dark_gray><bold>MARKET <gray><bold>» <dark_gray><bold>{category} ({current}/{total})'
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   size: 6 # in rows
   border-icon:
@@ -347,17 +347,48 @@ market-gui:
       - 44
 
 #---------------------------------------#
-#       [ ANVIL- INPUT - SEARCH ]       #
+#          [ BUY - MESSAGES ]           #
 #---------------------------------------#
-anvil-input:
-  title: '<dark_gray><bold>TYPE ITEM'
-  empty: 'Empty!'
+buy-messages:
+  item-sold-message: '<red>This offer is already sold!'
+  not-enough-money-message: '<red>You do not have enough money!'
+  player-is-owner-message: '<red>You can not buy your own item!'
+  success-message: '<white>You have bought an item for <green>{COST}$!'
+  sell-item-to-owner: '<gray>Player <green>{player} <gray>bought your item for <green>{cost}$!'
+  inventory-full-message: '<red>Your inventory is full!'
+
+#---------------------------------------#
+#       [ Dialog - INPUT - SEARCH ]       #
+#---------------------------------------#
+
+dialog-admin-delete:
+  title: ''
+  text-break: '\n\n\n\n\n\n\n\n\n\n\n\n'
+  text-title: '<shadow:#0c0c0c:1><sprite:"minecraft:gui":"player_list/remove_player"> Delete an item</shadow>'
+  text-info: '<shadow:#0c0c0c:1><sprite:"minecraft:gui":"icon/trial_available"> Cost: <#ADFF85>{cost}$\n <white><head:{seller}> Seller: <#F5FF85>{seller}</shadow>'
+  back-button: '<white>Back'
+  accept-button: '<white>Delete'
+
+dialog-buy:
+  title: ''
+  text-break: '\n\n\n\n\n\n\n\n\n\n\n\n'
+  text-title: '<shadow:#0c0c0c:1><sprite:"minecraft:gui":"icon/checkmark"> Purchase an item</shadow>'
+  text-info: '<shadow:#0c0c0c:1><sprite:"minecraft:gui":"icon/trial_available"> Cost: <#ADFF85>{cost}$\n <white><head:{seller}> Seller: <#F5FF85>{seller}</shadow>'
+  back-button: '<white>Back'
+  accept-button: '<white>Confirm'
+
+dialog-input:
+  title: ''
+  text-break: '\n\n\n\n\n\n\n\n\n\n\n\n'
+  text-label: '<white>Type item name'
+  back-button: '<white> Back'
+  search-button: '<white> Search'
 
 #---------------------------------------#
 #            [ SEARCH - GUI ]           #
 #---------------------------------------#
 search-gui:
-  title: '<dark_gray><bold>SEARCH <gray><bold>» <dark_gray><bold>{SEARCH} ({CURRENT}/{TOTAL})'
+  title: '<dark_gray><bold>SEARCH <gray><bold>» <dark_gray><bold>{search} ({current}/{total})'
   size: 6 # in rows
   fill: false # if true, all empty slots will be filled with border icons, ignores border layout
   border-icon:
@@ -401,7 +432,7 @@ offers-gui:
   remove-offer-message: '<red>Your offer has been removed!'
   nothing-to-get-message: '<red>You have nothing to claim!'
   inventory-full-message: '<red>Your inventory is full!'
-  success-message: '<green>You have successfully received <dark_green>{MONEY}$ <green>for your sold offers!'
+  success-message: '<green>You have successfully received <dark_green>{money}$ <green>for your sold offers!'
   border-icon:
     name: ' '
     icon: 'GRAY_STAINED_GLASS_PANE'
@@ -411,18 +442,18 @@ offers-gui:
     icon: 'CHEST'
     slot: 4
     lore:
-      # {OFFERS} - player offers
-      # {OFFERS_LIMIT} - player offers limit
-      # {MONEY_EARNED} - player money earned
-      # {ALL_SOLD} - all time player sold items
-      # {ALL_MONEY_EARNED} - all time player money earned
+      # {offers} - player offers
+      # {offers_limit} - player offers limit
+      # {money_earned} - player money earned
+      # {all_sold} - all time player sold items
+      # {all_money_earned} - all time player money earned
       - ''
-      - '<aqua>◆ <white>Offers: <aqua>{OFFERS}<dark_gray>/<aqua>{OFFERS_LIMIT}'
-      - '<light_purple>◆ <white>Sold offers: <light_purple>{SOLD}'
-      - '<green>$ <white>Money to claim: <green>{MONEY_EARNED}$'
+      - '<aqua>◆ <white>Offers: <aqua>{offers}<dark_gray>/<aqua>{offers_limit}'
+      - '<light_purple>◆ <white>Sold offers: <light_purple>{sold}'
+      - '<green>$ <white>Money to claim: <green>{money_earned}$'
       - ''
-      - '<light_purple>◆ <white>All time sold offers: <light_purple>{ALL_SOLD}'
-      - '<green>$ <white>All time money earned: <green>{ALL_MONEY_EARNED}$'
+      - '<light_purple>◆ <white>All time sold offers: <light_purple>{all_sold}'
+      - '<green>$ <white>All time money earned: <green>{all_money_earned}$'
       - ''
       - '<#dcee9a>Click to claim!'
   back-to-market-icon:
@@ -455,46 +486,6 @@ offers-gui:
       - 28-34
 
 #---------------------------------------#
-#            [ BUY - GUI ]              #
-#---------------------------------------#
-buy-gui:
-  title: '<dark_gray><bold>BUY AN ITEM'
-  size: 4 # in rows
-  fill: false # if true, all empty slots will be filled with border icons, ignores border layout
-  item-sold-message: '<red>This offer is already sold!'
-  not-enough-money-message: '<red>You do not have enough money!'
-  player-is-owner-message: '<red>You can not buy your own item!'
-  success-message: '<white>You have bought an item for <green>{COST}$!'
-  sell-item-to-owner: '<gray>Player <green>{PLAYER} <gray>bought your item for <green>{PRICE}$!'
-  inventory-full-message: '<red>Your inventory is full!'
-  buy-icon:
-    slot: 13
-    lore:
-      - '<dark_gray>{DATE}'
-      - ''
-      - '<white>Price: <green>{PRICE}$'
-      - '<white>Seller: <green>{SELLER}'
-      - '<white>Expire: <green>{EXPIRE}'
-  border-icon:
-    name: ' '
-    icon: 'GRAY_STAINED_GLASS_PANE'
-    lore: []
-  accept-icon:
-    name: '<white><bold>Buy for <green><bold>{AMOUNT}$!'
-    icon: 'GREEN_WOOL'
-    slot: 20
-    lore:
-      - ''
-      - '<#dcee9a>Click to buy!'
-  cancel-icon:
-    name: '<red><bold>Back'
-    icon: 'RED_WOOL'
-    slot: 24
-    lore:
-      - ''
-      - '<#dcee9a>Click to go back!'
-
-#---------------------------------------#
 #         [ SHULKERBOX - GUI ]          #
 #---------------------------------------#
 # shulker box gui, opens when player click shulker box for preview
@@ -525,7 +516,7 @@ shulker-gui:
 #---------------------------------------#
 #            [ CATEGORIES ]             #
 #---------------------------------------#
-category-name-format: '<#93f182><bold>{CATEGORY}'
+category-name-format: '<#93f182><bold>{category}'
 category-selected-lore:
   - ''
   - '<green><bold>Selected!'
@@ -551,7 +542,7 @@ all-category:
     -
 
 # categories, you can add more categories
-# file is the name of the file /categories/{file}.yml
+# file is the name of the file /categories/<file>.yml
 categories:
   1:
     name: 'BLOCKS'

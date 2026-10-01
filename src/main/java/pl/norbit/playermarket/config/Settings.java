@@ -1,5 +1,6 @@
 package pl.norbit.playermarket.config;
 
+import io.papermc.paper.dialog.Dialog;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -111,10 +112,23 @@ public class Settings {
     @Getter
     private static List<String> mainCommandReloadInfo;
 
+    //search dialog
     @Getter
-    private static String anvilTitle;
+    private static String dialogSearchTitle;
     @Getter
-    private static String anvilEmpty;
+    private static String dialogSearchBreak;
+    @Getter
+    private static String dialogSearchTextLabel;
+    @Getter
+    private static String dialogSearchBackButton;
+    @Getter
+    private static String dialogSearchButton;
+
+    @Getter
+    private static ConfigDialog buyDialog;
+
+    @Getter
+    private static ConfigDialog adminDeleteDialog;
 
     @Getter
     private static int expireTime;
@@ -223,10 +237,10 @@ public class Settings {
                 new String[0],
                 new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon", "border-icon"});
 
-        buyGui = new ConfigGui(config,"buy-gui",
+        buyGui = new ConfigGui(config,"buy-messages",
                 new String[]{"item-sold-message", "not-enough-money-message", "success-message",
                         "player-is-owner-message", "inventory-full-message", "sell-item-to-owner"},
-                new String[]{"accept-icon", "cancel-icon", "border-icon", "buy-icon"});
+                new String[]{});
 
         offersGui = new ConfigGui(config,"offers-gui",
                 new String[]{"remove-offer-message", "nothing-to-get-message", "success-message", "inventory-full-message"},
@@ -281,9 +295,15 @@ public class Settings {
         blacklistItems = config.getStringList("blacklist.items");
         blacklistMessage = config.getString("blacklist.message");
 
-        //anvil
-        anvilTitle = config.getString("anvil-input.title");
-        anvilEmpty = config.getString("anvil-input.empty");
+        //dialog
+        dialogSearchTitle = config.getString("dialog-input.title");
+        dialogSearchBreak = config.getString("dialog-input.text-break");
+        dialogSearchTextLabel = config.getString("dialog-input.text-label");
+        dialogSearchBackButton = config.getString("dialog-input.back-button");
+        dialogSearchButton = config.getString("dialog-input.search-button");
+
+        buyDialog = getConfigDialog("dialog-buy", config);
+        adminDeleteDialog = getConfigDialog("dialog-admin-delete", config);
 
         //expire
         expireTime = config.getInt("expire.time");
@@ -331,6 +351,25 @@ public class Settings {
         discordConfig.setOfferEmbed(getEmbed(section, "messages.offer"));
 
         return discordConfig;
+    }
+
+    private static ConfigDialog getConfigDialog(String key, ConfigurationSection section){
+        ConfigurationSection dialogSection = section.getConfigurationSection(key);
+
+        if(dialogSection == null){
+            return null;
+        }
+
+        return ConfigDialog
+                .builder()
+                .title(dialogSection.getString("title"))
+                .textBreak(dialogSection.getString("text-break"))
+                .textTitle(dialogSection.getString("text-title"))
+                .textInfo(dialogSection.getString("text-info"))
+                .backButton(dialogSection.getString("back-button"))
+                .acceptButton(dialogSection.getString("accept-button"))
+                .build();
+
     }
 
     private static DiscordEmbed getEmbed(ConfigurationSection section, String key){

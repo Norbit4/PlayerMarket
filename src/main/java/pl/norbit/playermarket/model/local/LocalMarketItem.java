@@ -11,11 +11,13 @@ import pl.norbit.playermarket.cooldown.CooldownService;
 import pl.norbit.playermarket.data.DataService;
 import pl.norbit.playermarket.gui.shulker.ShulkerContentGui;
 import pl.norbit.playermarket.model.MarketItemData;
-import pl.norbit.playermarket.gui.BuyGui;
+import pl.norbit.playermarket.service.DialogService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.format.DoubleFormatter;
 import pl.norbit.playermarket.utils.gui.LoreBuilder;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
+import pl.norbit.playermarket.utils.player.PermUtils;
+import pl.norbit.playermarket.utils.player.PlayerUtils;
 import pl.norbit.playermarket.utils.time.ExpireUtils;
 import pl.norbit.playermarket.utils.time.TimeUtils;
 
@@ -46,7 +48,8 @@ public class LocalMarketItem {
     }
 
     public Icon getMarketItem(MarketItemType marketItemType) {
-        Icon icon = new Icon(getStack(marketItemType));
+        ItemStack formatedItemStack = getStack(marketItemType);
+        Icon icon = new Icon(formatedItemStack);
 
         icon.onClick(e->{
             Player p = (Player) e.getWhoClicked();
@@ -58,19 +61,20 @@ public class LocalMarketItem {
             }
 
             ClickType click = e.getClick();
-
             DataService.getMarketItemData(id).thenAccept(mtItemData -> {
                 if(mtItemData == null){
                     return;
                 }
 
-                if(click == ClickType.RIGHT && ItemsUtils.isShulkerBox(itemStack)){
-                    sync(() -> new ShulkerContentGui(p, mtItemData, this).open());
-                    return;
+                if(click.isKeyboardClick() && PermUtils.hasPermission("playermarket.admin", p)){
+                    DialogService.openAdminDelete(p, marketItemData);
+                }else {
+                    if(click == ClickType.RIGHT && ItemsUtils.isShulkerBox(itemStack)){
+                        sync(() -> new ShulkerContentGui(p, mtItemData).open());
+                        return;
+                    }
+                    DialogService.openBuy(p, marketItemData);
                 }
-
-                sync(() -> new BuyGui(p, mtItemData, this).open());
-
             });
         });
 
@@ -89,10 +93,10 @@ public class LocalMarketItem {
         }
 
         return new LoreBuilder(itemStack)
-                .replace("{PRICE}", DoubleFormatter.format(price))
-                .replace("{SELLER}", ownerName)
-                .replace("{EXPIRE}", ExpireUtils.getRemainingTime(offerDate))
-                .replace("{DATE}", TimeUtils.getFormattedDate(offerDate))
+                .replace("{cost}", DoubleFormatter.format(price))
+                .replace("{seller}", ownerName)
+                .replace("{expire}", ExpireUtils.getRemainingTime(offerDate))
+                .replace("{date}", TimeUtils.getFormattedDate(offerDate))
                 .append(lore);
     }
 }

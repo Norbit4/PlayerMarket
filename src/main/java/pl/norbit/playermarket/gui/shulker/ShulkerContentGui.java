@@ -13,10 +13,9 @@ import pl.norbit.playermarket.gui.*;
 import pl.norbit.playermarket.model.MarketItemData;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.model.local.ConfigIcon;
-import pl.norbit.playermarket.model.local.LocalMarketItem;
-import pl.norbit.playermarket.model.local.MarketItemType;
 import pl.norbit.playermarket.service.CategoryService;
-import pl.norbit.playermarket.service.SearchStorage;
+import pl.norbit.playermarket.data.SearchStorage;
+import pl.norbit.playermarket.service.DialogService;
 import pl.norbit.playermarket.utils.format.ChatUtils;
 import pl.norbit.playermarket.utils.player.ItemsUtils;
 
@@ -29,22 +28,18 @@ public class ShulkerContentGui extends Gui {
     private final PaginationManager items;
     private final ConfigGui configGui;
     private final GuiType guiType;
-    private final ItemStack itemIcon;
     private MarketItemData marketItemData;
-    private LocalMarketItem localMarketItem;
 
-    public ShulkerContentGui(@NotNull Player player, MarketItemData marketItemData, LocalMarketItem localMarketItem) {
+    public ShulkerContentGui(@NotNull Player player, MarketItemData marketItemData) {
         super(player, "shulker-gui", ChatUtils.format(Settings.getShulkerGui().getTitle()), 5);
 
         this.items = new PaginationManager(this);
         this.items.registerPageSlotsBetween(0, 26);
 
         this.marketItemData = marketItemData;
-        this.itemIcon = localMarketItem.getMarketItem(MarketItemType.MAIN).getItem();
 
         configGui = Settings.getShulkerGui();
         this.guiType = GuiType.MAIN;
-        this.localMarketItem = localMarketItem;
 
         List<ItemStack> shulkerBoxInv = ItemsUtils.getShulkerBoxInv(marketItemData.getItemStackDeserialize());
 
@@ -55,8 +50,6 @@ public class ShulkerContentGui extends Gui {
 
         this.items = new PaginationManager(this);
         this.items.registerPageSlotsBetween(0, 26);
-
-        this.itemIcon = icon;
 
         configGui = Settings.getShulkerGui();
         this.guiType = GuiType.PLAYER_ITEMS;
@@ -103,8 +96,7 @@ public class ShulkerContentGui extends Gui {
             DataService.getMarketItemData(this.marketItemData.getId()).thenAccept(mItemData -> {
                     if (mItemData == null) {
                         String message = configGui.getMessage("item-sold-message");
-
-                        sync(() -> p.sendMessage(ChatUtils.format(p, message)));
+                        p.sendMessage(ChatUtils.format(p, message));
 
                         if (guiType == GuiType.MAIN) {
                             sync(() -> new MarketGui(p, CategoryService.getMain()).open());
@@ -114,7 +106,7 @@ public class ShulkerContentGui extends Gui {
                             });
                         }
                     }else {
-                        sync(() -> new BuyGui(p, mItemData, localMarketItem).open());
+                        DialogService.openBuy(p, mItemData);
                     }
             });
         });

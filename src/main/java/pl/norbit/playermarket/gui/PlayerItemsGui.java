@@ -6,6 +6,7 @@ import mc.obliviate.inventory.pagination.PaginationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pl.norbit.playermarket.config.Settings;
 import pl.norbit.playermarket.cooldown.CooldownService;
@@ -136,7 +137,7 @@ public class PlayerItemsGui extends Gui {
         ConfigIcon profileIcon = configGui.getIcon("statistics-icon");
         ConfigIcon backIcon = configGui.getIcon("back-to-market-icon");
 
-        addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
+        addItem(profileIcon.getSlot(), getProfileIcon(profileIcon));
 
         addItem(
                 backIcon.getSlot(),
@@ -150,15 +151,18 @@ public class PlayerItemsGui extends Gui {
         playersGui.put(player.getUniqueId(), this);
     }
 
-    private Icon getProfileIcon(Icon icon){
+    private Icon getProfileIcon(ConfigIcon configIcon){
         PlayerData playerData = localData.getPlayerData();
 
-        icon.setLore(icon.getItem()
-                .getItemMeta()
-                .getLore()
+        List<String> lore = configIcon.getLore()
                 .stream()
                 .map(l -> formatLine(l, playerData))
-                .toList());
+                .toList();
+
+        ItemStack item = configIcon.getItem();
+        Icon icon = new Icon(item);
+        icon.setLore(lore);
+        icon.setName(configIcon.getName());
 
         icon.hideFlags();
 
@@ -185,7 +189,7 @@ public class PlayerItemsGui extends Gui {
             player.sendMessage(ChatUtils.format(
                     player,
                     configGui.getMessage("success-message")
-                            .replace("{MONEY}", DoubleFormatter.format(earnedMoney))
+                            .replace("{money}", DoubleFormatter.format(earnedMoney))
             ));
 
             if(updateProgress) return;
@@ -213,21 +217,21 @@ public class PlayerItemsGui extends Gui {
         return icon;
     }
 
-    private String formatLine(String line, PlayerData playerData){
+    private String formatLine(String line, PlayerData playerData) {
         int amount = PermUtils.getAmount(
                 player,
                 Settings.getOfferCommandLimitPermission(),
                 Settings.getOfferCommandDefaultLimit()
         );
 
-        return ChatUtils.format(
+        return ChatUtils.setPlaceholders(
                 player,
-                line.replace("{OFFERS}", String.valueOf(playerData.getPlayerOffers().size()))
-                        .replace("{OFFERS_LIMIT}", String.valueOf(amount))
-                        .replace("{SOLD}", String.valueOf(playerData.getSoldItems()))
-                        .replace("{MONEY_EARNED}", DoubleFormatter.format(playerData.getEarnedMoney()))
-                        .replace("{ALL_SOLD}", String.valueOf(playerData.getTotalSoldItems()))
-                        .replace("{ALL_MONEY_EARNED}", DoubleFormatter.format(playerData.getTotalEarnedMoney()))
+                line.replace("{offers}", String.valueOf(playerData.getPlayerOffers().size()))
+                        .replace("{offers_limit}", String.valueOf(amount))
+                        .replace("{sold}", String.valueOf(playerData.getSoldItems()))
+                        .replace("{money_earned}", DoubleFormatter.format(playerData.getEarnedMoney()))
+                        .replace("{all_sold}", String.valueOf(playerData.getTotalSoldItems()))
+                        .replace("{all_money_earned}", DoubleFormatter.format(playerData.getTotalEarnedMoney()))
         );
     }
 
