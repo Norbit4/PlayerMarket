@@ -1,5 +1,6 @@
 package pl.norbit.playermarket.cache;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import pl.norbit.playermarket.PlayerMarket;
@@ -14,11 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerDataCache {
     private static Map<UUID, LocalPlayerData> localDataCache = new ConcurrentHashMap<>();
+    private static ScheduledTask updateTask;
 
     private PlayerDataCache() {}
 
     public static void start(){
-        TaskUtils.asyncTimer(() ->{
+        updateTask = TaskUtils.asyncTimer(() -> {
             Map<UUID, LocalPlayerData> newLocalDataCache = new ConcurrentHashMap<>();
             for (Player onlinePlayer : PlayerMarket.getInstance().getServer().getOnlinePlayers()) {
                 DataService.getPlayerLocalData(onlinePlayer)
@@ -27,6 +29,13 @@ public class PlayerDataCache {
             }
             localDataCache = newLocalDataCache;
         }, 20L, 20 * 60 * 3L);
+    }
+
+    public static void stop() {
+        if (updateTask != null) {
+            updateTask.cancel();
+            updateTask = null;
+        }
     }
 
     public static void loadCache(PlayerData playerData){
