@@ -15,7 +15,6 @@ public class TemplateUtils {
     public static GuiTemplate getTemplate(Gui gui, GuiLayout layout){
         return GuiTemplate.builder()
                 .marketItemsPagination(getPagination(gui, layout.getItemsLayout()))
-                .categoriesPagination(getPagination(gui, layout.getCategoryLayout()))
                 .borderPagination(getPagination(gui, layout.getBorderLayout()))
                 .build();
     }

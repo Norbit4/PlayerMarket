@@ -88,6 +88,7 @@ public final class PlayerMarket extends JavaPlugin {
     @Override
     public void onDisable() {
         MarketService.stop();
+        PlayerDataCache.stop();
         DataService.close();
     }
 }

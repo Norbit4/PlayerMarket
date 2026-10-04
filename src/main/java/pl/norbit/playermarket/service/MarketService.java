@@ -187,8 +187,6 @@ public class MarketService {
     private static void addToMarketItems(UUID categoryUUID, LocalMarketItem item,
                                          HashMap<UUID, List<LocalMarketItem>> marketItems) {
 
-        marketItems
-                .computeIfAbsent(categoryUUID, k -> new ArrayList<>())
-                .add(item);
+        marketItems.computeIfAbsent(categoryUUID, k -> new ArrayList<>()).add(item);
     }
 }

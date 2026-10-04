@@ -1,8 +1,6 @@
 package pl.norbit.playermarket.config.category;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import pl.norbit.playermarket.exception.MaterialException;
 import pl.norbit.playermarket.model.local.Category;
 import pl.norbit.playermarket.model.local.CategoryType;
 
@@ -14,7 +12,6 @@ public class CategoryUtils {
     private CategoryUtils() {}
 
     public static List<Category> getCategories(ConfigurationSection section){
-
         List<Category> categories = new ArrayList<>();
 
         section.getKeys(false).forEach(key ->{
@@ -44,18 +41,9 @@ public class CategoryUtils {
 
         Category category = new Category(type);
 
-        String iconId = categorySection.getString("icon");
-
-        if(iconId == null){
-            return null;
-        }
-
         category.setName(categorySection.getString("name"));
         category.setFile(categorySection.getString("file"));
-        category.setLore(categorySection.getStringList("lore"));
         category.setEnabled(categorySection.getBoolean("enabled"));
-
-        category.setIcon(iconId);
 
         return category;
     }

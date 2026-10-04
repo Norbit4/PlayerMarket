@@ -1,7 +1,6 @@
 package pl.norbit.playermarket.model.local;
 
 import lombok.Data;
-import org.bukkit.Material;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,8 +11,6 @@ public class Category {
     private UUID categoryUUID;
 
     private String name;
-    private List<String> lore;
-    private String icon;
 
     private boolean enabled;
     private CategoryType type;

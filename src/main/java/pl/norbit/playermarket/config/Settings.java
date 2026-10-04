@@ -13,6 +13,7 @@ import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.utils.economy.EconomyUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Settings {
@@ -36,8 +37,6 @@ public class Settings {
     //category
     @Getter
     private static List<Category> categories;
-    @Getter
-    private static Category otherCategory;
     @Getter
     private static Category allCategory;
 
@@ -230,14 +229,13 @@ public class Settings {
 
         //category
         categories = CategoryUtils.getCategories(configurationSection);
-
-        otherCategory = CategoryUtils.getDefaultCategory(config.getConfigurationSection("other-category"), CategoryType.OTHER);
         allCategory = CategoryUtils.getDefaultCategory(config.getConfigurationSection("all-category"), CategoryType.ALL);
 
         //gui
         marketGui = new ConfigGui(config,"market-gui",
-                new String[0],
-                new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon", "border-icon"});
+                new String[]{"category-active","category-inactive"},
+                new String[]{"your-offers-icon", "previous-page-icon", "next-page-icon", "search-icon", "border-icon",
+                "categories-icon"});
 
         buyGui = new ConfigGui(config,"buy-messages",
                 new String[]{"item-sold-message", "not-enough-money-message", "success-message",
@@ -342,6 +340,15 @@ public class Settings {
         }else {
             discordConfig = getDiscordConfig(discordSection);
         }
+    }
+
+    public static List<Category> getFilterCategories() {
+        List<Category> categories = new ArrayList<>();
+
+        categories.add(Settings.getAllCategory());
+        categories.addAll(Settings.getCategories());
+
+        return categories;
     }
 
     private static DiscordConfig getDiscordConfig(ConfigurationSection section){

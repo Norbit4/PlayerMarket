@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public class CategoryService {
     private CategoryService() {}
+    private static final UUID otherCategoryUUID = UUID.randomUUID();
 
     public static UUID getCategoryUUID(LocalMarketItem item){
         Category category = Settings.getCategories().stream()
@@ -17,7 +18,7 @@ public class CategoryService {
                 .orElse(null);
 
         if(category == null){
-            return Settings.getOtherCategory().getCategoryUUID();
+            return otherCategoryUUID;
         }
 
         return category.getCategoryUUID();

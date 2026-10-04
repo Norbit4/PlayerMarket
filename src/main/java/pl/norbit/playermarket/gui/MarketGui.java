@@ -5,7 +5,6 @@ import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -32,7 +31,6 @@ import static pl.norbit.playermarket.utils.TaskUtils.*;
 public class MarketGui extends Gui {
 
     private final PaginationManager marketItems;
-    private final PaginationManager categoriesPagination;
     private final PaginationManager borderPagination;
 
     private final Category category;
@@ -52,7 +50,6 @@ public class MarketGui extends Gui {
         GuiTemplate template = TemplateUtils.getTemplate(this, this.configGui.getLayout());
 
         this.marketItems = template.getMarketItemsPagination();
-        this.categoriesPagination = template.getCategoriesPagination();
 
         this.borderPagination = this.configGui.isFill()
                 ? new PaginationManager(this)
@@ -64,12 +61,6 @@ public class MarketGui extends Gui {
                 this.configGui.getFillBlackList(),
                 this.getSize()
         );
-
-        categoriesPagination.addItem(createCategory(Settings.getAllCategory()));
-        Settings.getCategories().stream()
-                .map(this::createCategory)
-                .forEach(categoriesPagination::addItem);
-        categoriesPagination.addItem(createCategory(Settings.getOtherCategory()));
 
         ConfigIcon left = configGui.getIcon("previous-page-icon");
         ConfigIcon right = configGui.getIcon("next-page-icon");
@@ -136,13 +127,17 @@ public class MarketGui extends Gui {
     @Override
     public void onOpen(InventoryOpenEvent e) {
         marketItems.update();
-        categoriesPagination.update();
         borderPagination.update();
 
         ConfigIcon profileIcon = configGui.getIcon("your-offers-icon");
         ConfigIcon searchIcon = configGui.getIcon("search-icon");
+        ConfigIcon categoryIcon = configGui.getIcon("categories-icon");
 
         addItem(profileIcon.getSlot(), getProfileIcon(profileIcon.getIcon()));
+
+        if(categoryIcon.isEnabled()){
+            addItem(categoryIcon.getSlot(), getCategoryIcon(categoryIcon, category));
+        }
 
         if(searchIcon.isEnabled()){
             addItem(searchIcon.getSlot(), getSearchIcon(searchIcon.getIcon()));
@@ -154,9 +149,7 @@ public class MarketGui extends Gui {
 
         SearchStorage.clear(player.getUniqueId());
         update();
-        viewers
-                .computeIfAbsent(category.getCategoryUUID(), k -> ConcurrentHashMap.newKeySet())
-                .add(this);
+        viewers.computeIfAbsent(category.getCategoryUUID(), k -> ConcurrentHashMap.newKeySet()).add(this);
     }
 
     private Icon getProfileIcon(Icon icon) {
@@ -191,42 +184,21 @@ public class MarketGui extends Gui {
         return icon;
     }
 
-    private Icon createCategory(Category category) {
-        ItemStack itemStack = CustomItemsUtils.getItemStack(category.getIcon());
+    private Icon getCategoryIcon(ConfigIcon categoryIcon, Category selectedCategory) {
+        ItemStack itemStack = CustomItemsUtils.getItemStack(categoryIcon.getConfigId());
 
-        if(itemStack == null){
-
+        if (itemStack == null) {
             Icon icon = new Icon(Material.BARRIER);
-
             icon.setName(ChatUtils.formatLegacy("&cInvalid item"));
-
             return icon;
         }
+
         Icon icon = new Icon(itemStack);
+        List<Category> categories = Settings.getFilterCategories();
+        List<String> lore = getCategoryLore(categoryIcon, selectedCategory, categories);
 
-        boolean selected = category.getCategoryUUID().equals(this.category.getCategoryUUID());
-
-        icon.setName(ChatUtils.formatLegacy(
-                player,
-                Settings.getCategoryNameFormat().replace("{category}", category.getName())
-        ));
-
-        icon.hideFlags();
-
-        if (selected) {
-            icon.setLore(Settings.getCategorySelectedLore().stream()
-                    .map(ChatUtils::formatLegacy)
-                    .toList());
-
-            icon.enchant(Enchantment.UNBREAKING);
-
-            return icon;
-        }
-
-        icon.setLore(category.getLore().stream()
-                .map(line -> ChatUtils.formatLegacy(player, line))
-                .toList());
-
+        icon.setName(categoryIcon.getName());
+        icon.setLore(lore);
         icon.onClick(e -> {
             if (!CooldownService.tryClick(player.getUniqueId())) {
                 player.closeInventory();
@@ -234,9 +206,54 @@ public class MarketGui extends Gui {
                 return;
             }
 
-            new MarketGui(player, category).open();
+            if (categories.isEmpty()) {
+                return;
+            }
+
+            Category nextCategory = getNextCategory(selectedCategory, categories);
+            new MarketGui(player, nextCategory).open();
         });
 
         return icon;
+    }
+
+    private Category getNextCategory(Category selectedCategory, List<Category> categories) {
+        int currentIndex = 0;
+
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getCategoryUUID().equals(selectedCategory.getCategoryUUID())) {
+                currentIndex = i;
+                break;
+            }
+        }
+
+        int nextIndex = (currentIndex + 1) % categories.size();
+        return categories.get(nextIndex);
+    }
+
+    private List<String> getCategoryLore(ConfigIcon categoryIcon, Category selectedCategory, List<Category> categories) {
+        List<String> lore = new ArrayList<>();
+
+        for (String line : categoryIcon.getLore()) {
+            if (line.equals("{categories}")) {
+                for (Category cat : categories) {
+                    boolean selected = selectedCategory != null
+                            && cat.getCategoryUUID().equals(selectedCategory.getCategoryUUID());
+
+                    if (selected) {
+                        String activeLine = configGui.getMessage("category-active")
+                                .replace("{category}", cat.getName());
+                        lore.add(activeLine);
+                    } else {
+                        String inactiveLine = configGui.getMessage("category-inactive")
+                                .replace("{category}", cat.getName());
+                        lore.add(inactiveLine);
+                    }
+                }
+            } else {
+                lore.add(line);
+            }
+        }
+        return lore;
     }
 }
