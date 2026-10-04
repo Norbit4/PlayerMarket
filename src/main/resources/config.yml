@@ -369,9 +369,13 @@ buy-messages:
   inventory-full-message: '<red>Your inventory is full!'
 
 #---------------------------------------#
-#       [ Dialog - INPUT - SEARCH ]       #
+#             [ Dialog ]                #
 #---------------------------------------#
 
+# ADMIN ITEM DELETION
+# Press Q while hovering over an item in the GUI to delete it.
+# Requires the playermarket.admin permission.
+# WARNING: Admin deletion does not return the item to the seller.
 dialog-admin-delete:
   title: ''
   text-break: '\n\n\n\n\n\n\n\n\n\n\n\n'
