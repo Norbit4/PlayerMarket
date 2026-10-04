@@ -303,6 +303,19 @@ market-gui:
     lore:
       - ''
       - '<#dcee9a>Click to browse!'
+  categories-icon:
+    name: '<#93f182><bold>CATEGORY FILTER'
+    icon: 'KNOWLEDGE_BOOK'
+    slot: 47
+    enabled: true
+    lore:
+      - ''
+      - '{categories}'
+      - ''
+      - '<#dcee9a>Click to change!'
+  category-active: '<!italic> <#93f182><bold>▸ {category}'
+  category-inactive: '<!italic> <#7f8c8d>• {category}'
+
   search-icon:
     name: '<#93f182><bold>SEARCH'
     icon: 'NAME_TAG'
@@ -329,29 +342,20 @@ market-gui:
       - '<#dcee9a>Click to browse!'
   layout:
     border:
-      - 1
-      - 10
-      - 19
-      - 28
-      - 37
-      - 7
-      - 16
-      - 25
-      - 34
-      - 43
-      - 38-42
-    items:
-      - 2-6
-      - 11-15
-      - 20-24
-      - 29-33
-    categories:
       - 0
-      - 8-9
-      - 17-18
-      - 26-27
-      - 35-36
-      - 44
+      - 9
+      - 18
+      - 27
+      - 8
+      - 17
+      - 26
+      - 35
+      - 36-44
+    items:
+      - 1-7
+      - 10-16
+      - 19-25
+      - 28-34
 
 #---------------------------------------#
 #          [ BUY - MESSAGES ]           #
@@ -528,82 +532,32 @@ category-selected-lore:
   - ''
   - '<green><bold>Selected!'
 
-# all items without category will go to this category
-other-category:
-  # if disabled, all items without category will be not available to buy in shop
-  enabled: true
-  name: "OTHER"
-  icon: "ENDER_PEARL"
-  lore:
-    - ''
-    - '<#dcee9a>Click to browse!'
-
 # main page category, all items will be displayed here
 all-category:
   enabled: true
   name: "MAIN"
-  icon: "NETHER_STAR"
-  lore:
-    - ''
-    - '<#dcee9a>Click to browse!'
-    -
 
 # categories, you can add more categories
 # file is the name of the file /categories/<file>.yml
 categories:
   1:
     name: 'BLOCKS'
-    icon: 'BRICKS'
     file: 'blocks'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
   2:
-    name: 'ARMOR'
-    icon: 'DIAMOND_CHESTPLATE'
-    file: 'armor'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
-  3:
     name: 'COMBAT'
-    icon: 'GOLDEN_SWORD'
     file: 'combat'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
-  4:
+  3:
     name: 'MINERALS'
-    icon: 'AMETHYST_SHARD'
     file: 'minerals'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
-  5:
+  4:
     name: 'NATURE'
-    icon: 'BAMBOO'
     file: 'nature'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
-  6:
+  5:
     name: 'REDSTONE'
-    icon: 'REDSTONE'
     file: 'redstone'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
-  7:
+  6:
     name: 'TOOLS'
-    icon: 'IRON_PICKAXE'
     file: 'tools'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
-  8:
+  7:
     name: 'FOOD'
-    icon: 'ENCHANTED_GOLDEN_APPLE'
     file: 'food'
-    lore:
-      - ''
-      - '<#dcee9a>Click to browse!'
