@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class DialogBuilder {
+
     private final List<DialogBody> body = new ArrayList<>();
     private final List<DialogInput> inputs = new ArrayList<>();
     private final List<ActionButton> buttons = new ArrayList<>();
@@ -48,7 +49,10 @@ public final class DialogBuilder {
     public DialogBuilder text(String text) {
         text = text.replace("\\n", "\n");
 
-        body.add(DialogBody.plainMessage(Component.text(text)));
+        body.add(DialogBody.plainMessage(
+                ChatUtils.format(text)
+        ));
+
         return this;
     }
 
@@ -60,9 +64,9 @@ public final class DialogBuilder {
 
     public DialogBuilder item(ItemStack item) {
         body.add(DialogBody.item(item)
-                        .showDecorations(true)
-                        .showTooltip(true)
-                        .build()
+                .showDecorations(true)
+                .showTooltip(true)
+                .build()
         );
 
         return this;
@@ -100,22 +104,20 @@ public final class DialogBuilder {
         if (action != null) {
             dialogAction = DialogAction.customClick(
                     action,
-                    nbt == null
-                            ? null
-                            : BinaryTagHolder.binaryTagHolder(nbt)
+                    nbt == null ? null : BinaryTagHolder.binaryTagHolder(nbt)
             );
         }
 
         buttons.add(ActionButton.create(
-                        ChatUtils.format(text),
-                        null,
-                        100,
-                        dialogAction
-                )
-        );
+                ChatUtils.format(text),
+                null,
+                100,
+                dialogAction
+        ));
 
         return this;
     }
+
     public DialogBuilder button(
             String text,
             DialogActionCallback callback,
@@ -131,7 +133,6 @@ public final class DialogBuilder {
         return this;
     }
 
-
     public DialogBuilder columns(int columns) {
         this.columns = columns;
         return this;
@@ -141,16 +142,15 @@ public final class DialogBuilder {
         return Dialog.create(builder -> builder
                 .empty()
                 .base(DialogBase.builder(title)
-                                .body(body)
-                                .inputs(inputs)
-                                .build()
+                        .body(body)
+                        .inputs(inputs)
+                        .build()
                 )
                 .type(DialogType.multiAction(
-                                buttons,
-                                null,
-                                columns
-                        )
-                )
+                        buttons,
+                        null,
+                        columns
+                ))
         );
     }
 

@@ -12,6 +12,7 @@ import pl.norbit.playermarket.config.category.CategoryUtils;
 import pl.norbit.playermarket.model.local.CategoryType;
 import pl.norbit.playermarket.model.local.ConfigGui;
 import pl.norbit.playermarket.utils.economy.EconomyUtils;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -257,11 +258,10 @@ public class Settings {
 
         categoryNameFormat = config.getString("category-name-format");
 
-        categorySelectedLore = config.getStringList("category-selected-lore");
         marketOfferItemLore = config.getStringList("market-offer-item-lore");
         marketOfferShulkerLore = config.getStringList("market-offer-shulker-lore");
 
-        playerOfferItemLore = config.getStringList("player-offer-item-lore");
+        playerOfferItemLore =  config.getStringList("player-offer-item-lore");
         playerOfferShulkerLore = config.getStringList("player-offer-shulker-lore");
 
         joinMessage = config.getString("info-messages.join");

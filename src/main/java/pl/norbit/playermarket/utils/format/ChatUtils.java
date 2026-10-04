@@ -32,14 +32,6 @@ public class ChatUtils {
         return MiniMessage.miniMessage().deserialize(text);
     }
 
-    public static String formatLegacy(Player p, String text) {
-        if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
-            text = PlaceholderAPI.setPlaceholders(p, text);
-        }
-        Component component = MiniMessage.miniMessage().deserialize(text);
-        return LegacyComponentSerializer.legacySection().serialize(component);
-    }
-
     public static String formatLegacy(String text) {
         if(PluginService.isEnabled(PluginHook.PLACEHOLDER_API)) {
             text = PlaceholderAPI.setPlaceholders(null, text);

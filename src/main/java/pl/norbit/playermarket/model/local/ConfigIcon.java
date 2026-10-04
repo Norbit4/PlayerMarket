@@ -2,6 +2,8 @@ package pl.norbit.playermarket.model.local;
 
 import lombok.Data;
 import mc.obliviate.inventory.Icon;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import pl.norbit.playermarket.utils.custom.CustomItemsUtils;
@@ -42,13 +44,20 @@ public class ConfigIcon {
                     .setLore(ChatUtils.formatLegacy("&cItem not found"));
         }
 
+
         Icon icon = new Icon(itemStack);
+
+        List<Component> componentLore = lore.stream()
+                .map(MiniMessage.miniMessage()::deserialize)
+                .toList();
+
+        itemStack.lore(componentLore);
 
         if(name != null){
             icon.setName(name);
         }
 
-        icon.setLore(lore);
+//        icon.setLore(lore);
 
         return icon;
     }

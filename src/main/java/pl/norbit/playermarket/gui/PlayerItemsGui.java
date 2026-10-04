@@ -3,6 +3,7 @@ package pl.norbit.playermarket.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -154,14 +155,14 @@ public class PlayerItemsGui extends Gui {
     private Icon getProfileIcon(ConfigIcon configIcon){
         PlayerData playerData = localData.getPlayerData();
 
-        List<String> lore = configIcon.getLore()
+        List<Component> lore = configIcon.getLore()
                 .stream()
                 .map(l -> formatLine(l, playerData))
                 .toList();
 
         ItemStack item = configIcon.getItem();
+        item.lore(lore);
         Icon icon = new Icon(item);
-        icon.setLore(lore);
         icon.setName(configIcon.getName());
 
         icon.hideFlags();
@@ -217,21 +218,22 @@ public class PlayerItemsGui extends Gui {
         return icon;
     }
 
-    private String formatLine(String line, PlayerData playerData) {
+    private Component formatLine(String line, PlayerData playerData) {
         int amount = PermUtils.getAmount(
                 player,
                 Settings.getOfferCommandLimitPermission(),
                 Settings.getOfferCommandDefaultLimit()
         );
 
-        return ChatUtils.setPlaceholders(
-                player,
-                line.replace("{offers}", String.valueOf(playerData.getPlayerOffers().size()))
-                        .replace("{offers_limit}", String.valueOf(amount))
-                        .replace("{sold}", String.valueOf(playerData.getSoldItems()))
-                        .replace("{money_earned}", DoubleFormatter.format(playerData.getEarnedMoney()))
-                        .replace("{all_sold}", String.valueOf(playerData.getTotalSoldItems()))
-                        .replace("{all_money_earned}", DoubleFormatter.format(playerData.getTotalEarnedMoney()))
+        line = line.replace("{offers}", String.valueOf(playerData.getPlayerOffers().size()))
+                .replace("{offers_limit}", String.valueOf(amount))
+                .replace("{sold}", String.valueOf(playerData.getSoldItems()))
+                .replace("{money_earned}", DoubleFormatter.format(playerData.getEarnedMoney()))
+                .replace("{all_sold}", String.valueOf(playerData.getTotalSoldItems()))
+                .replace("{all_money_earned}", DoubleFormatter.format(playerData.getTotalEarnedMoney()));
+
+        return ChatUtils.format(
+                ChatUtils.setPlaceholders(player, line)
         );
     }
 

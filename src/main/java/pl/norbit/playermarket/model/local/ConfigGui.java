@@ -83,9 +83,11 @@ public class ConfigGui {
             configIcon.setSlot(slot);
             configIcon.setEnabled(configurationSection.getBoolean("enabled"));
 
-            configIcon.setLore(stringList.stream()
-                    .map(ChatUtils::formatLegacy)
-                    .toList());
+//            configIcon.setLore(stringList.stream()
+//                    .map(ChatUtils::formatLegacy)
+//                    .toList());
+
+            configIcon.setLore(stringList);
 
             icons.put(key, configIcon);
         }

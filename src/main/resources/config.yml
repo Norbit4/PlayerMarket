@@ -302,7 +302,7 @@ market-gui:
     slot: 49
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><#dcee9a>Click to browse!'
   categories-icon:
     name: '<#93f182><bold>CATEGORY FILTER'
     icon: 'KNOWLEDGE_BOOK'
@@ -312,7 +312,7 @@ market-gui:
       - ''
       - '{categories}'
       - ''
-      - '<#dcee9a>Click to change!'
+      - '<!italic><#dcee9a>Click to change!'
   category-active: '<!italic> <#93f182><bold>▸ {category}'
   category-inactive: '<!italic> <#7f8c8d>• {category}'
 
@@ -323,23 +323,23 @@ market-gui:
     enabled: true
     lore:
       - ''
-      - '<gray>Type item name...'
+      - '<!italic><gray>Type item name...'
       - ''
-      - '<#dcee9a>Click to search!'
+      - '<!italic><#dcee9a>Click to search!'
   previous-page-icon:
     name: '<white><bold>PREVIOUS PAGE'
     icon: 'ARROW'
     slot: 46
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><#dcee9a>Click to browse!'
   next-page-icon:
     name: '<white><bold>NEXT PAGE'
     icon: 'ARROW'
     slot: 52
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><#dcee9a>Click to browse!'
   layout:
     border:
       - 0
@@ -412,21 +412,21 @@ search-gui:
     slot: 49
     lore:
       - ''
-      - '<#dcee9a>Click to go back!'
+      - '<!italic><#dcee9a>Click to go back!'
   previous-page-icon:
     name: '<white><bold>PREVIOUS PAGE'
     icon: 'ARROW'
     slot: 45
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><#dcee9a>Click to browse!'
   next-page-icon:
     name: '<white><bold>NEXT PAGE'
     icon: 'ARROW'
     slot: 53
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><#dcee9a>Click to browse!'
   layout:
     border:
       - 36-44
@@ -459,35 +459,35 @@ offers-gui:
       # {all_sold} - all time player sold items
       # {all_money_earned} - all time player money earned
       - ''
-      - '<aqua>◆ <white>Offers: <aqua>{offers}<dark_gray>/<aqua>{offers_limit}'
-      - '<light_purple>◆ <white>Sold offers: <light_purple>{sold}'
-      - '<green>$ <white>Money to claim: <green>{money_earned}$'
+      - '<!italic><aqua>◆ <white>Offers: <aqua>{offers}<dark_gray>/<aqua>{offers_limit}'
+      - '<!italic><light_purple>◆ <white>Sold offers: <light_purple>{sold}'
+      - '<!italic><green>$ <white>Money to claim: <green>{money_earned}$'
       - ''
-      - '<light_purple>◆ <white>All time sold offers: <light_purple>{all_sold}'
-      - '<green>$ <white>All time money earned: <green>{all_money_earned}$'
+      - '<!italic><light_purple>◆ <white>All time sold offers: <light_purple>{all_sold}'
+      - '<!italic><green>$ <white>All time money earned: <green>{all_money_earned}$'
       - ''
-      - '<#dcee9a>Click to claim!'
+      - '<!italic><#dcee9a>Click to claim!'
   back-to-market-icon:
     name: '<#93f182><bold>BACK TO MARKET'
     icon: 'BARRIER'
     slot: 49
     lore:
       - ''
-      - '<#dcee9a>Click to go back!'
+      - '<!italic><#dcee9a>Click to go back!'
   previous-page-icon:
     name: '<white><bold>PREVIOUS PAGE'
     icon: 'ARROW'
     slot: 46
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><<#dcee9a>Click to browse!'
   next-page-icon:
     name: '<white><bold>NEXT PAGE'
     icon: 'ARROW'
     slot: 52
     lore:
       - ''
-      - '<#dcee9a>Click to browse!'
+      - '<!italic><#dcee9a>Click to browse!'
   layout:
     border:
       - 36-44
@@ -515,22 +515,19 @@ shulker-gui:
     slot: 40
     lore:
       - ''
-      - '<#dcee9a>Click to go back!'
+      - '<!italic><#dcee9a>Click to go back!'
   buy-icon:
     name: '<#93f182><bold>BUY'
     icon: 'GREEN_WOOL'
     slot: 36
     lore:
       - ''
-      - '<#dcee9a>Click to buy!'
+      - '<!italic><#dcee9a>Click to buy!'
 
 #---------------------------------------#
 #            [ CATEGORIES ]             #
 #---------------------------------------#
 category-name-format: '<#93f182><bold>{category}'
-category-selected-lore:
-  - ''
-  - '<green><bold>Selected!'
 
 # main page category, all items will be displayed here
 all-category:

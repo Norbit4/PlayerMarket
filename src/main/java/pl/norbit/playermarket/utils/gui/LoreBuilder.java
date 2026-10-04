@@ -1,12 +1,13 @@
 package pl.norbit.playermarket.utils.gui;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import pl.norbit.playermarket.utils.format.ChatUtils;
 
 import java.util.*;
 
 public class LoreBuilder {
-
     private final ItemStack item;
     private final Map<String, String> placeholders = new LinkedHashMap<>();
 
@@ -26,20 +27,18 @@ public class LoreBuilder {
             return item;
         }
 
-        List<String> lore = meta.hasLore()
-                ? new ArrayList<>(Objects.requireNonNull(meta.getLore()))
+        List<Component> lore = meta.hasLore()
+                ? new ArrayList<>(Objects.requireNonNull(meta.lore()))
                 : new ArrayList<>();
 
         for (String line : template) {
-
             for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                 line = line.replace(entry.getKey(), entry.getValue());
             }
-
-            lore.add(line);
+            lore.add(ChatUtils.format(line));
         }
 
-        meta.setLore(lore);
+        meta.lore(lore);
         item.setItemMeta(meta);
 
         return item;

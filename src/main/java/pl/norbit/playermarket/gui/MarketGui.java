@@ -4,6 +4,7 @@ import lombok.Getter;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.pagination.PaginationManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -192,13 +193,13 @@ public class MarketGui extends Gui {
             icon.setName(ChatUtils.formatLegacy("&cInvalid item"));
             return icon;
         }
+        List<Category> categories = Settings.getFilterCategories();
+        List<Component> lore = getCategoryLore(categoryIcon, selectedCategory, categories);
+        itemStack.lore(lore);
 
         Icon icon = new Icon(itemStack);
-        List<Category> categories = Settings.getFilterCategories();
-        List<String> lore = getCategoryLore(categoryIcon, selectedCategory, categories);
 
         icon.setName(categoryIcon.getName());
-        icon.setLore(lore);
         icon.onClick(e -> {
             if (!CooldownService.tryClick(player.getUniqueId())) {
                 player.closeInventory();
@@ -231,29 +232,27 @@ public class MarketGui extends Gui {
         return categories.get(nextIndex);
     }
 
-    private List<String> getCategoryLore(ConfigIcon categoryIcon, Category selectedCategory, List<Category> categories) {
-        List<String> lore = new ArrayList<>();
+    private List<Component> getCategoryLore(ConfigIcon categoryIcon, Category selectedCategory, List<Category> categories) {
+        List<Component> lore = new ArrayList<>();
 
         for (String line : categoryIcon.getLore()) {
+
             if (line.equals("{categories}")) {
                 for (Category cat : categories) {
                     boolean selected = selectedCategory != null
                             && cat.getCategoryUUID().equals(selectedCategory.getCategoryUUID());
 
-                    if (selected) {
-                        String activeLine = configGui.getMessage("category-active")
-                                .replace("{category}", cat.getName());
-                        lore.add(activeLine);
-                    } else {
-                        String inactiveLine = configGui.getMessage("category-inactive")
-                                .replace("{category}", cat.getName());
-                        lore.add(inactiveLine);
-                    }
+                    String categoryLine = configGui.getMessage(selected ? "category-active" : "category-inactive")
+                            .replace("{category}", cat.getName());
+
+                    lore.add(ChatUtils.format(categoryLine));
                 }
+
             } else {
-                lore.add(line);
+                lore.add(ChatUtils.format(line));
             }
         }
+
         return lore;
     }
 }
